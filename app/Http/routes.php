@@ -24,3 +24,7 @@ Route::group(['middleware'=>'auth'],function(){
     Route::post('user-archive','UserArchiveController@addOrUpdate');
 });
 
+Route::group(['middleware'=>'role:ADMIN'],function(){
+    Route::get('user-manage','UserController@userManage');
+});
+

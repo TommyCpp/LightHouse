@@ -15,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         view()->composer('layouts/menu',function(View $view){
-            $view->with('test','testcontent');
+            $view->with('menus','testcontent');
         });
     }
 

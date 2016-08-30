@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class AdminAuth
+class RoleAuth
 {
     /**
      * Handle an incoming request.
@@ -13,8 +13,11 @@ class AdminAuth
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next,$role)
     {
+        if(!$request->user()->hasRole($role)){
+            return redirect('home');
+        }
         return $next($request);
     }
 }

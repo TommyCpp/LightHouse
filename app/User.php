@@ -24,7 +24,16 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
-    
+
+    /**
+     * Where User has corresponding role
+     * @param $role
+     * @return bool
+     */
+    public function hasRole($role){
+        return !(strpos($this->archive->Identity,$role) === false);
+    }
+
     public function archive(){
         return $this->hasOne('App\UserArchive','id');
     }
