@@ -7,7 +7,7 @@
 
     <title>Learn Laravel 5</title>
 
-    <link href='http://fonts.useso.com/css?family=Roboto:300italic,400italic,300,400,500,700,900' rel='stylesheet' type='text/css'/>
+    {{--<link href='http://fonts.useso.com/css?family=Roboto:300italic,400italic,300,400,500,700,900' rel='stylesheet' type='text/css'/>--}}
     <link href="http://localhost/LightHouse/resources/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="http://localhost/LightHouse/resources/assets/css/materialadmin.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="http://localhost/LightHouse/resources/assets/css/font-awesome.min.css">
@@ -430,4 +430,8 @@
 <script src="http://localhost/LightHouse/resources/assets/js/core/source/AppForm.js"></script>
 <script src="http://localhost/LightHouse/resources/assets/js/core/source/AppNavSearch.js"></script>
 <script src="http://localhost/LightHouse/resources/assets/js/core/source/AppVendor.js"></script>
+<script>
+    $("#main-menu").find("li").removeClass('active');
+    $("a[href='{{Request::url()}}']").parent('li').addClass('active');
+</script>
 @yield('js')

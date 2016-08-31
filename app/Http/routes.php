@@ -25,6 +25,6 @@ Route::group(['middleware'=>'auth'],function(){
 });
 
 Route::group(['middleware'=>'role:ADMIN'],function(){
-    Route::get('user-manage','UserController@userManage');
+    Route::get('user-management','UserController@userManage');
 });
 

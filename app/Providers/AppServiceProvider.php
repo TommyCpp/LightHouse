@@ -15,8 +15,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         view()->composer('layouts/menu',function(View $view){
-            $view->with('menus','testcontent');
+            $view->with('menus',[
+                ['首页','home'],
+                ['用户管理','user-management'],
+                ['我的资料','user-archive']
+            ]);
         });
+        
     }
 
     /**

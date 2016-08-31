@@ -7,8 +7,8 @@
             </a>
         </div>
         <div class="expanded">
-            <a href="{{ url('home') }}">
-                <span class="text-lg text-bold text-primary ">{{ $test }}</span>
+            <a href="/">
+                <span class="text-lg text-bold text-primary ">test</span>
             </a>
         </div>
     </div>
@@ -18,12 +18,21 @@
         <ul id="main-menu" class="gui-controls">
 
             <!-- BEGIN DASHBOARD -->
+            @foreach($menus as $item)
             <li>
-                <a href="{{ url('home') }}" class="active">
-                    <div class="gui-icon"><i class="md md-home"></i></div>
-                    <span class="title">{{ $test }}</span>
+                <a href="{{url($item[1])}}">
+                    <div class="gui-icon">
+                        @if(count($item)==3)
+                            <i class="md {{$item[2]}}"></i>
+                            @else
+                            <i class="md md-home"></i>
+                        @endif
+                    </div>
+                    <span class="title">{{$item[0]}}</span>
                 </a>
-            </li><!--end /menu-li -->
+            </li>
+            @endforeach
+
             <!-- END DASHBOARD -->
         </ul><!--end .main-menu -->
         <!-- END MAIN MENU -->

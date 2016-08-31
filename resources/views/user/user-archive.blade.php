@@ -20,25 +20,30 @@
                                 {{Form::label('id','ID')}}
                                 {{Form::text('id',$user->id,['readonly','class'=>'form-control'])}}
                             </div>
+                            <div class='form-group'>
+                                {{Form::label('name','姓名')}}
+                                {{Form::text('name',Request::user()->name,['class'=>'form-control'])}}
+                            </div>
                             <div class="form-group">
                                 {{Form::label('first-name','姓拼音')}}
-                                {{Form::text('first-name',null,['class'=>'form-control'])}}
+                                {{Form::text('first-name',$user->FirstName,['class'=>'form-control'])}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('last-name','名拼音')}}
-                                {{Form::text('last-name',null,['class'=>'form-control'])}}
+                                {{Form::label('last-name','拼音')}}
+                                {{Form::text('last-name',$user->LastName,['class'=>'form-control'])}}
                             </div>
                             <div class='form-group'>
                                 {{Form::label('high-school','高中学校名称')}}
-                                {{Form::text('high-school',null,['class'=>'form-control'])}}
+                                {{Form::text('high-school',$user->HighSchool,['class'=>'form-control'])}}
                             </div>
                             <div class='form-group'>
                                 {{Form::label('university','大学名称')}}
-                                {{Form::text('university',null,['class'=>'form-control'])}}
+                                {{Form::text('university',$user->University,['class'=>'form-control'])}}
                             </div>
                             <div class="form-group">
                                 {{Form::submit('现在提交',['class'=>'btn btn-flat btn-primary'])}}
                             </div>
+
                             {{Form::close()}}
                         </div>
                     </div>

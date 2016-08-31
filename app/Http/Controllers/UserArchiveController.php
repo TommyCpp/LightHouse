@@ -25,7 +25,7 @@ class UserArchiveController extends Controller
     {
         $id = $request->user()->id;
         $user_archive = UserArchive::where('id', $id)->first();
-        return view('user-archive/user-archive', ['user' => $user_archive]);
+        return view('user/user-archive', ['user' => $user_archive]);
     }
 
     /**
@@ -35,6 +35,7 @@ class UserArchiveController extends Controller
     {
         //TODO
         $user_archive = UserArchive::find($request->user()->id);
+        $request->user()->name=$request->input('name');
         $user_archive->FirstName = $request->input('first-name');
         $user_archive->LastName = $request->input('last-name');
         $user_archive->HighSchool = $request->input('high-school');
