@@ -12,13 +12,13 @@ class MotifiedUserArchives extends Migration
      */
     public function up()
     {
-        Schema::create('UserArchives', function (Blueprint $table) {
+        Schema::create('user_archives', function (Blueprint $table) {
             $table->increments('id');
             $table->string('FirstName')->nullable();
             $table->string('LastName')->nullable();
-            $table->string('HighSchool');
+            $table->string('HighSchool')->nullable();
             $table->string('University')->nullable();
-            $table->enum('Identity', ['Admin', 'Dais', 'AcademicTeam', 'OrganizingTeam', 'Director', 'CoreDirector', 'Volunteer', 'Teacher', 'Other']);
+            $table->enum('Identity', ['Admin', 'Dais', 'AT', 'OT', 'DIR', 'CoreDIR', 'VOL', 'DEL', 'HeadDel','Other']);
             $table->timestamps();
         });
     }
