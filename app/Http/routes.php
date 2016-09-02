@@ -24,7 +24,9 @@ Route::group(['middleware'=>'auth'],function(){
     Route::post('user-archive','UserArchiveController@addOrUpdate');
 });
 
-Route::group(['middleware'=>'role:ADMIN'],function(){
+Route::group(['middleware'=>['auth','role:ADMIN']],function(){
     Route::get('user-management','UserController@userManage');
+    Route::get('user-management/{id}','UserController@showUserManageForm');
+    Route::post('user-management/{id}','UserController@editUserInformation');
 });
 

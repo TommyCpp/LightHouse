@@ -2,11 +2,12 @@
 
 @section('css')
     <link type="text/css" rel="stylesheet"
-          href="http://localhost/LightHouse/resources/assets/css/libs/DataTables/jquery.dataTables.css?1423553989"/>
+          href="{{env('APP_URL')}}/resources/assets/css/libs/DataTables/jquery.dataTables.css?1423553989"/>
     <link type="text/css" rel="stylesheet"
-          href="http://localhost/LightHouse/resources/assets/css/libs/DataTables/extensions/dataTables.colVis.css?1423553990"/>
+          href="{{env('APP_URL')}}/resources/assets/css/libs/DataTables/extensions/dataTables.colVis.css?1423553990"/>
     <link type="text/css" rel="stylesheet"
-          href="http://localhost/LightHouse/resources/assets/css/libs/DataTables/extensions/dataTables.tableTools.css?1423553990"/>
+          href="{{env('APP_URL')}}/resources/assets/css/libs/DataTables/extensions/dataTables.tableTools.css?1423553990"/>
+    <link rel="stylesheet" href="{{env('APP_URL')}}/resources/assets/css/libs/toastr/toastr.css"/>
 @endsection
 
 @section('content')
@@ -51,7 +52,8 @@
                                     </td>
                                     <td>{{$user->archive->HighSchool}}</td>
                                     <td>{{$user->archive->University}}</td>
-                                    <td><a href="{{url('user-management',$user->id)}}"><i class="md md-mode-edit"></i></a></td>
+                                    <td><a href="{{url('user-management',$user->id)}}"><i
+                                                    class="md md-mode-edit"></i></a></td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -64,9 +66,10 @@
 @endsection
 
 @section('js')
-    <script src="http://localhost/LightHouse/resources/assets/js/libs/DataTables/jquery.dataTables.min.js"></script>
-    <script src="http://localhost/LightHouse/resources/assets/js/libs/DataTables/extensions/ColVis/js/dataTables.colVis.min.js"></script>
-    <script src="http://localhost/LightHouse/resources/assets/js/libs/DataTables/extensions/TableTools/js/dataTables.tableTools.min.js"></script>
+    <script src="{{env('APP_URL')}}/resources/assets/js/libs/DataTables/jquery.dataTables.min.js"></script>
+    <script src="{{env('APP_URL')}}/resources/assets/js/libs/DataTables/extensions/ColVis/js/dataTables.colVis.min.js"></script>
+    <script src="{{env('APP_URL')}}/resources/assets/js/libs/DataTables/extensions/TableTools/js/dataTables.tableTools.min.js"></script>
+    <script src="{{env('APP_URL')}}/resources/assets/js/libs/toastr/toastr.js"></script>
     <script>
         $('#users').DataTable({
             "language": {
@@ -75,8 +78,11 @@
                 "info": "显示 _PAGES_ 中的 _PAGE_ 页",
                 "infoEmpty": "没有数据",
                 "infoFiltered": "(filtered from _MAX_ total records)",
-                "search":"搜索"
+                "search": "搜索"
             }
         });
+        @if(session('error') != null)
+            toastr.error('{{session('error')}}');
+        @endif
     </script>
 @endsection

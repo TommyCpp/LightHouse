@@ -36,55 +36,5 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library name="PHP">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/barryvdh/laravel-ide-helper" />
-          <root url="file://$MODULE_DIR$/vendor/barryvdh/reflection-docblock" />
-          <root url="file://$MODULE_DIR$/vendor/doctrine/annotations" />
-          <root url="file://$MODULE_DIR$/vendor/doctrine/cache" />
-          <root url="file://$MODULE_DIR$/vendor/doctrine/collections" />
-          <root url="file://$MODULE_DIR$/vendor/doctrine/common" />
-          <root url="file://$MODULE_DIR$/vendor/doctrine/dbal" />
-          <root url="file://$MODULE_DIR$/vendor/doctrine/lexer" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/console" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/container" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/contracts" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/events" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/filesystem" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/http" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/pipeline" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/routing" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/session" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/support" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/view" />
-          <root url="file://$MODULE_DIR$/vendor/laravelcollective/html" />
-          <root url="file://$MODULE_DIR$/vendor/symfony/class-loader" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/barryvdh/laravel-ide-helper" />
-          <root url="file://$MODULE_DIR$/vendor/barryvdh/reflection-docblock" />
-          <root url="file://$MODULE_DIR$/vendor/doctrine/annotations" />
-          <root url="file://$MODULE_DIR$/vendor/doctrine/cache" />
-          <root url="file://$MODULE_DIR$/vendor/doctrine/collections" />
-          <root url="file://$MODULE_DIR$/vendor/doctrine/common" />
-          <root url="file://$MODULE_DIR$/vendor/doctrine/dbal" />
-          <root url="file://$MODULE_DIR$/vendor/doctrine/lexer" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/console" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/container" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/contracts" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/events" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/filesystem" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/http" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/pipeline" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/routing" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/session" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/support" />
-          <root url="file://$MODULE_DIR$/vendor/illuminate/view" />
-          <root url="file://$MODULE_DIR$/vendor/laravelcollective/html" />
-          <root url="file://$MODULE_DIR$/vendor/symfony/class-loader" />
-        </SOURCES>
-      </library>
-    </orderEntry>
   </component>
 </module>

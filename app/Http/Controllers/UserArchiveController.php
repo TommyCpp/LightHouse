@@ -35,6 +35,12 @@ class UserArchiveController extends Controller
     {
         //TODO
         $user_archive = UserArchive::find($request->user()->id);
+        $this->validate($request,[
+            'name'=>'required',
+            'first-name'=>'required|alpha',
+            'last-name'=>'required|alpha',
+            'high-school'=>'max:255'
+        ]);
         $request->user()->name=$request->input('name');
         $user_archive->FirstName = $request->input('first-name');
         $user_archive->LastName = $request->input('last-name');

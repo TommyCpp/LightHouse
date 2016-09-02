@@ -25,11 +25,11 @@
                                 {{Form::text('name',Request::user()->name,['class'=>'form-control'])}}
                             </div>
                             <div class="form-group">
-                                {{Form::label('first-name','姓拼音')}}
+                                {{Form::label('first-name','名拼音')}}
                                 {{Form::text('first-name',$user->FirstName,['class'=>'form-control'])}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('last-name','拼音')}}
+                                {{Form::label('last-name','姓拼音')}}
                                 {{Form::text('last-name',$user->LastName,['class'=>'form-control'])}}
                             </div>
                             <div class='form-group'>
@@ -46,6 +46,15 @@
 
                             {{Form::close()}}
                         </div>
+                        @if (count($errors) > 0)
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
