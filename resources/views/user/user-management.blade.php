@@ -77,7 +77,7 @@
                 "zeroRecords": "没有任何记录",
                 "info": "显示 _PAGES_ 中的 _PAGE_ 页",
                 "infoEmpty": "没有数据",
-                "infoFiltered": "(filtered from _MAX_ total records)",
+                "infoFiltered": "(从 _MAX_ 个数据中筛选)",
                 "search": "搜索"
             }
         });

@@ -13,17 +13,22 @@
     <link rel="stylesheet" href="{{env('APP_URL')}}/resources/assets/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{env('APP_URL')}}/resources/assets/css/material-design-iconic-font.min.css">
     @yield('css')
+    <style>
+        .dropdown-menu.animation-dock li.dropdown-body{
+            padding: 5px 20px;
+        }
+    </style>
 </head>
 
 <body class="menubar-hoverable header-fixed menubar-pin ">
 
 <!-- BEGIN HEADER-->
-<header id="header" >
+<header id="header">
     <div class="headerbar">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="headerbar-left">
             <ul class="header-nav header-nav-options">
-                <li class="header-nav-brand" >
+                <li class="header-nav-brand">
                     <div class="brand-holder">
                         <a href="{{url('home')}}">
                             <span class="text-lg text-bold text-primary">MATERIAL ADMIN</span>
@@ -44,9 +49,11 @@
                     <!-- Search form -->
                     <form class="navbar-search" role="search">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="headerSearch" placeholder="Enter your keyword">
+                            <input type="text" class="form-control" name="headerSearch"
+                                   placeholder="Enter your keyword">
                         </div>
-                        <button type="submit" class="btn btn-icon-toggle ink-reaction"><i class="fa fa-search"></i></button>
+                        <button type="submit" class="btn btn-icon-toggle ink-reaction"><i class="fa fa-search"></i>
+                        </button>
                     </form>
                 </li>
                 <li class="dropdown hidden-xs">
@@ -57,21 +64,25 @@
                         <li class="dropdown-header">Today's messages</li>
                         <li>
                             <a class="alert alert-callout alert-warning" href="javascript:void(0);">
-                                <img class="pull-right img-circle dropdown-avatar" src="../../assets/img/avatar2.jpg?1404026449" alt="" />
+                                <img class="pull-right img-circle dropdown-avatar"
+                                     src="../../assets/img/avatar2.jpg?1404026449" alt=""/>
                                 <strong>Alex Anistor</strong><br/>
                                 <small>Testing functionality...</small>
                             </a>
                         </li>
                         <li>
                             <a class="alert alert-callout alert-info" href="javascript:void(0);">
-                                <img class="pull-right img-circle dropdown-avatar" src="../../assets/img/avatar3.jpg?1404026799" alt="" />
+                                <img class="pull-right img-circle dropdown-avatar"
+                                     src="../../assets/img/avatar3.jpg?1404026799" alt=""/>
                                 <strong>Alicia Adell</strong><br/>
                                 <small>Reviewing last changes...</small>
                             </a>
                         </li>
                         <li class="dropdown-header">Options</li>
-                        <li><a href="../../html/pages/login.html">View all messages <span class="pull-right"><i class="fa fa-arrow-right"></i></span></a></li>
-                        <li><a href="../../html/pages/login.html">Mark as read <span class="pull-right"><i class="fa fa-arrow-right"></i></span></a></li>
+                        <li><a href="../../html/pages/login.html">View all messages <span class="pull-right"><i
+                                            class="fa fa-arrow-right"></i></span></a></li>
+                        <li><a href="../../html/pages/login.html">Mark as read <span class="pull-right"><i
+                                            class="fa fa-arrow-right"></i></span></a></li>
                     </ul><!--end .dropdown-menu -->
                 </li><!--end .dropdown -->
                 <li class="dropdown hidden-xs">
@@ -86,7 +97,9 @@
                                     <span class="text-light">Server load <strong>Today</strong></span>
                                     <strong class="pull-right">93%</strong>
                                 </div>
-                                <div class="progress"><div class="progress-bar progress-bar-danger" style="width: 93%"></div></div>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-danger" style="width: 93%"></div>
+                                </div>
                             </a>
                         </li><!--end .dropdown-progress -->
                         <li class="dropdown-progress">
@@ -95,7 +108,9 @@
                                     <span class="text-light">Server load <strong>Yesterday</strong></span>
                                     <strong class="pull-right">30%</strong>
                                 </div>
-                                <div class="progress"><div class="progress-bar progress-bar-success" style="width: 30%"></div></div>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success" style="width: 30%"></div>
+                                </div>
                             </a>
                         </li><!--end .dropdown-progress -->
                         <li class="dropdown-progress">
@@ -104,7 +119,9 @@
                                     <span class="text-light">Server load <strong>Lastweek</strong></span>
                                     <strong class="pull-right">74%</strong>
                                 </div>
-                                <div class="progress"><div class="progress-bar progress-bar-warning" style="width: 74%"></div></div>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-warning" style="width: 74%"></div>
+                                </div>
                             </a>
                         </li><!--end .dropdown-progress -->
                     </ul><!--end .dropdown-menu -->
@@ -113,26 +130,27 @@
             <ul class="header-nav header-nav-profile">
                 <li class="dropdown">
                     <a href="javascript:void(0);" class="dropdown-toggle ink-reaction" data-toggle="dropdown">
-                        <img src="../../assets/img/avatar1.jpg?1403934956" alt="" />
+                        <img src="../../assets/img/avatar1.jpg?1403934956" alt=""/>
 								<span class="profile-info">
-									Daniel Johnson
-									<small>Administrator</small>
+                                    {{Auth::user()->name}}
 								</span>
                     </a>
                     <ul class="dropdown-menu animation-dock">
-                        <li class="dropdown-header">Config</li>
-                        <li><a href="../../html/pages/profile.html">My profile</a></li>
-                        <li><a href="../../html/pages/blog/post.html">My blog <span class="badge style-danger pull-right">16</span></a></li>
-                        <li><a href="../../html/pages/calendar.html">My appointments</a></li>
+                        <li class="dropdown-header">身份</li>
+                        @if(Auth::user()->identities())
+                            @foreach(Auth::user()->identities() as $identity)
+                                <li class="dropdown-body">{{$identity}}</li>
+                            @endforeach
+                        @endif
                         <li class="divider"></li>
-                        <li><a href="../../html/pages/locked.html"><i class="fa fa-fw fa-lock"></i> Lock</a></li>
-                        <li><a href="../../html/pages/login.html"><i class="fa fa-fw fa-power-off text-danger"></i> Logout</a></li>
+                        <li><a>test</a></li>
                     </ul><!--end .dropdown-menu -->
                 </li><!--end .dropdown -->
             </ul><!--end .header-nav-profile -->
             <ul class="header-nav header-nav-toggle">
                 <li>
-                    <a class="btn btn-icon-toggle btn-default" href="#offcanvas-search" data-toggle="offcanvas" data-backdrop="false">
+                    <a class="btn btn-icon-toggle btn-default" href="#offcanvas-search" data-toggle="offcanvas"
+                       data-backdrop="false">
                         <i class="fa fa-ellipsis-v"></i>
                     </a>
                 </li>
@@ -179,9 +197,10 @@
                         </div>
                     </li>
                     <li class="tile">
-                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas" data-backdrop="false">
+                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas"
+                           data-backdrop="false">
                             <div class="tile-icon">
-                                <img src="../../assets/img/avatar4.jpg?1404026791" alt="" />
+                                <img src="../../assets/img/avatar4.jpg?1404026791" alt=""/>
                             </div>
                             <div class="tile-text">
                                 Alex Nelson
@@ -190,9 +209,10 @@
                         </a>
                     </li>
                     <li class="tile">
-                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas" data-backdrop="false">
+                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas"
+                           data-backdrop="false">
                             <div class="tile-icon">
-                                <img src="../../assets/img/avatar9.jpg?1404026744" alt="" />
+                                <img src="../../assets/img/avatar9.jpg?1404026744" alt=""/>
                             </div>
                             <div class="tile-text">
                                 Ann Laurens
@@ -206,9 +226,10 @@
                         </div>
                     </li>
                     <li class="tile">
-                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas" data-backdrop="false">
+                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas"
+                           data-backdrop="false">
                             <div class="tile-icon">
-                                <img src="../../assets/img/avatar2.jpg?1404026449" alt="" />
+                                <img src="../../assets/img/avatar2.jpg?1404026449" alt=""/>
                             </div>
                             <div class="tile-text">
                                 Jessica Cruise
@@ -217,9 +238,10 @@
                         </a>
                     </li>
                     <li class="tile">
-                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas" data-backdrop="false">
+                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas"
+                           data-backdrop="false">
                             <div class="tile-icon">
-                                <img src="../../assets/img/avatar8.jpg?1404026729" alt="" />
+                                <img src="../../assets/img/avatar8.jpg?1404026729" alt=""/>
                             </div>
                             <div class="tile-text">
                                 Jim Peters
@@ -233,9 +255,10 @@
                         </div>
                     </li>
                     <li class="tile">
-                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas" data-backdrop="false">
+                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas"
+                           data-backdrop="false">
                             <div class="tile-icon">
-                                <img src="../../assets/img/avatar5.jpg?1404026513" alt="" />
+                                <img src="../../assets/img/avatar5.jpg?1404026513" alt=""/>
                             </div>
                             <div class="tile-text">
                                 Mabel Logan
@@ -244,9 +267,10 @@
                         </a>
                     </li>
                     <li class="tile">
-                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas" data-backdrop="false">
+                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas"
+                           data-backdrop="false">
                             <div class="tile-icon">
-                                <img src="../../assets/img/avatar11.jpg?1404026774" alt="" />
+                                <img src="../../assets/img/avatar11.jpg?1404026774" alt=""/>
                             </div>
                             <div class="tile-text">
                                 Mary Peterson
@@ -255,9 +279,10 @@
                         </a>
                     </li>
                     <li class="tile">
-                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas" data-backdrop="false">
+                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas"
+                           data-backdrop="false">
                             <div class="tile-icon">
-                                <img src="../../assets/img/avatar3.jpg?1404026799" alt="" />
+                                <img src="../../assets/img/avatar3.jpg?1404026799" alt=""/>
                             </div>
                             <div class="tile-text">
                                 Mike Alba
@@ -271,9 +296,10 @@
                         </div>
                     </li>
                     <li class="tile">
-                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas" data-backdrop="false">
+                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas"
+                           data-backdrop="false">
                             <div class="tile-icon">
-                                <img src="../../assets/img/avatar6.jpg?1404026572" alt="" />
+                                <img src="../../assets/img/avatar6.jpg?1404026572" alt=""/>
                             </div>
                             <div class="tile-text">
                                 Nathan Peterson
@@ -287,9 +313,10 @@
                         </div>
                     </li>
                     <li class="tile">
-                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas" data-backdrop="false">
+                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas"
+                           data-backdrop="false">
                             <div class="tile-icon">
-                                <img src="../../assets/img/avatar7.jpg?1404026721" alt="" />
+                                <img src="../../assets/img/avatar7.jpg?1404026721" alt=""/>
                             </div>
                             <div class="tile-text">
                                 Philip Ericsson
@@ -303,9 +330,10 @@
                         </div>
                     </li>
                     <li class="tile">
-                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas" data-backdrop="false">
+                        <a class="tile-content ink-reaction" href="#offcanvas-chat" data-toggle="offcanvas"
+                           data-backdrop="false">
                             <div class="tile-icon">
-                                <img src="../../assets/img/avatar10.jpg?1404026762" alt="" />
+                                <img src="../../assets/img/avatar10.jpg?1404026762" alt=""/>
                             </div>
                             <div class="tile-text">
                                 Samuel Parsons
@@ -326,13 +354,15 @@
                     <a class="btn btn-icon-toggle btn-default-light pull-right" data-dismiss="offcanvas">
                         <i class="md md-close"></i>
                     </a>
-                    <a class="btn btn-icon-toggle btn-default-light pull-right" href="#offcanvas-search" data-toggle="offcanvas" data-backdrop="false">
+                    <a class="btn btn-icon-toggle btn-default-light pull-right" href="#offcanvas-search"
+                       data-toggle="offcanvas" data-backdrop="false">
                         <i class="md md-arrow-back"></i>
                     </a>
                 </div>
                 <form class="form">
                     <div class="form-group floating-label">
-                        <textarea name="sidebarChatMessage" id="sidebarChatMessage" class="form-control autosize" rows="1"></textarea>
+                        <textarea name="sidebarChatMessage" id="sidebarChatMessage" class="form-control autosize"
+                                  rows="1"></textarea>
                         <label for="sidebarChatMessage">Leave a message</label>
                     </div>
                 </form>
@@ -341,7 +371,8 @@
                 <ul class="list-chats">
                     <li>
                         <div class="chat">
-                            <div class="chat-avatar"><img class="img-circle" src="../../assets/img/avatar1.jpg?1403934956" alt="" /></div>
+                            <div class="chat-avatar"><img class="img-circle"
+                                                          src="../../assets/img/avatar1.jpg?1403934956" alt=""/></div>
                             <div class="chat-body">
                                 Yes, it is indeed very beautiful.
                                 <small>10:03 pm</small>
@@ -350,7 +381,8 @@
                     </li>
                     <li class="chat-left">
                         <div class="chat">
-                            <div class="chat-avatar"><img class="img-circle" src="../../assets/img/avatar9.jpg?1404026744" alt="" /></div>
+                            <div class="chat-avatar"><img class="img-circle"
+                                                          src="../../assets/img/avatar9.jpg?1404026744" alt=""/></div>
                             <div class="chat-body">
                                 Did you see the changes?
                                 <small>10:02 pm</small>
@@ -359,7 +391,8 @@
                     </li>
                     <li>
                         <div class="chat">
-                            <div class="chat-avatar"><img class="img-circle" src="../../assets/img/avatar1.jpg?1403934956" alt="" /></div>
+                            <div class="chat-avatar"><img class="img-circle"
+                                                          src="../../assets/img/avatar1.jpg?1403934956" alt=""/></div>
                             <div class="chat-body">
                                 I just arrived at work, it was quite busy.
                                 <small>06:44pm</small>
@@ -372,7 +405,8 @@
                     </li>
                     <li class="chat-left">
                         <div class="chat">
-                            <div class="chat-avatar"><img class="img-circle" src="../../assets/img/avatar9.jpg?1404026744" alt="" /></div>
+                            <div class="chat-avatar"><img class="img-circle"
+                                                          src="../../assets/img/avatar9.jpg?1404026744" alt=""/></div>
                             <div class="chat-body">
                                 The colors are much better now.
                             </div>
@@ -386,7 +420,8 @@
                     </li>
                     <li>
                         <div class="chat">
-                            <div class="chat-avatar"><img class="img-circle" src="../../assets/img/avatar1.jpg?1403934956" alt="" /></div>
+                            <div class="chat-avatar"><img class="img-circle"
+                                                          src="../../assets/img/avatar1.jpg?1403934956" alt=""/></div>
                             <div class="chat-body">
                                 Are the colors of the logo already adapted?
                                 <small>Last week</small>

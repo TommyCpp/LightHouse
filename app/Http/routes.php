@@ -17,9 +17,9 @@ Route::get('/', function () {
 
 Route::auth();
 
-Route::get('/home', 'HomeController@index');
 
 Route::group(['middleware'=>'auth'],function(){
+    Route::get('/home', 'HomeController@index');
     Route::get('user-archive','UserArchiveController@showArchiveForm');
     Route::post('user-archive','UserArchiveController@addOrUpdate');
 });

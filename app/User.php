@@ -40,6 +40,9 @@ class User extends Authenticatable
         return $this->hasOne('App\UserArchive', 'id');
     }
 
+    /**获取身份数组
+     * @return bool|array
+     */
     public function identities()
     {
         $identity_string = $this->archive->Identity;
