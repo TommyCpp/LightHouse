@@ -19,19 +19,19 @@
 
             <!-- BEGIN DASHBOARD -->
             @foreach($menus as $item)
-            <li>
-                <a href="{{url($item[1])}}">
-                    <div class="gui-icon">
-                        @if(count($item)==3)
-                            <i class="md {{$item[2]}}"></i>
+                <li>
+                    <a href="{{url($item[1])}}">
+                        <div class="gui-icon">
+                            @if(count($item)==3)
+                                <i class="md {{$item[2]}}"></i>
                             @else
-                            <i class="md md-home"></i>
-                        @endif
-                    </div>
-                    <span class="title">{{$item[0]}}</span>
-                </a>
-            </li>
-            @endforeach
+                                <i class="md md-home"></i>
+                            @endif
+                        </div>
+                        <span class="title">{{$item[0]}}</span>
+                    </a>
+                </li>
+                @endforeach
 
             <!-- END DASHBOARD -->
         </ul><!--end .main-menu -->

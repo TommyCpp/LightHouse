@@ -14,11 +14,17 @@ class Committee extends Model
         if($value == null || $value == ""){
             return "无议题";
         }
+        return $value;
     }
     
     public function getTopicEnglishNameAttribute($value){
         if($value == null || $value == ""){
             return "No Topic";
         }
+        return $value;
+    }
+    
+    public function getAbbrrviationAttribute($value){
+        return strtoupper($value);
     }
 }

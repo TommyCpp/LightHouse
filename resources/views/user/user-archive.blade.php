@@ -12,7 +12,6 @@
         <div class="section-body contain-lg">
             <div class="row">
                 <div class="col-lg-12">
-
                     {{ Form::open(['action'=>['UserArchiveController@addOrUpdate'],'class'=>'form'])}}
                     <div class="card">
                         <div class="card-body">

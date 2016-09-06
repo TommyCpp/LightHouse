@@ -17,7 +17,6 @@ Route::get('/', function () {
 
 Route::auth();
 
-
 Route::group(['middleware'=>'auth'],function(){
     Route::get('/home', 'HomeController@index');
     Route::get('user-archive','UserArchiveController@showArchiveForm');
@@ -28,5 +27,10 @@ Route::group(['middleware'=>['auth','role:ADMIN']],function(){
     Route::get('user-management','UserController@userManage');
     Route::get('user-management/{id}','UserController@showUserManageForm');
     Route::post('user-management/{id}','UserController@editUserInformation');
+});
+
+Route::group(['middleware'=>['auth','role:AT|OT']],function(){
+    Route::get('committees','CommitteeController@index');
+    
 });
 

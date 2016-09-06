@@ -137,8 +137,8 @@
                     </a>
                     <ul class="dropdown-menu animation-dock">
                         <li class="dropdown-header">身份</li>
-                        @if(Auth::user()->identities())
-                            @foreach(Auth::user()->identities() as $identity)
+                        @if(\App\UserArchive::identities(Auth::user()->id))
+                            @foreach(\App\UserArchive::identities(Auth::user()->id) as $identity)
                                 <li class="dropdown-body">{{$identity}}</li>
                             @endforeach
                         @endif
@@ -163,6 +163,8 @@
 <!-- BEGIN BASE-->
 <div id="base">
 
+    @include('layouts/menu')
+
     <!-- BEGIN OFFCANVAS LEFT -->
     <div class="offcanvas">
     </div><!--end .offcanvas-->
@@ -173,8 +175,6 @@
         @yield('content')
     </div><!--end #content-->
     <!-- END CONTENT -->
-
-    @include('layouts/menu')
 
             <!-- BEGIN OFFCANVAS RIGHT -->
     <div class="offcanvas">

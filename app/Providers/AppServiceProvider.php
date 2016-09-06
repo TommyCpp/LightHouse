@@ -18,7 +18,8 @@ class AppServiceProvider extends ServiceProvider
             $view->with('menus',[
                 ['首页','home'],
                 ['用户管理','user-management'],
-                ['我的资料','user-archive']
+                ['我的资料','user-archive'],
+                ['会场管理','committees']
             ]);
         });
         
