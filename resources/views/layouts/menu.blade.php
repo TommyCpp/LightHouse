@@ -20,20 +20,31 @@
             <!-- BEGIN DASHBOARD -->
             @foreach($menus as $item)
                 <li>
-                    <a href="{{url($item[1])}}">
+                    <a href="{{array_key_exists('url',$item) ? url($item['url']) : $item['link']}}">
                         <div class="gui-icon">
-                            @if(count($item)==3)
-                                <i class="md {{$item[2]}}"></i>
+                            @if(array_key_exists('icon',$item))
+                                <i class="md {{$item['icon']}}"></i>
                             @else
                                 <i class="md md-home"></i>
                             @endif
                         </div>
-                        <span class="title">{{$item[0]}}</span>
+                        <span class="title">{{$item['name']}}</span>
                     </a>
+                    @if(array_key_exists('offspring',$item))
+                        <ul>
+                            @foreach($item['offspring'] as $sub)
+                                <li>
+                                    <a href="{{array_key_exists('url',$sub)?url($sub['url']):$sub['link']}}">
+                                        <span class="title">{{$sub['name']}}</span>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
                 </li>
                 @endforeach
 
-            <!-- END DASHBOARD -->
+                        <!-- END DASHBOARD -->
         </ul><!--end .main-menu -->
         <!-- END MAIN MENU -->
 

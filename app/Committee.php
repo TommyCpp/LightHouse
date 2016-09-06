@@ -24,7 +24,7 @@ class Committee extends Model
         return $value;
     }
     
-    public function getAbbrrviationAttribute($value){
+    public function getAbbreviationAttribute($value){
         return strtoupper($value);
     }
 }

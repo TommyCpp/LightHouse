@@ -31,6 +31,7 @@ Route::group(['middleware'=>['auth','role:ADMIN']],function(){
 
 Route::group(['middleware'=>['auth','role:AT|OT']],function(){
     Route::get('committees','CommitteeController@index');
+    Route::get('new-committees','CommitteeController@showCreateForm');
     
 });
 

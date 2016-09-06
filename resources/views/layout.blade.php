@@ -137,8 +137,8 @@
                     </a>
                     <ul class="dropdown-menu animation-dock">
                         <li class="dropdown-header">身份</li>
-                        @if(\App\UserArchive::identities(Auth::user()->id))
-                            @foreach(\App\UserArchive::identities(Auth::user()->id) as $identity)
+                        @if($identities = \App\UserArchive::identities(Auth::user()->id))
+                            @foreach($identities as $identity)
                                 <li class="dropdown-body">{{$identity}}</li>
                             @endforeach
                         @endif
@@ -468,5 +468,9 @@
 <script>
     $("#main-menu").find("li").removeClass('active');
     $("a[href='{{Request::url()}}']").parent('li').addClass('active');
+    var parent_li = $("a[href='{{Request::url()}}'").parents('#main-menu > li');
+    if(! parent_li.hasClass('active')){
+        parent_li.addClass('expanded').addClass('gui-folder');
+    }
 </script>
 @yield('js')

@@ -20,6 +20,10 @@
                                 {{Form::text('id',$user->id,['readonly','class'=>'form-control'])}}
                             </div>
                             <div class='form-group'>
+                                {{Form::label('email','Email')}}
+                                {{Form::text('email',Request::user()->email,['class'=>'form-control','readonly'])}}
+                            </div>
+                            <div class='form-group'>
                                 {{Form::label('name','姓名')}}
                                 {{Form::text('name',Request::user()->name,['class'=>'form-control'])}}
                             </div>
