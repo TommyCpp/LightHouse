@@ -49,7 +49,10 @@
                                     <td>{{$committee->delegation}}</td>
                                     <td>{{$committee->number}}</td>
                                     <td><a href="{{url('committee',$committee->id)}}"><i
-                                                    class="md md-mode-edit"></i></a></td>
+                                                    class="md md-mode-edit"></i></a>
+                                        <a href="javascript:void(0);" data-target="{{$committee->id}}"><i
+                                                    class="fa fa-trash"></i></a>
+                                    </td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -80,5 +83,29 @@
         @if(session('error') != null)
             toastr.error('{{session('error')}}');
         @endif
+
+        $("i.fa.fa-trash").click(function (e) {
+            BootstrapDialog.show({
+                title: "确认",
+                type: "type-warning",
+                message: "确认删除" + $(e.target).parent().data('target') + "号会场",
+                buttons: [{
+                    id: "btn-ok",
+                    label: "确定",
+                    cssClass: "btn btn-danger",
+                    action: function (dialog) {
+                        //TODO
+                    }
+                }, {
+                    id: "btn-close",
+                    label: "取消",
+                    cssClass: "btn btn-primary",
+                    action: function (dialog) {
+                        dialog.close();
+                    }
+                }
+                ]
+            })
+        })
     </script>
 @endsection

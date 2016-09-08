@@ -12,9 +12,10 @@
     <link href="{{env('APP_URL')}}/resources/assets/css/materialadmin.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{env('APP_URL')}}/resources/assets/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{env('APP_URL')}}/resources/assets/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="{{env('APP_URL')}}/resources/assets/css/libs/bootstrap-dialog/bootstrap-dialog.css"/>
     @yield('css')
     <style>
-        .dropdown-menu.animation-dock li.dropdown-body{
+        .dropdown-menu.animation-dock li.dropdown-body {
             padding: 5px 20px;
         }
     </style>
@@ -163,9 +164,9 @@
 <!-- BEGIN BASE-->
 <div id="base">
 
-    @include('layouts/menu')
+    @include('partial.menu')
 
-    <!-- BEGIN OFFCANVAS LEFT -->
+            <!-- BEGIN OFFCANVAS LEFT -->
     <div class="offcanvas">
     </div><!--end .offcanvas-->
     <!-- END OFFCANVAS LEFT -->
@@ -176,7 +177,7 @@
     </div><!--end #content-->
     <!-- END CONTENT -->
 
-            <!-- BEGIN OFFCANVAS RIGHT -->
+    <!-- BEGIN OFFCANVAS RIGHT -->
     <div class="offcanvas">
 
         <!-- BEGIN OFFCANVAS SEARCH -->
@@ -443,6 +444,7 @@
 <script src="{{env('APP_URL')}}/resources/assets/js/libs/jquery/jquery-1.11.2.min.js"></script>
 <script src="{{env('APP_URL')}}/resources/assets/js/libs/jquery/jquery-migrate-1.2.1.min.js"></script>
 <script src="{{env('APP_URL')}}/resources/assets/js/libs/bootstrap/bootstrap.min.js"></script>
+<script src="{{env('APP_URL')}}/resources/assets/js/libs/bootstrap-dialog/bootstrap-dialog.js"></script>
 <script src="{{env('APP_URL')}}/resources/assets/js/libs/spin.js/spin.min.js"></script>
 <script src="{{env('APP_URL')}}/resources/assets/js/libs/autosize/jquery.autosize.min.js"></script>
 <script src="{{env('APP_URL')}}/resources/assets/js/libs/moment/moment.min.js"></script>
@@ -469,7 +471,7 @@
     $("#main-menu").find("li").removeClass('active');
     $("a[href='{{Request::url()}}']").parent('li').addClass('active');
     var parent_li = $("a[href='{{Request::url()}}'").parents('#main-menu > li');
-    if(! parent_li.hasClass('active')){
+    if (!parent_li.hasClass('active')) {
         parent_li.addClass('expanded').addClass('gui-folder');
     }
 </script>

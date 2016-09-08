@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        view()->composer('layouts/menu',function(View $view){
+        view()->composer('partial/menu',function(View $view){
             $view->with('menus',[
                 //name:选项名称
                 //url：相对URL
