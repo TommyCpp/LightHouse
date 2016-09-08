@@ -137,8 +137,8 @@
                     </a>
                     <ul class="dropdown-menu animation-dock">
                         <li class="dropdown-header">身份</li>
-                        @if($identities = \App\UserArchive::identities(Auth::user()->id))
-                            @foreach($identities as $identity)
+                        @if(Auth::user()->identities)
+                            @foreach(Auth::user()->identities as $identity)
                                 <li class="dropdown-body">{{$identity}}</li>
                             @endforeach
                         @endif

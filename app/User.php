@@ -86,5 +86,9 @@ class User extends Authenticatable
         }
         return false;
     }
+    
+    public function getIdentitiesAttribute(){
+        return $this->identities();
+    }
 
 }

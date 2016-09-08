@@ -25,7 +25,7 @@ class CommitteeController extends Controller
 
     public function showCreateForm(Request $request)
     {
-        //仅限AT访问
+        return view('committee/create-committee');
     }
 
     public function create(Request $request)
