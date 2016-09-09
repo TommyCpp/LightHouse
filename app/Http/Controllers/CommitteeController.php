@@ -16,7 +16,7 @@ class CommitteeController extends Controller
 
     public function __construct()
     {
-        $this->middleware('role:AT', ['only' => ['showCreateForm', 'create']]);
+        $this->middleware('role:AT', ['only' => ['showCreateForm', 'create','delete']]);
     }
 
     public function index()
@@ -50,5 +50,48 @@ class CommitteeController extends Controller
         $committee = Committee::create($request->input());
 
         return redirect('committees');
+    }
+
+    public function delete(Request $request,$id)
+    {
+        if(Committee::all()->find($id)->delete()){
+            return response();
+        }
+        else{
+            return response("",404);
+        }
+    }
+
+    public function showUpdateForm($id)
+    {
+        $committee = Committee::all()->find($id);
+        return view('committee/committee')->with("committee",$committee);
+    }
+
+    public function update(Request $request,$id)
+    {
+        $this->validate($request, [
+            'id' => 'required',
+            'chinese_name' => 'required',
+            'english_name' => 'required',
+            'delegation' => 'in:1,2,3',
+            'number' => 'integer|required',
+            'topic_chinese_name' => 'required',
+            'topic_english_name' => 'required',
+            'abbreviation' => 'required'
+        ], [
+            'required' => ':attribute 为必填项',
+            'integer' => ':attribute 必须是数字',
+            'in' => ':attribute 必须是下列值中的一个 :values'
+        ]);
+
+        $committee = Committee::all()->find($id);
+        if($committee->update($request->input())){
+            return redirect("committees");
+        }
+        else{
+            return response()->back();
+        }
+
     }
 }

@@ -33,5 +33,8 @@ Route::group(['middleware'=>['auth','role:AT|OT']],function(){
     Route::get('committees','CommitteeController@index');
     Route::get('create-committee','CommitteeController@showCreateForm');
     Route::post('create-committee','CommitteeController@create');
+    Route::get('committee/{id}/edit',"CommitteeController@showUpdateForm");
+    Route::delete('committee/{id}',"CommitteeController@delete");
+    Route::put('committee/{id}',"CommitteeController@update");
 });
 

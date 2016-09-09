@@ -48,7 +48,7 @@
                                     <td>{{$committee->topic_english_name}}</td>
                                     <td>{{$committee->delegation}}</td>
                                     <td>{{$committee->number}}</td>
-                                    <td><a href="{{url('committee',$committee->id)}}"><i
+                                    <td><a href="{{url("committee/".$committee->id."/edit")}}"><i
                                                     class="md md-mode-edit"></i></a>
                                         <a href="javascript:void(0);" data-target="{{$committee->id}}"><i
                                                     class="fa fa-trash"></i></a>
@@ -85,16 +85,29 @@
         @endif
 
         $("i.fa.fa-trash").click(function (e) {
+            var current_tr = $(e.target).parents("tr");
+            var committee_id = $(e.target).parent().data('target');
             BootstrapDialog.show({
                 title: "确认",
                 type: "type-warning",
-                message: "确认删除" + $(e.target).parent().data('target') + "号会场",
+                message: "确认删除" + committee_id + "号会场",
                 buttons: [{
                     id: "btn-ok",
                     label: "确定",
                     cssClass: "btn btn-danger",
                     action: function (dialog) {
-                        //TODO
+                        $.ajax({
+                            url:"committee/"+ committee_id,
+                            method:"POST",
+                            data:{
+                                _method:"DELETE",
+                                _token:"{{csrf_token()}}"
+                            },
+                            success:function(data){
+                                $(current_tr).remove();
+                                dialog.close();
+                            }
+                        })
                     }
                 }, {
                     id: "btn-close",
