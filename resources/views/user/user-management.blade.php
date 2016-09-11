@@ -52,8 +52,11 @@
                                     </td>
                                     <td>{{$user->archive->HighSchool}}</td>
                                     <td>{{$user->archive->University}}</td>
-                                    <td><a href="{{url('user-management',$user->id)}}"><i
-                                                    class="md md-mode-edit"></i></a></td>
+                                    <td><a href="{{url('user',$user->id)}}"><i
+                                                    class="md md-mode-edit"></i></a>
+                                        <a href="javascript:void(0);" data-target="{{$user->id}}"><i
+                                                    class="fa fa-trash"></i></a>
+                                    </td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -84,5 +87,41 @@
         @if(session('error') != null)
             toastr.error('{{session('error')}}');
         @endif
+         $("i.fa.fa-trash").click(function (e) {
+            var current_tr = $(e.target).parents("tr");
+            var user_id = $(e.target).parent().data('target');
+            BootstrapDialog.show({
+                title: "确认",
+                type: "type-warning",
+                message: "确认删除" + user_id + "用户",
+                buttons: [{
+                    id: "btn-ok",
+                    label: "确定",
+                    cssClass: "btn btn-danger",
+                    action: function (dialog) {
+                        $.ajax({
+                            url:"user/"+ user_id,
+                            method:"POST",
+                            data:{
+                                _method:"DELETE",
+                                _token:"{{csrf_token()}}"
+                            },
+                            success:function(data){
+                                $(current_tr).remove();
+                                dialog.close();
+                            }
+                        })
+                    }
+                }, {
+                    id: "btn-close",
+                    label: "取消",
+                    cssClass: "btn btn-primary",
+                    action: function (dialog) {
+                        dialog.close();
+                    }
+                }
+                ]
+            })
+        })
     </script>
 @endsection

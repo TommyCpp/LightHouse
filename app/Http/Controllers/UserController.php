@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\UserArchive;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use Redirect;
 
 class UserController extends Controller
 {
@@ -59,5 +59,21 @@ class UserController extends Controller
             else
                 return response()->json(['error'=>'保存数据时出现不可预知的错误'],422);
         }
+    }
+
+    public function deleteUser(Request $request,$id)
+    {
+        $user = User::find($id);
+        
+        if($user->archive->delete() && $user->delete()){
+            return response("");
+        }
+        else{
+            return response("",500);
+        }
+    }
+
+    public function showUserCreateForm(Request $request){
+        return view("user/create-user");
     }
 }

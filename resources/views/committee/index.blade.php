@@ -29,6 +29,7 @@
                                 <th>会场编号</th>
                                 <th>会场中文名称</th>
                                 <th>会场英文名称</th>
+                                <th>工作语言</th>
                                 <th>会场缩写</th>
                                 <th>议题中文名称</th>
                                 <th>议题英文名称</th>
@@ -43,12 +44,15 @@
                                     <td>{{$committee->id}}</td>
                                     <td>{{$committee->chinese_name}}</td>
                                     <td>{{$committee->english_name}}</td>
+                                    <td>{{$committee->format_language}}</td>
                                     <td>{{$committee->abbreviation}}</td>
                                     <td>{{$committee->topic_chinese_name}}</td>
                                     <td>{{$committee->topic_english_name}}</td>
                                     <td>{{$committee->delegation}}</td>
                                     <td>{{$committee->number}}</td>
-                                    <td><a href="{{url("committee/".$committee->id."/edit")}}"><i
+                                    <td><a href="javascript:void(0)" data-target="{{$committee->id}}"><i
+                                                    class="fa fa-eye"></i></a>
+                                        <a href="{{url("committee/".$committee->id."/edit")}}"><i
                                                     class="md md-mode-edit"></i></a>
                                         <a href="javascript:void(0);" data-target="{{$committee->id}}"><i
                                                     class="fa fa-trash"></i></a>
@@ -83,6 +87,19 @@
         @if(session('error') != null)
             toastr.error('{{session('error')}}');
         @endif
+
+        $("i.fa.fa-eye").click(function(e){
+            var committee_id = $(e.target).parent().data('target');
+            var dialog = new BootstrapDialog({
+                title:"备注",
+                type:"type-primary"
+            });
+            $.get("committee/"+committee_id+"/note",function(data){
+                dialog.setMessage(data);
+                dialog.open();
+            });
+        });
+
 
         $("i.fa.fa-trash").click(function (e) {
             var current_tr = $(e.target).parents("tr");

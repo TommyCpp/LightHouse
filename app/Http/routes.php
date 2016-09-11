@@ -24,15 +24,17 @@ Route::group(['middleware'=>'auth'],function(){
 });
 
 Route::group(['middleware'=>['auth','role:ADMIN']],function(){
-    Route::get('user-management','UserController@userManage');
-    Route::get('user-management/{id}','UserController@showUserManageForm');
-    Route::post('user-management/{id}','UserController@editUserInformation');
+    Route::get('users','UserController@userManage');
+    Route::get('user/{id}','UserController@showUserManageForm');
+    Route::post('user/{id}','UserController@editUserInformation');
+    Route::delete('user/{id}',"UserController@deleteUser");
 });
 
 Route::group(['middleware'=>['auth','role:AT|OT']],function(){
     Route::get('committees','CommitteeController@index');
     Route::get('create-committee','CommitteeController@showCreateForm');
     Route::post('create-committee','CommitteeController@create');
+    Route::get('committee/{id}/note',"CommitteeController@getNote");
     Route::get('committee/{id}/edit',"CommitteeController@showUpdateForm");
     Route::delete('committee/{id}',"CommitteeController@delete");
     Route::put('committee/{id}',"CommitteeController@update");

@@ -28,6 +28,10 @@
                                 {{Form::text('english_name',null,['class'=>'form-control'])}}
                             </div>
                             <div class='form-group'>
+                                {{Form::label('language','工作语言')}}
+                                {{Form::select('language',["chinese"=>"中文","english"=>"English"],null,['class'=>'form-control'])}}
+                            </div>
+                            <div class='form-group'>
                                 {{Form::label('abbreviation','缩写')}}
                                 {{Form::text('abbreviation',null,['class'=>'form-control'])}}
                             </div>
@@ -46,6 +50,10 @@
                             <div class='form-group'>
                                 {{Form::label('topic_english_name','议题英文名称')}}
                                 {{Form::text('topic_english_name',null,['class'=>'form-control'])}}
+                            </div>
+                            <div class='form-group'>
+                                {{Form::label('note','备注')}}
+                                {{Form::textarea('note',null,['class'=>'form-control'])}}
                             </div>
                             <div class="form-group">
                                 {{Form::submit('现在提交',['class'=>'btn btn-primary'])}}

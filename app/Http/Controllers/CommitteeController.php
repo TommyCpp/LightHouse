@@ -36,7 +36,8 @@ class CommitteeController extends Controller
             'id' => 'required',
             'chinese_name' => 'required',
             'english_name' => 'required',
-            'delegation' => 'in:1,2,3',
+            'delegation' => 'required|in:1,2,0',
+            'language'=>'required|in:chinese,english',
             'number' => 'integer|required',
             'topic_chinese_name' => 'required',
             'topic_english_name' => 'required',
@@ -58,7 +59,7 @@ class CommitteeController extends Controller
             return response();
         }
         else{
-            return response("",404);
+            return response("",500);
         }
     }
 
@@ -74,7 +75,8 @@ class CommitteeController extends Controller
             'id' => 'required',
             'chinese_name' => 'required',
             'english_name' => 'required',
-            'delegation' => 'in:1,2,3',
+            'delegation' => 'required|in:1,2,0',
+            'language'=>'required|in:chinese,english',
             'number' => 'integer|required',
             'topic_chinese_name' => 'required',
             'topic_english_name' => 'required',
@@ -93,5 +95,15 @@ class CommitteeController extends Controller
             return response()->back();
         }
 
+    }
+
+    public function getNote(Request $request,$id)
+    {
+        if($request->ajax()){
+            return response(Committee::find($id)->note);
+        }
+        else{
+            return response("",401);//401表示未授权
+        }
     }
 }

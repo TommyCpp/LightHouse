@@ -9,40 +9,36 @@
         <div class="section-header">
             <ol class="breadcrumb">
                 <li class="active">
-                    编辑用户{{$user->id}}的信息
+                   创建用户
                 </li>
             </ol>
         </div>
         <div class="section-body contain-lg">
             <div class="row">
                 <div class="col-lg-12">
-                    {{Form::open(['action'=>['UserController@editUserInformation',$user->id],'class'=>'form','id'=>'edit-form'])}}
+                    {{Form::open(['action'=>['UserController@create'],'class'=>'form','id'=>'create-form'])}}
                 </div>
                 <div class="card">
                     <div class="card-body">
                         <div class="form-group">
-                            {{Form::label('id','ID')}}
-                            {{Form::text('id',$user->id,['class'=>'form-control','readonly'])}}
-                        </div>
-                        <div class="form-group">
                             {{Form::label('name','姓名')}}
-                            {{Form::text('name',$user->name,['class'=>'form-control'])}}
+                            {{Form::text('name',null,['class'=>'form-control'])}}
                         </div>
                         <div class="form-group">
                             {{Form::label('first-name','名拼音')}}
-                            {{Form::text('first-name',$user->archive->FirstName,['class'=>'form-control'])}}
+                            {{Form::text('first-name',null,['class'=>'form-control'])}}
                         </div>
                         <div class="form-group">
                             {{Form::label('last-name','姓拼音')}}
-                            {{Form::text('last-name',$user->archive->LastName,['class'=>'form-control'])}}
+                            {{Form::text('last-name',null,['class'=>'form-control'])}}
                         </div>
                         <div class="form-group">
                             {{Form::label('high-school','高中学校名称')}}
-                            {{Form::text('high-school',$user->archive->HighSchool,['class'=>'form-control'])}}
+                            {{Form::text('high-school',null,['class'=>'form-control'])}}
                         </div>
                         <div class="form-group">
                             {{Form::label('university','大学名称')}}
-                            {{Form::text('university',$user->archive->University,['class'=>'form-control'])}}
+                            {{Form::text('university',null,['class'=>'form-control'])}}
                         </div>
                         <div class="form-group">
                             {{Form::label('identity','身份')}}
@@ -57,7 +53,7 @@
                             "DEL"=>"代表",
                             "HEADDEL"=>"代表团领队",
                             "OTHER"=>"其他"
-                            ],explode(",",$user->archive->Identity),['class'=>'form-control','multiple'=>true,'id'=>'identities'])}}
+                            ],null,['class'=>'form-control','multiple'=>true,'id'=>'identities'])}}
                         </div>
                         <div class="form-group">
                             {{Form::button('现在提交',['class'=>'btn btn-flat btn-primary','id'=>'submit'])}}
@@ -80,30 +76,9 @@
                 url: location.href,
                 type: "POST",
                 dataType: 'json',
-                data: $('#edit-form').serializeArray(),
+                data: $('#create-form').serializeArray(),
                 success: function () {
-                    BootstrapDialog.show({
-                        title:"修改成功",
-                        type:"type-success",
-                        message:"用户信息修改成功",
-                        buttons:[{
-                            id:"redirect",
-                            label:"返回用户列表",
-                            cssClass:"btn btn-success",
-                            action:function(dialog){
-                                window.location.href="{{env("APP_URL")}}"+"/public/users";
-                            }
-                        },
-                            {
-                                id:"close",
-                                label:"关闭",
-                                cssClass:"btn btn-danger",
-                                action:function(dialog){
-                                    dialog.close();
-                                }
-                            }]
-                    });
-
+                    BootstrapDialog.success('修改成功');
                 },
                 error: function (data) {
                     var errors = data.responseJSON;
