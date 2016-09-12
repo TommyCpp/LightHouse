@@ -23,7 +23,7 @@ Route::group(['middleware'=>'auth'],function(){
     Route::post('user-archive','UserArchiveController@addOrUpdate');
 });
 
-Route::group(['middleware'=>['auth','role:ADMIN']],function(){
+Route::group(['middleware'=>['auth','role:ADMIN|OT']],function(){
     Route::get('users','UserController@userManage');
     Route::get('user/{id}','UserController@showUserManageForm');
     Route::post('user/{id}','UserController@editUserInformation');
@@ -38,5 +38,11 @@ Route::group(['middleware'=>['auth','role:AT|OT']],function(){
     Route::get('committee/{id}/edit',"CommitteeController@showUpdateForm");
     Route::delete('committee/{id}',"CommitteeController@delete");
     Route::put('committee/{id}',"CommitteeController@update");
+});
+
+Route::group(['middleware'=>['auth','role:OT']],function(){
+    Route::get("delegations","DelegationController@delegations");
+    Route::get('create-delegation','DelegationController@showCreateForm');
+    Route::post("create-delegation","DelegationController@create");
 });
 

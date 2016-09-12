@@ -40,6 +40,11 @@ class User extends Authenticatable
         return $this->hasOne('App\UserArchive', 'id');
     }
 
+    public function delegate()
+    {
+        return $this->hasOne("App\\Delegate", "delegate_id");
+    }
+
     /**获取身份数组
      * @return bool|array
      */
@@ -47,7 +52,7 @@ class User extends Authenticatable
     {
         $identity_string = $this->archive->Identity;
         if ($identity_string != null && $identity_string != "") {
-            $identities = explode(",",$identity_string);
+            $identities = explode(",", $identity_string);
             foreach ($identities as &$identity) {
                 switch ($identity) {
                     case "ADMIN":
@@ -66,29 +71,49 @@ class User extends Authenticatable
                         $identity = "理事";
                         break;
                     case "COREDIR":
-                        $identity = "核心理事"
-                        ;break;
+                        $identity = "核心理事";
+                        break;
                     case "VOL":
-                        $identity = "志愿者"
-                        ;break;
+                        $identity = "志愿者";
+                        break;
                     case "DEL":
-                        $identity = "代表"
-                        ;break;
+                        $identity = "代表";
+                        break;
                     case "HEADDEL":
-                        $identity = "代表团领队"
-                        ;break;
+                        $identity = "代表团领队";
+                        break;
                     case "OTHER":
-                        $identity = "其他"
-                        ;break;
+                        $identity = "其他";
+                        break;
                 }
             }
             return $identities;
         }
         return false;
     }
-    
-    public function getIdentitiesAttribute(){
+
+    public function getIdentitiesAttribute()
+    {
         return $this->identities();
+    }
+
+    public function getDelegateAttribute($value)
+    {
+        if ($this->hasRole("DEL")) {
+            return $value;
+        } else {
+            return false;
+        }
+    }
+
+    public function setDelegateAttribute(Delegate $delegate)
+    {
+        if ($this->hasRole("DEL")) {
+            $delegate->delegate_id = $this->id;//设置成与User的id相同
+            $this->delegate = $delegate;
+        }
+        
+        return false;
     }
 
 }

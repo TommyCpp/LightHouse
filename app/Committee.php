@@ -9,6 +9,12 @@ class Committee extends Model
     protected $fillable = [
       'id','chinese_name','english_name','abbreviation','topic_english_name','topic_chinese_name','language','delegation','number','note'
     ];
+
+    public function seats()
+    {
+        return $this->hasMany("App\\Seat","committee_id","id");
+    }
+    
     
     public function getTopicChineseNameAttribute($value){
         if($value == null || $value == ""){
@@ -36,5 +42,7 @@ class Committee extends Model
             return "English";
         }
     }
+
+
     
 }
