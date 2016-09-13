@@ -11,9 +11,13 @@ class Delegation extends Model
     ];
 
     public function head_delegate(){
-        return $this->hasOne("App\\Delegate","delegate_id","delegate_head_id");
+        return $this->hasOne("App\\User","id","delegate_head_id");
     }
-    
-    
+
+    public function delegates()
+        //每个代表团有多个代表
+    {
+        return $this->hasMany("App\\Delegate","delegation_id","id");
+    }
     
 }

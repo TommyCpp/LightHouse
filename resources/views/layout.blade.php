@@ -144,7 +144,8 @@
                             @endforeach
                         @endif
                         <li class="divider"></li>
-                        <li><a>test</a></li>
+                        <li><a href="{{env("APP_URL")}}/public/logout">登出</a></li>
+
                     </ul><!--end .dropdown-menu -->
                 </li><!--end .dropdown -->
             </ul><!--end .header-nav-profile -->

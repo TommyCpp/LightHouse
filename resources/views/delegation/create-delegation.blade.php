@@ -25,8 +25,8 @@
                                 {{Form::text('name',null,['class'=>'form-control'])}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('delegation_number','代表团人数')}}
-                                {{Form::text('delegation_number',null,['class'=>'form-control'])}}
+                                {{Form::label('delegate_number','代表团人数')}}
+                                {{Form::text('delegate_number',null,['class'=>'form-control'])}}
                             </div>
                             <div class='form-group'>
                                 {{Form::label('head_delegate_id','代表团领队')}}
@@ -47,8 +47,8 @@
                             </div>
                             @foreach($committees as $committee)
                                 <div class='form-group'>
-                                    {{Form::label($committee->id,$committee->chinese_name." 会场席位数")}}
-                                    {{Form::text($committee->id,null,['class'=>'form-control'])}}
+                                    {{Form::label($committee->abbreviation,$committee->chinese_name." 会场席位数")}}
+                                    {{Form::text($committee->abbreviation,0,['class'=>'form-control'])}}
                                 </div>
                             @endforeach
                             <div class="form-group">

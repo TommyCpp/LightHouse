@@ -5,6 +5,7 @@ namespace App\Providers;
 use Auth;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\ServiceProvider;
+use Validator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,8 +36,8 @@ class AppServiceProvider extends ServiceProvider
                     ['name' => '首页', 'url' => 'home'],
                     ['name' => '用户管理', 'url' => "users"],
                     ['name' => '代表团管理', 'link' => 'javascript:void(0)', 'offspring' => [
-                        ['name'=>'代表团列表','url'=>'delegations'],
-                        ['name'=>'创建代表团','url'=>'create-delegation']
+                        ['name' => '代表团列表', 'url' => 'delegations'],
+                        ['name' => '创建代表团', 'url' => 'create-delegation']
                     ]
                     ],
                     ['name' => '我的资料', 'url' => 'user-archive'],
@@ -60,6 +61,18 @@ class AppServiceProvider extends ServiceProvider
             ]);
         });
 
+
+        //Validation
+        Validator::extend("even", function ($attribute, $value, $para, $validator) {
+            return $value % 2 == 0;
+        });
+        Validator::extend("equal_to_total_seat", function ($attribute, $value, $para, $validator) {
+            $total = 0;
+            $data = $validator->getData();
+            for ($i = 0; $i < count($para); $i++)
+                $total += array_get($data, $para[$i]);
+            return $value == $total;
+        });
     }
 
     /**

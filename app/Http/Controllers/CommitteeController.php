@@ -62,15 +62,11 @@ class CommitteeController extends Controller
     public function delete(Request $request, $id)
     {
         $committee = Committee::find($id);
-        foreach($committee->seats as $seat){
-            $seat -> delete();
+        foreach ($committee->seats as $seat) {
+            $seat->delete();
         }
-
-        if ($committee->delete()) {
-            return response();
-        } else {
-            return response("", 500);
-        }
+        $status = $committee->delete();
+        return $status ? response("", 200) : response("", 500);
     }
 
     public function showUpdateForm($id)
@@ -98,6 +94,13 @@ class CommitteeController extends Controller
         ]);
 
         $committee = Committee::all()->find($id);
+        if ($id != $request->input('id')) {
+            //如果更改ID的话,更新所有seats的id
+            $seats = $committee->seats->all();
+            foreach ($seats as $seat) {
+                $seat->update(["committee_id"=>$request->input("id")]);
+            }
+        }
         if ($committee->update($request->input())) {
             return redirect("committees");
         } else {
