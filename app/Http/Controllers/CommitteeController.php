@@ -61,7 +61,12 @@ class CommitteeController extends Controller
 
     public function delete(Request $request, $id)
     {
-        if (Committee::all()->find($id)->delete()) {
+        $committee = Committee::find($id);
+        foreach($committee->seats as $seat){
+            $seat -> delete();
+        }
+
+        if ($committee->delete()) {
             return response();
         } else {
             return response("", 500);
