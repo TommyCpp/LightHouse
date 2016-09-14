@@ -45,6 +45,11 @@ class User extends Authenticatable
         return $this->hasOne("App\\Delegate", "delegate_id");
     }
 
+    public function delegation()
+    {
+        return $this->hasOne("App\\Delegation","head_delegate_id","id");
+    }
+
     /**获取身份数组
      * @return bool|array
      */

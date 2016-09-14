@@ -4,7 +4,7 @@
 @section('css')
     <link rel="stylesheet" href="{{env('APP_URL')}}/resources/assets/css/libs/select2/select2.css">
 
-    @endsection
+@endsection
 @section('content')
     <section>
         <div class="section-header">
@@ -31,18 +31,10 @@
                             <div class='form-group'>
                                 {{Form::label('head_delegate_id','代表团领队')}}
                                 <select name="head_delegate_id" id="head_delegate_id">
-                                    <optgroup label="代表">
-                                        @foreach($delegates as $delegate)
-                                            <option value="{{$delegate->id}}">{{$delegate->name}}
-                                                ,{{$delegate->archive->HighSchool}}</option>
-                                        @endforeach
-                                    </optgroup>
-                                    <optgroup label="主席">
-                                        @foreach($daises as $dais)
-                                            <option value="{{$dais->id}}">{{$dais->name}}
-                                                ,{{$dais->archive->HighSchool}}</option>
-                                        @endforeach
-                                    </optgroup>
+                                    @foreach($delegates as $delegate)
+                                        <option value="{{$delegate->id}}">{{$delegate->name}}
+                                            ,{{$delegate->archive->HighSchool}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             @foreach($committees as $committee)

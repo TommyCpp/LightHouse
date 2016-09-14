@@ -31,20 +31,25 @@
                                 <th>代表团领队名称</th>
                                 <th>代表团人数</th>
                                 <th>代表团席位总数</th>
+                                @foreach($committee_names as $name)
+                                    <th>{{$name}}</th>
+                                @endforeach
                                 <th>编辑</th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($delegations as $delegation)
+                                @php($seats = $delegation->committee_seats)
                                 <tr>
                                     <td>{{$delegation->id}}</td>
                                     <td>{{$delegation->name}}</td>
                                     <td>{{$delegation->head_delegation_name}}</td>
                                     <td>{{$delegation->delegate_number}}</td>
                                     <td>{{$delegation->seat_number}}</td>
-                                    <td><a href="javascript:void(0)" data-target="{{$delegation->id}}"><i
-                                                    class="fa fa-eye"></i></a>
-                                        <a href="{{url("committee/".$committee->id."/edit")}}"><i
+                                    @for($i=0;$i<count($committee_names);$i++)
+                                        <td>{{$seats[$committee_names[$i]]}}</td>
+                                    @endfor
+                                    <td><a href="{{url("delegation/".$delegation->id."/edit")}}"><i
                                                     class="md md-mode-edit"></i></a>
                                         <a href="javascript:void(0);" data-target="{{$delegation->id}}"><i
                                                     class="fa fa-trash"></i></a>
@@ -80,13 +85,13 @@
             toastr.error('{{session('error')}}');
         @endif
 
-        $("i.fa.fa-eye").click(function(e){
+        $("i.fa.fa-eye").click(function (e) {
             var committee_id = $(e.target).parent().data('target');
             var dialog = new BootstrapDialog({
-                title:"备注",
-                type:"type-primary"
+                title: "备注",
+                type: "type-primary"
             });
-            $.get("committee/"+committee_id+"/note",function(data){
+            $.get("committee/" + committee_id + "/note", function (data) {
                 dialog.setMessage(data);
                 dialog.open();
             });
@@ -95,24 +100,24 @@
 
         $("i.fa.fa-trash").click(function (e) {
             var current_tr = $(e.target).parents("tr");
-            var committee_id = $(e.target).parent().data('target');
+            var delegation_id = $(e.target).parent().data('target');
             BootstrapDialog.show({
                 title: "确认",
                 type: "type-warning",
-                message: "确认删除" + committee_id + "号会场",
+                message: "确认删除" + delegation_id + "号代表团",
                 buttons: [{
                     id: "btn-ok",
                     label: "确定",
                     cssClass: "btn btn-danger",
                     action: function (dialog) {
                         $.ajax({
-                            url:"committee/"+ committee_id,
-                            method:"POST",
-                            data:{
-                                _method:"DELETE",
-                                _token:"{{csrf_token()}}"
+                            url: "delegation/" + delegation_id,
+                            method: "POST",
+                            data: {
+                                _method: "DELETE",
+                                _token: "{{csrf_token()}}"
                             },
-                            success:function(data){
+                            success: function (data) {
                                 $(current_tr).remove();
                                 dialog.close();
                             }

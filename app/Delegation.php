@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Delegation extends Model
 {
     protected $fillable=[
-        "delegate_head_id","name","delegate_number","seat_number"
+        "head_delegate_id","name","delegate_number","seat_number"
     ];
 
     public function head_delegate(){
-        return $this->hasOne("App\\User","id","delegate_head_id");
+        return $this->belongsTo("App\\User","head_delegate_id","id");
     }
 
     public function delegates()
@@ -19,5 +19,24 @@ class Delegation extends Model
     {
         return $this->hasMany("App\\Delegate","delegation_id","id");
     }
+
+    public function seats()
+    {//每个代表团有多个席位
+        return $this->hasMany("App\\Seat","delegation_id","id");        
+    }
+
+    public function getHeadDelegationNameAttribute()
+    {
+        return $this->head_delegate->name;
+    }
     
+    public function getCommitteeSeatsAttribute(){
+        //返回 会场 => 席位 关联数组
+        $committees = Committee::all();
+        $result = [];
+        foreach($committees as $committee){
+            $result[$committee->abbreviation]=$this->seats()->where("committee_id",$committee->id)->count();
+        }
+        return $result;
+    }
 }
