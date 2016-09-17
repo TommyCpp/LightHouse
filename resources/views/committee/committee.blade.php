@@ -5,7 +5,7 @@
         <div class="section-header">
             <ol class="breadcrumb">
                 <li class="active">
-                    创建会场
+                    修改会场
                 </li>
             </ol>
         </div>

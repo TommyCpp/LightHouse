@@ -46,9 +46,9 @@
                                     <td>{{$delegation->head_delegation_name}}</td>
                                     <td>{{$delegation->delegate_number}}</td>
                                     <td>{{$delegation->seat_number}}</td>
-                                    @for($i=0;$i<count($committee_names);$i++)
-                                        <td>{{$seats[$committee_names[$i]]}}</td>
-                                    @endfor
+                                    @foreach($seats as $seat)
+                                        <td>{{$seat["seats"]}}</td>
+                                    @endforeach
                                     <td><a href="{{url("delegation/".$delegation->id."/edit")}}"><i
                                                     class="md md-mode-edit"></i></a>
                                         <a href="javascript:void(0);" data-target="{{$delegation->id}}"><i

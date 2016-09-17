@@ -35,7 +35,10 @@ class Delegation extends Model
         $committees = Committee::all();
         $result = [];
         foreach($committees as $committee){
-            $result[$committee->abbreviation]=$this->seats()->where("committee_id",$committee->id)->count();
+            $committee_seat = [];
+            $committee_seat['committee']=$committee->abbreviation;
+            $committee_seat['seats']=$this->seats()->where("committee_id",$committee->id)->count();
+            $result[count($result)] = $committee_seat;
         }
         return $result;
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Committee;
 use App\Delegation;
+use App\Http\Requests\DelegationRequest;
 use App\Seat;
 use App\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -34,6 +35,17 @@ class DelegationController extends Controller
         return view("delegation/delegations", ["delegations" => Delegation::all(), 'committee_names' => $names->toArray()]);
     }
 
+    public function showUpdateForm(Request $request, $id)
+    {
+        $delegation = Delegation::find($id);
+        $committee_seats = $delegation->committee_seats;
+        $users = User::all();
+        $delegates = $users->filter(function (User $user) {
+            return $user->hasRole('HEADDEL');
+        });
+        return view('delegation/edit', compact("delegation", "committee_seats", "delegates"));
+    }
+
     public function delete(Request $request, $id)
     {
         $delegation = Delegation::find($id);
@@ -48,33 +60,60 @@ class DelegationController extends Controller
 
     }
 
-    public function create(Request $request)
+    public function edit(DelegationRequest $request, $id)
     {
-        $committees_double = Committee::all()->where('delegation', 2);//所有双代委员会
-        $committees = Committee::all()->all();//所有委员会名称集合
-        $names = [];
+        $committees = Committee::all();
+
+
+        $delegation = Delegation::all()->find($id);
+        if ($delegation->head_delegate->id != $request->input("head_delegate_id")) {
+            //更改领队
+            $delegation->head_delegate()->dissociate();
+            $delegation->head_delegate()->associate(User::find($request->input("head_delegate_id")));
+        }
+        $delegation->name = $request->input("name");
+        $delegation->delegate_number = $request->input("delegate_number");
+        $delegation->seat_number = $request->input("delegate_number");
+
+        //修改会场
         for ($i = 0; $i < count($committees); $i++) {
-            $names[$i] = $committees[$i]->abbreviation;
+            $committee_id = $committees[$i]->id;
+            $committee_abbr = $committees[$i]->abbreviation;
+            $current_seat = $delegation->seats->where("committee_id", $committee_id);
+            $difference = $current_seat->count() - $request->input($committee_abbr);
+            if ($difference > 0) {
+                //需要从代表团中删除席位
+                foreach ($current_seat->take($difference) as $seat) {
+                    $seat->delegation()->dissociate();//删除的席位将回到席位池中
+                    $seat->is_distributed = false;
+                    $seat->save();
+                }
+            } else if ($difference < 0) {
+                //需要增加席位
+                $difference = -$difference;
+                $seats = Seat::where("committee_id", $committee_id)->where("is_distributed", 0)->take($difference)->get();
+                if ($seats->count() < $difference) {
+                    //如果剩余席位不够分配
+                    //回滚
+                    $error = new Collection();
+                    $error->add($committees[$i]->chinese_name . "席位不足");
+                    return redirect('/delegation/' . $committee_id . '/edit')->with("errors", $error);
+                }
+                foreach ($seats as $seat) {
+                    $seat->is_distributed = true;
+                    $seat->save();
+                }
+                $delegation->seats()->saveMany($seats);
+            }
         }
-        $names = implode(",", $names);
+        $delegation->save();
 
-        $committees_validation = [];
-        foreach ($committees_double as $committee) {
-            $committees_validation[$committee->abbreviation] = "required|even";
-        }
+        return redirect("/delegations");
+    }
 
-        $rules = [
-            'name' => 'required',
-            'delegate_number' => 'required|equal_to_total_seat:' . $names . '|min:1'
-        ];
-        $rules = array_merge($rules, $committees_validation);
-        $this->validate($request, $rules, [
-            'required' => ':attribute 为必填项',
-            'integer' => ':attribute 必须是数字',
-            'in' => ':attribute 必须是下列值中的一个 :values',
-            'even' => ':attribute 必须是一个偶数',
-            'equal_to_total_seat' => '代表团人数与席位总数不符合'
-        ]);
+    public function create(DelegationRequest $request)
+    {
+        $committees = Committee::all();
 
         //创建代表团
         $delegation = new Delegation();
