@@ -48,5 +48,6 @@ Route::group(['middleware'=>['auth','role:OT']],function(){
     Route::delete('delegation/{id}',"DelegationController@delete");
     Route::put('delegation/{id}',"DelegationController@edit");
     Route::get('delegation/{id}/edit',"DelegationController@showUpdateForm");
+    Route::get('delegation-seat-exchange-rule',"DelegationController@showDelegationSeatExchangeRuleForm");
 });
 

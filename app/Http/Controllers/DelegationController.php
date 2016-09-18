@@ -24,7 +24,10 @@ class DelegationController extends Controller
 
         return view('delegation/create-delegation', compact("committees", "delegates"));
     }
-
+    public function showDelegationSeatExchangeRuleForm(){
+        $committees  = Committee::all();
+        return view('delegation/rules',compact("committees"));
+    }
     public function showDelegations()
     {
         $committee_names = Committee::all("abbreviation");
