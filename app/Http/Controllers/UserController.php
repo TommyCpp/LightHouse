@@ -12,6 +12,8 @@ class UserController extends Controller
 {
     /**
      * @param Request $request
+     * 查看全部用户
+     * /users
      */
     public function userManage(Request $request)
     {

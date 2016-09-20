@@ -19,4 +19,12 @@ class DelegationTest extends TestCase
             ->press("现在提交")
             ->seePageIs("/create-delegation");
     }
+    
+    public function testChangeCommitteeLimit(){
+        $this->actingAs(User::find(18));
+        $this->visit("/committees/limit")
+            ->type("2","ASS")
+            ->press("现在提交")
+            ->seeInDatabase("committees",['abbreviation'=>'ASS','limit'=>'2']);
+    }
 }

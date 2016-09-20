@@ -20,7 +20,7 @@
             <!-- BEGIN DASHBOARD -->
             @foreach($menus as $item)
                 <li>
-                    <a href="{{array_key_exists('url',$item) ? url($item['url']) : $item['link']}}">
+                    <a href="{{$item['url']!="javascript:void(0)" ? url($item['url']) : $item['url']}}">
                         <div class="gui-icon">
                             @if(array_key_exists('icon',$item))
                                 <i class="md {{$item['icon']}}"></i>

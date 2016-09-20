@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Committee;
+use App\Delegation;
 use App\Seat;
+use Faker\Provider\lv_LV\Person;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -98,7 +100,7 @@ class CommitteeController extends Controller
             //如果更改ID的话,更新所有seats的id
             $seats = $committee->seats->all();
             foreach ($seats as $seat) {
-                $seat->update(["committee_id"=>$request->input("id")]);
+                $seat->update(["committee_id" => $request->input("id")]);
             }
         }
         if ($committee->update($request->input())) {
@@ -115,6 +117,21 @@ class CommitteeController extends Controller
             return response(Committee::find($id)->note);
         } else {
             return response("", 401);//401表示未授权
+        }
+    }
+
+    public function getSeats(Request $request, $id)
+    {
+        if ($request->ajax()) {
+            $delegations = Delegation::all("id");
+            $result = [];
+            $seats = Seat::all()->where("committee_id",(int)$id);
+            foreach ($delegations as $delegation) {
+                $result[$delegation->id] = $seats->where("delegation_id", $delegation->id)->count();
+            }
+            return response()->json($result);
+        } else {
+            return response("", 401);
         }
     }
 }

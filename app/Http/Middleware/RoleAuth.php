@@ -28,6 +28,6 @@ class RoleAuth
         if($validate)
             return $next($request);
         else
-            return redirect()->back();
+            return response("",405);
     }
 }
