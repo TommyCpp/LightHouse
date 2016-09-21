@@ -122,16 +122,16 @@ class CommitteeController extends Controller
 
     public function getSeats(Request $request, $id)
     {
-        if ($request->ajax()) {
-            $delegations = Delegation::all("id");
+//        if ($request->ajax()) {
+            $delegations = Delegation::all("id","name");
             $result = [];
             $seats = Seat::all()->where("committee_id",(int)$id);
             foreach ($delegations as $delegation) {
-                $result[$delegation->id] = $seats->where("delegation_id", $delegation->id)->count();
+                $result[] = [$delegation->id,$delegation->name,$seats->where("delegation_id", $delegation->id)->count()];
             }
             return response()->json($result);
-        } else {
-            return response("", 401);
-        }
+//        } else {
+//            return response("", 401);
+//        }
     }
 }

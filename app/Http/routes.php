@@ -55,7 +55,6 @@ Route::group(['middleware' => ['auth', 'role:OT']], function () {
 Route::group(['middleware' => ['auth', 'role:HEADDEL']], function () {
     Route::get('delegation/{id}', "DelegationController@showDelegationInformation");
 
-
-    Route::get('committee/{id}/seats', "CommitteeController@getSeats");
+    Route::post('committee/{id}/seats', "CommitteeController@getSeats");
 });
 

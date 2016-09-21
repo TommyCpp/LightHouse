@@ -88,13 +88,26 @@
 @section('js')
     @include('partial/form-error')
     <script>
-        $('table tr td a i.fa.fa-eye').click(function(e){
+        $('table tr td a i.fa.fa-eye').click(function (e) {
             $dialog = new BootstrapDialog();
             $dialog.setType("type-info");
             $dialog.setSize("size-wide");
             $dialog.setTitle("会场名额分布");
+            $dialog.setId("seats-information");
             $dialog.open();
+            $dialog.setMessage("载入中");
+            getSeatsData($(e.target).parent().data('target'));
+        });
 
-        })
+        function getSeatsData($committee_id) {
+            $.post("{{env('APP_URL')}}/public/committee/" + $committee_id + "/seats", {"_token": "{{csrf_token()}}"}, function (data) {
+//                console.log(data);
+                $("#seats-information .bootstrap-dialog-message").html("");
+                $('<table class="table table-responsive" id="seat-table"><thead><tr><th>代表团编号</tf><th>代表团名称</th><th>席位数</th></tr></thead><tbody></tbody></table>').appendTo($("#seats-information .bootstrap-dialog-message"));
+                for (var i = 0; i < data.length; i++)
+                    $("#seat-table tbody").append($("<tr><td>" + data[i][0] + "</td><td>" + data[i][1] + "</td><td>" + data[i][2] + "</td></tr>"));
+            });
+
+        }
     </script>
 @endsection

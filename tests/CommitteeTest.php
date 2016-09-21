@@ -52,4 +52,11 @@ class CommitteeTest extends TestCase
         $this->post("/committee/".$this->committee_id,["_method"=>'DELETE',"_token"=>csrf_token()])
             ->dontSeeInDatabase("committees",['id'=>$this->committee_id]);
     }
+
+    public function testCommitteeSeats()
+    {
+        $this->actingAs(User::find(22));
+        $this->post('/committee/1/seats',['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+            ->seeStatusCode(200);
+    }
 }
