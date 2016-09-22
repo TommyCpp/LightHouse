@@ -222,5 +222,14 @@ class DelegationController extends Controller
 
     }
 
+    public function showSeatsExchange()
+    {
+        $committees = Committee::all();
+        $committees_name = $committees->pluck("abbreviation");
+        $delegations = Delegation::all();
+
+        return view("delegation/seat-exchange",compact("committees","committees_name","delegations"));
+    }
+
 
 }

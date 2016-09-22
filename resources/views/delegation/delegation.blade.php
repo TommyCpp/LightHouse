@@ -104,8 +104,11 @@
 //                console.log(data);
                 $("#seats-information .bootstrap-dialog-message").html("");
                 $('<table class="table table-responsive" id="seat-table"><thead><tr><th>代表团编号</tf><th>代表团名称</th><th>席位数</th></tr></thead><tbody></tbody></table>').appendTo($("#seats-information .bootstrap-dialog-message"));
-                for (var i = 0; i < data.length; i++)
-                    $("#seat-table tbody").append($("<tr><td>" + data[i][0] + "</td><td>" + data[i][1] + "</td><td>" + data[i][2] + "</td></tr>"));
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i][0] != "{{$delegation->id}}") {
+                        $("#seat-table tbody").append($("<tr><td>" + data[i][0] + "</td><td>" + data[i][1] + "</td><td>" + data[i][2] + "</td></tr>"));
+                    }
+                }
             });
 
         }
