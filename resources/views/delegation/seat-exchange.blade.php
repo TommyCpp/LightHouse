@@ -25,6 +25,7 @@
                         <div class="card-body  style-default-bright">
                             <form action="javascript:void(0)" id="target-delegation">
                                 <select name="target" id="target">
+                                    <option></option>
                                     @foreach($delegations as $delegation)
                                         @if($delegation->id != Auth::user()->delegation->id)
                                             <option value="{{$delegation->id}}">{{$delegation->name}}</option>
@@ -32,6 +33,7 @@
                                     @endforeach
                                 </select>
                             </form>
+                            <table class="table"></table>
                         </div>
                     </div>
                 </div>
@@ -50,7 +52,7 @@
                                     <div class="form-group">
                                         <label for="{{$committee->abbreviation}}-in">{{$committee->chinese_name}}</label>
                                         <input type="text" name="{{$committee->abbreviation}}-in"
-                                               id="{{$committee->abbreviation}}-in" class="form-control"/>
+                                               id="{{$committee->abbreviation}}-in" class="form-control" value="0"/>
                                     </div>
                                 @endforeach
                             </form>
@@ -70,12 +72,17 @@
                                     <div class="form-group">
                                         <label for="{{$committee->abbreviation}}-out">{{$committee->chinese_name}}</label>
                                         <input type="text" name="{{$committee->abbreviation}}-out"
-                                               id="{{$committee->abbreviation}}-out" class="form-control"/>
+                                               id="{{$committee->abbreviation}}-out" class="form-control" value="0"/>
                                     </div>
                                 @endforeach
                             </form>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <button class="btn ink-reaction btn-raised btn-primary btn-block" id="submit">提交申请</button>
                 </div>
             </div>
         </div>
@@ -86,6 +93,28 @@
     <script src="{{env("APP_URL")}}/resources/assets/js/libs/select2/select2.min.js"></script>
     @include('partial/form-error')
     <script>
-        $('#target').select2();
+        $('#target').select2({
+            placeholder: "请选择目标代表团"
+        });
+        $(document).ready(function(){
+            $("#submit").click(function(e){
+                var $button = e.target;
+                $($button).prop("disabled",true);
+                //防止连续点击两次
+
+                $inData = $('#seats-in').serializeArray();
+                $outData = $('#seats-out').serializeArray();
+
+                $data = $inData.concat($outData).concat($('#target').serializeArray());
+
+                $.ajax({
+                    url:"/delegation-seat-exchange",
+                    method:"POST",
+                    data:$data,
+                    success:function(){}
+                })
+
+            })
+        })
     </script>
 @endsection

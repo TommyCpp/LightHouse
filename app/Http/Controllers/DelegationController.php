@@ -5,12 +5,17 @@ namespace App\Http\Controllers;
 use App\Committee;
 use App\Delegation;
 use App\Http\Requests\DelegationRequest;
+use App\Http\Requests\SeatExchangeRequest;
 use App\Seat;
+use App\SeatExchange;
+use App\SeatExchangeRecord;
 use App\User;
+use Auth;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Input;
 
 class DelegationController extends Controller
 {
@@ -25,10 +30,13 @@ class DelegationController extends Controller
 
         return view('delegation/create-delegation', compact("committees", "delegates"));
     }
-    public function showDelegationSeatExchangeRuleForm(){
-        $committees  = Committee::all();
-        return view('delegation/rules',compact("committees"));
+
+    public function showDelegationSeatExchangeRuleForm()
+    {
+        $committees = Committee::all();
+        return view('delegation/rules', compact("committees"));
     }
+
     public function showDelegations()
     {
         $committee_names = Committee::all("abbreviation");
@@ -218,17 +226,110 @@ class DelegationController extends Controller
             $seats[$committee->abbreviation] = $seat_collection->where("committee_id", $committee->id)->count();
         }
 
-        return view("delegation/delegation",compact("seats","committees","delegation"));
+        return view("delegation/delegation", compact("seats", "committees", "delegation"));
 
     }
 
-    public function showSeatsExchange()
+    public function showSeatExchange()
     {
         $committees = Committee::all();
         $committees_name = $committees->pluck("abbreviation");
         $delegations = Delegation::all();
 
-        return view("delegation/seat-exchange",compact("committees","committees_name","delegations"));
+        return view("delegation/seat-exchange", compact("committees", "committees_name", "delegations"));
+    }
+
+    public function SeatExchange(SeatExchangeRequest $request)
+    {
+        $committees = Committee::all();
+        $committee_rules = $committees->pluck("limit");
+        $committee_abbreviations = $committees->pluck("abbreviation");
+
+        $initiator = Delegation::findOrFail(Auth::user()->delegation->id);
+        $target = Delegation::findOrFail(Input::get("target"));
+
+        $errors = [];
+        
+        
+        //检查是否是一个已经存在的交换申请
+        $is_corresponding = false;//是否存在一个申请，如果存在是否与正在处理的request中包含的信息相符
+        $seat_exchanges = SeatExchange::all()->where("initiator", $initiator->id)->where("target", $target->id);
+        if ($seat_exchanges->count() != 0) {
+            //已经存在至少一个申请
+            foreach ($seat_exchanges as $seat_exchange) {
+                $is_corresponding = true;
+                foreach ($committees as $committee) {
+                    if ($seat_exchange->where("committee_id", $committee->id)->get("in") != $request->input($committee->abbreviation . "-in") || $seat_exchange->where("committee_id", $committee->id)->get("out") != $request->input($committee->abbreviation . "-out")) {
+                        //数据库中记录与正在处理的request中的数据不符合
+                        $is_corresponding = false;
+                    }
+                }
+                if($is_corresponding)
+                    break;
+            }
+            //如果没有一个申请与之相对应
+            if(!$is_corresponding){
+                //错误处理
+            }
+            else{
+                //todo:进行名额交换
+            }
+        }
+
+        //检查本代表团是否有足够名额
+        $delegation_in_faults = [];//本代表团超限的会场
+        $target_out_faults = [];//目标代表团名额不足的会场
+        $target_in_faults = [];//目标代表团超限的会场
+        $delegation_out_faults = [];//本代表团名额不足的会场
+        foreach ($committees as $committee) {
+            $current = $initiator->seats->where("committee_id", $committee->id)->count();
+            $target_current = $target->seats->where("committee_id", $committee->id)->count();
+            $in = $request->input($committee->abbreviation . "-in");
+            $out = $request->input($committee->abbreviation . "-out");
+            if ($current + $in > $committee->limit) {
+                $delegation_in_faults[] = $committee->abbreviation;
+            }
+            if ($target_current < $current) {
+                $target_out_faults[] = $committee->abbreviation;
+            }
+            if ($target_current + $out > $committee->limit) {
+                $target_in_faults[] = $committee->abbreviation;
+            }
+            if ($current < $out) {
+                $delegation_out_faults[] = $committee->abbreviation;
+            }
+        }
+        
+        //在SeatExchange中创建相应的数据项目
+        $seat_exchange_request = new SeatExchange();
+        $seat_exchange_request->initiator = $initiator->id;
+        $seat_exchange_request->target = $target->id;
+        $seat_exchange_request->save();
+        
+        $seat_exchange_records = [];
+        foreach($committees as $committee){
+            $seat_exchange_records[] = SeatExchangeRecord::create([
+                'committee_id'=>$committee->id,
+                'in'=>$request->input($committee->id."-in"),
+                "out"=>$request->input($committee->id."-out")
+            ]);
+        }
+        $seat_exchange_request->seat_exchange_records()->saveMany($seat_exchange_records);
+        
+        //todo:未测试代码，同时seats_exchange_records里对于in=0,out=0的会场也进行了存储，看看能不能减少存储量【关键在于修改后如何判断到底这个申请是否已经由目标方发送过】
+        //todo:是否有必要保证两个代表团间同时只能进行一次交换
+        
+
+    }
+    
+    
+    
+    
+    //helper functions
+    private function exchangeSeats(SeatExchange $exchange_request)
+    {
+        //在完成验证之后处理席位交换的函数
+        
     }
 
 
