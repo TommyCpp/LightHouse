@@ -8,7 +8,7 @@ class SeatExchange extends Model
 {
     public function seat_exchange_records()
     {
-        return $this->hasMany("App\\SeatExchangeRecord", "id", "request_id");
+        return $this->hasMany("App\\SeatExchangeRecord", "request_id", "id");
     }
 
     public function setStatusAttribute($value)
@@ -19,7 +19,7 @@ class SeatExchange extends Model
             "fail" => 2,
             "error" => 3
         ];
-        return array_key_exists($value, $arr) ? false : $arr[$value];
+        $this->attributes['status'] = array_key_exists($value, $arr) ? $arr[$value] : false;
     }
 
     public function getStatusAttribute($value)
@@ -31,6 +31,6 @@ class SeatExchange extends Model
             3 => "error"
         ];
 
-        return array_key_exists($value, $arr) ? false : $arr[$value];
+        return array_key_exists($value, $arr) ? $arr[$value] : false;
     }
 }

@@ -91,27 +91,50 @@
 
 @section('js')
     <script src="{{env("APP_URL")}}/resources/assets/js/libs/select2/select2.min.js"></script>
-    @include('partial/form-error')
     <script>
         $('#target').select2({
             placeholder: "请选择目标代表团"
         });
-        $(document).ready(function(){
-            $("#submit").click(function(e){
+        $(document).ready(function () {
+            $("#submit").click(function (e) {
                 var $button = e.target;
-                $($button).prop("disabled",true);
+//                $($button).prop("disabled", true);
                 //防止连续点击两次
 
                 $inData = $('#seats-in').serializeArray();
                 $outData = $('#seats-out').serializeArray();
 
-                $data = $inData.concat($outData).concat($('#target').serializeArray());
+                $data = $inData.concat($outData).concat($('#target').serializeArray()).concat({
+                    "name": "_token",
+                    "value": "{{csrf_token()}}"
+                });
 
                 $.ajax({
-                    url:"/delegation-seat-exchange",
-                    method:"POST",
-                    data:$data,
-                    success:function(){}
+                    url: "{{env('APP_URL')}}/public/delegation-seat-exchange",
+                    method: "POST",
+                    data: $data,
+                    statusCode: {
+                        400: function (response) {
+                            data = response.responseJSON;
+                            var lis = "";
+                            for (var i = 0; i < data.length; i++) {
+                                lis += ("<li>" + data[i] + "</li>");
+                            }
+                            BootstrapDialog.show({
+                                title: "错误",
+                                message: "<div class=\"alert alert-danger\"><ul>" + lis + "</ul></div>",
+                                type: 'type-danger'
+                            })
+                        },
+                        422: function () {
+                            BootstrapDialog.show({
+                                title: "错误",
+                                message: "<div class=\"alert alert-danger\">表单中存在未填写项、负数、或者交换数量超过该会场限额</div>",
+                                type: 'type-danger'
+                            })
+                        }
+
+                    }
                 })
 
             })

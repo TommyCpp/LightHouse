@@ -14,7 +14,7 @@ class SeatExchangeRequest extends Request
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class SeatExchangeRequest extends Request
      */
     public function rules()
     {
-        $rules = ["target"=>"require|integer"];
+        $rules = ["target"=>"required|integer"];
         $committees = Committee::all("abbreviation","limit");
         foreach ($committees as $committee) {
             $rules[$committee->abbreviation."-in"] = "required|integer|min:0|max:".$committee->limit;

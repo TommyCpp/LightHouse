@@ -58,7 +58,7 @@
                                     <th>#</th>
                                     <th>会场名称</th>
                                     <th>席位数</th>
-                                    <th>待确认席位数</th>
+                                    <th>席位上限</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
@@ -69,7 +69,7 @@
                                         <td>{{$committee->id}}</td>
                                         <td>{{$committee->abbreviation}}</td>
                                         <td>{{$seats[$committee->abbreviation]}}</td>
-                                        <td>0</td>
+                                        <td>{{$committee->limit}}</td>
                                         <td><a href="javascript:void(0)" data-target="{{$committee->id}}"><i
                                                         class="fa fa-eye"></i></a></td>
                                     </tr>
