@@ -51,6 +51,11 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card style-primary">
+                        <div class="card-head">
+                            <header>
+                                代表团名额
+                            </header>
+                        </div>
                         <div class="card-body">
                             <table class="table table-hover no-margin">
                                 <thead>
@@ -74,7 +79,96 @@
                                                         class="fa fa-eye"></i></a></td>
                                     </tr>
                                 @endforeach
-
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-bordered style-primary">
+                        <div class="card-head">
+                            <header>
+                                名额交换请求
+                            </header>
+                        </div>
+                        <div class="card-body style-default-bright">
+                            <table class="table table-hover no-margin">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>发起方</th>
+                                    <th>目标方</th>
+                                    @foreach($committees as $committee)
+                                        <th>{{$committee->abbreviation}}</th>
+                                    @endforeach
+                                    <th>状态</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($target_requests as $item)
+                                        <tr>
+                                            <td>{{$item['id']}}</td>
+                                            <td>{{$item['initiator']}}</td>
+                                            <td>{{$item['target']}}</td>
+                                            @foreach($committees as $committee)
+                                                <td>{{$item[$committee->abbreviation]}}</td>
+                                            @endforeach
+                                            @if($item['status'] == "success")
+                                            <td><span class="tab label label-success">交换成功</span></td>
+                                                @elseif($item['status'] == "fail")
+                                                <td><span class="tab label label-danger">交换失败</span></td>
+                                                @elseif($item['status'] == "padding")
+                                                <td><span class="tab label label-primary">等待确认</span></td>
+                                            @endif
+                                        </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-bordered style-primary">
+                        <div class="card-head">
+                            <header>
+                                发起的名额交换请求
+                            </header>
+                        </div>
+                        <div class="card-body style-default-bright">
+                            <table class="table table-hover no-margin">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>发起方</th>
+                                    <th>目标方</th>
+                                    @foreach($committees as $committee)
+                                        <th>{{$committee->abbreviation}}</th>
+                                    @endforeach
+                                    <th>状态</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($initiator_requests as $item)
+                                    <tr>
+                                        <td>{{$item['id']}}</td>
+                                        <td>{{$item['initiator']}}</td>
+                                        <td>{{$item['target']}}</td>
+                                        @foreach($committees as $committee)
+                                            <td>{{$item[$committee->abbreviation]}}</td>
+                                        @endforeach
+                                        @if($item['status'] == "success")
+                                            <td><span class="tab label label-success">交换成功</span></td>
+                                        @elseif($item['status'] == "fail")
+                                            <td><span class="tab label label-danger">交换失败</span></td>
+                                        @elseif($item['status'] == "padding")
+                                            <td><span class="tab label label-primary">等待确认</span></td>
+                                        @endif
+                                    </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>

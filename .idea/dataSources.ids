@@ -217,132 +217,121 @@
         <data-type>int(11)</data-type>
         <default-expression>&apos;0&apos;</default-expression>
       </column>
-      <index id="59" parent="8" name="seat_exchanges_initiator_target_pk">
-        <columns>initiator
-target</columns>
-        <desc-columns></desc-columns>
-        <unique>1</unique>
-      </index>
-      <key id="60" parent="8" name="PRIMARY">
+      <key id="59" parent="8" name="PRIMARY">
         <columns>id</columns>
         <primary>1</primary>
       </key>
-      <key id="61" parent="8" name="seat_exchanges_initiator_target_pk">
-        <columns>initiator
-target</columns>
-        <underlying-index>seat_exchanges_initiator_target_pk</underlying-index>
-      </key>
-      <column id="62" parent="9" name="seat_id">
+      <column id="60" parent="9" name="seat_id">
         <mandatory>1</mandatory>
         <data-type>int(10) unsigned</data-type>
         <sequence-identity>1</sequence-identity>
       </column>
-      <column id="63" parent="9" name="committee_id">
+      <column id="61" parent="9" name="committee_id">
         <comment>委员会ID</comment>
         <mandatory>1</mandatory>
         <data-type>int(11)</data-type>
       </column>
-      <column id="64" parent="9" name="main_name">
+      <column id="62" parent="9" name="main_name">
         <comment>主要名称（双代应使用同一主名称）</comment>
         <data-type>varchar(255)</data-type>
       </column>
-      <column id="65" parent="9" name="assist_name">
+      <column id="63" parent="9" name="assist_name">
         <comment>辅助名称</comment>
         <data-type>varchar(255)</data-type>
       </column>
-      <column id="66" parent="9" name="note">
+      <column id="64" parent="9" name="note">
         <comment>备注（制作国家牌时候用）</comment>
         <data-type>varchar(255)</data-type>
       </column>
-      <column id="67" parent="9" name="created_at">
+      <column id="65" parent="9" name="created_at">
         <data-type>timestamp</data-type>
       </column>
-      <column id="68" parent="9" name="updated_at">
+      <column id="66" parent="9" name="updated_at">
         <data-type>timestamp</data-type>
       </column>
-      <column id="69" parent="9" name="is_distributed">
+      <column id="67" parent="9" name="is_distributed">
         <mandatory>1</mandatory>
         <data-type>tinyint(1)</data-type>
         <default-expression>&apos;0&apos;</default-expression>
       </column>
-      <column id="70" parent="9" name="delegation_id">
+      <column id="68" parent="9" name="delegation_id">
         <data-type>int(11)</data-type>
       </column>
-      <index id="71" parent="9" name="seats_committee_id_foreign">
+      <index id="69" parent="9" name="seats_committee_id_foreign">
         <columns>committee_id</columns>
         <desc-columns></desc-columns>
       </index>
-      <key id="72" parent="9" name="PRIMARY">
+      <key id="70" parent="9" name="PRIMARY">
         <columns>seat_id</columns>
         <primary>1</primary>
       </key>
-      <column id="73" parent="10" name="id">
+      <column id="71" parent="10" name="id">
         <mandatory>1</mandatory>
         <data-type>int(10) unsigned</data-type>
         <sequence-identity>1</sequence-identity>
       </column>
-      <column id="74" parent="10" name="FirstName">
+      <column id="72" parent="10" name="FirstName">
         <data-type>varchar(255)</data-type>
       </column>
-      <column id="75" parent="10" name="LastName">
+      <column id="73" parent="10" name="LastName">
         <data-type>varchar(255)</data-type>
       </column>
-      <column id="76" parent="10" name="HighSchool">
+      <column id="74" parent="10" name="HighSchool">
         <data-type>varchar(255)</data-type>
       </column>
-      <column id="77" parent="10" name="University">
+      <column id="75" parent="10" name="University">
         <data-type>varchar(255)</data-type>
       </column>
-      <column id="78" parent="10" name="Identity">
+      <column id="76" parent="10" name="Identity">
         <mandatory>1</mandatory>
         <data-type>set(&apos;ADMIN&apos;, &apos;DAIS&apos;, &apos;AT&apos;, &apos;OT&apos;, &apos;DIR&apos;, &apos;COREDIR&apos;, &apos;VOL&apos;, &apos;HEADDEL&apos;, &apos;DEL&apos;, &apos;OTHER&apos;)</data-type>
       </column>
-      <column id="79" parent="10" name="created_at">
+      <column id="77" parent="10" name="created_at">
         <data-type>timestamp</data-type>
       </column>
-      <column id="80" parent="10" name="updated_at">
+      <column id="78" parent="10" name="updated_at">
         <data-type>timestamp</data-type>
       </column>
-      <key id="81" parent="10" name="PRIMARY">
+      <key id="79" parent="10" name="PRIMARY">
         <columns>id</columns>
         <primary>1</primary>
       </key>
-      <column id="82" parent="11" name="id">
+      <column id="80" parent="11" name="id">
         <mandatory>1</mandatory>
         <data-type>int(10) unsigned</data-type>
         <sequence-identity>1</sequence-identity>
       </column>
-      <column id="83" parent="11" name="name">
+      <column id="81" parent="11" name="name">
         <mandatory>1</mandatory>
         <data-type>varchar(255)</data-type>
       </column>
-      <column id="84" parent="11" name="email">
+      <column id="82" parent="11" name="email">
         <mandatory>1</mandatory>
         <data-type>varchar(255)</data-type>
       </column>
-      <column id="85" parent="11" name="password">
+      <column id="83" parent="11" name="password">
         <mandatory>1</mandatory>
         <data-type>varchar(255)</data-type>
       </column>
-      <column id="86" parent="11" name="remember_token">
+      <column id="84" parent="11" name="remember_token">
         <data-type>varchar(100)</data-type>
       </column>
-      <column id="87" parent="11" name="created_at">
+      <column id="85" parent="11" name="created_at">
         <data-type>timestamp</data-type>
       </column>
-      <column id="88" parent="11" name="updated_at">
+      <column id="86" parent="11" name="updated_at">
         <data-type>timestamp</data-type>
       </column>
-      <index id="89" parent="11" name="users_email_unique">
+      <index id="87" parent="11" name="users_email_unique">
         <columns>email</columns>
         <desc-columns></desc-columns>
         <unique>1</unique>
       </index>
-      <key id="90" parent="11" name="PRIMARY">
+      <key id="88" parent="11" name="PRIMARY">
         <columns>id</columns>
         <primary>1</primary>
       </key>
-      <key id="91" parent="11" name="users_email_unique">
+      <key id="89" parent="11" name="users_email_unique">
         <columns>email</columns>
         <underlying-index>users_email_unique</underlying-index>
       </key>

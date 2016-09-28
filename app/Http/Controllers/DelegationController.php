@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Committee;
 use App\Delegation;
+
 use App\Http\Requests\DelegationRequest;
 use App\Http\Requests\SeatExchangeRequest;
 use App\Seat;
@@ -55,6 +56,7 @@ class DelegationController extends Controller
         $delegates = $users->filter(function (User $user) {
             return $user->hasRole('HEADDEL');
         });
+
         return view('delegation/edit', compact("delegation", "committee_seats", "delegates"));
     }
 
@@ -217,6 +219,7 @@ class DelegationController extends Controller
 
     public function showDelegationInformation(Request $request, $id)
     {
+        $delegations = Delegation::all();
         $delegation = Delegation::find($id);
         $delegates = $delegation->delegates;
         $seat_collection = $delegation->seats;
@@ -226,7 +229,38 @@ class DelegationController extends Controller
             $seats[$committee->abbreviation] = $seat_collection->where("committee_id", $committee->id)->count();
         }
 
-        return view("delegation/delegation", compact("seats", "committees", "delegation"));
+        //名额交换数据
+        $as_targets = SeatExchange::where("target", $id)->get();
+        $target_requests = [];
+        foreach ($as_targets as $item) {
+            $record = [];
+            $record['id'] = $item->id;
+            $record['initiator'] = $delegations->find($item->initiator)->name;
+            $record['target'] = $delegations->find($id)->name;
+            $delta = $item->delta;
+            foreach($committees as $committee){
+                $record[$committee->abbreviation] = -$delta[$committee->abbreviation];
+            }
+            $record['status'] = $item->status;
+            $target_requests[] = $record;
+        }
+        $as_initiators = SeatExchange::where("initiator",$id)->get();
+        $initiator_requests = [];
+        foreach ($as_initiators as $item) {
+            $record = [];
+            $record['id'] = $item->id;
+            $record['target'] = $delegations->find($item->target)->name;
+            $record['initiator'] = $delegations->find($id)->name;
+            $delta = $item->delta;
+            foreach($committees as $committee){
+                $record[$committee->abbreviation] = $delta[$committee->abbreviation];
+            }
+            $record['status'] = $item->status;
+            $initiator_requests[] = $record;
+        }
+
+
+        return view("delegation/delegation", compact("seats", "committees", "delegation","initiator_requests","target_requests"));
 
     }
 
@@ -241,7 +275,7 @@ class DelegationController extends Controller
 
     public function seatExchange(SeatExchangeRequest $request)
     {
-        $request->session()->put("errors",new Collection());
+        $request->session()->put("errors", new Collection());
         $committees = Committee::all();
         $committee_rules = $committees->pluck("limit");
         $committee_abbreviations = $committees->pluck("abbreviation");
@@ -255,7 +289,7 @@ class DelegationController extends Controller
         //检查是否是一个已经存在的交换申请
         //两个代表团之间只能同时进行一次交换
         $seat_exchange = SeatExchange::all()->where("initiator", $target->id)->where("target", $initiator->id)->where("status", "padding");
-        if ($seat_exchange->count() != 0) {
+        if ($seat_exchange->count() == 1) {
             //已经存在至少一个申请
             $seats = $seat_exchange->first()->seat_exchange_records;
             $is_corresponding = true;
@@ -275,7 +309,7 @@ class DelegationController extends Controller
             }
             if (!$is_corresponding) {
 //                $this->errorHandle($request,["与目标代表团提交的名额交换申请存在出入"]);
-                return response(["与目标代表团提交的名额交换申请存在出入"],400);
+                return response(["与目标代表团提交的名额交换申请存在出入"], 400);
             } else {
                 $this->exchangeSeats($seat_exchange->first());
             }
@@ -306,20 +340,20 @@ class DelegationController extends Controller
             }
             if (count($initiator_in_faults) != 0 || count($initiator_out_faults) != 0 || count($target_in_faults) != 0 || count($target_out_faults) != 0) {
                 $error_messages = new Collection();
-                foreach($initiator_in_faults as $item){
-                    $error_messages->add("名额交换之后本代表团".$item."会场名额超过限制");
+                foreach ($initiator_in_faults as $item) {
+                    $error_messages->add("名额交换之后本代表团" . $item . "会场名额超过限制");
                 }
                 foreach ($initiator_out_faults as $item) {
-                    $error_messages->add("本代表团".$item."会场名额不足");
+                    $error_messages->add("本代表团" . $item . "会场名额不足");
                 }
                 foreach ($target_in_faults as $item) {
-                    $error_messages->add("名额交换之后目标代表团".$item."会场名额超过限制");
+                    $error_messages->add("名额交换之后目标代表团" . $item . "会场名额超过限制");
                 }
                 foreach ($target_out_faults as $item) {
-                    $error_messages->add("目标代表团".$item."会场名额不足");
+                    $error_messages->add("目标代表团" . $item . "会场名额不足");
                 }
 //                $this->errorHandle($request,$error_messages);
-                return response($error_messages,400);
+                return response($error_messages, 400);
             }
 
 
@@ -342,7 +376,7 @@ class DelegationController extends Controller
             }
             $seat_exchange_request->seat_exchange_records()->saveMany($seat_exchange_records);
         }
-        return response("",200);
+        return response("", 200);
     }
 
 
@@ -366,6 +400,12 @@ class DelegationController extends Controller
             }
         }
         $exchange_request->status = "success";
+        $initiator->seat_number = $initiator->seats->count();
+        $initiator->delegate_number = $initiator->seats->count();
+        $target->seat_number = $target->seats->count();
+        $target->delegate_number = $target->seats->count();
+        $initiator->save();
+        $target->save();
         $exchange_request->save();
 
     }

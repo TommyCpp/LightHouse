@@ -19,7 +19,7 @@ class SeatExchange extends Model
             "fail" => 2,
             "error" => 3
         ];
-        $this->attributes['status'] = array_key_exists($value, $arr) ? $arr[$value] : false;
+        $this->attributes['status'] = array_key_exists($value, $arr) ? $arr[$value] : -1;
     }
 
     public function getStatusAttribute($value)
@@ -32,5 +32,26 @@ class SeatExchange extends Model
         ];
 
         return array_key_exists($value, $arr) ? $arr[$value] : false;
+    }
+
+    /**
+     * @return array
+     * delta表示针对每个会场两个代表团之间的绝对差额，等于发起方实际收到的名额数量（如果是负数则表示发起方送出名额）
+     */
+    public function getDeltaAttribute()
+    {
+        $result = [];
+        $committees = Committee::all();
+        foreach ($committees as $committee) {
+            $record = $this->seat_exchange_records->where("committee_id", $committee->id);
+            if ($record->count() != 0) {
+                $record = $record->first();
+                $result[$committee->abbreviation] = $record->in - $record->out;
+            }
+            else{
+                $result[$committee->abbreviation] = 0;
+            }
+        }
+        return $result;
     }
 }

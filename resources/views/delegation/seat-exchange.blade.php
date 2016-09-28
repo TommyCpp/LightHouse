@@ -114,6 +114,13 @@
                     method: "POST",
                     data: $data,
                     statusCode: {
+                        200:function(){
+                            BootstrapDialog.show({
+                                title: "成功",
+                                message: "代表团名额交换请求创建成功",
+                                type: 'type-success'
+                            })
+                        },
                         400: function (response) {
                             data = response.responseJSON;
                             var lis = "";
