@@ -14,7 +14,7 @@ class SeatExchange extends Model
     public function setStatusAttribute($value)
     {
         $arr = [
-            "padding" => 0,
+            "pending" => 0,
             "success" => 1,
             "fail" => 2,
             "error" => 3
@@ -25,7 +25,7 @@ class SeatExchange extends Model
     public function getStatusAttribute($value)
     {
         $arr = [
-            0 => "padding",
+            0 => "pending",
             1 => "success",
             2 => "fail",
             3 => "error"

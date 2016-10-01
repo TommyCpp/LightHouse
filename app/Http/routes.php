@@ -58,5 +58,6 @@ Route::group(['middleware' => ['auth', 'role:HEADDEL']], function () {
     Route::post('committee/{id}/seats', "CommitteeController@getSeats");
     Route::get('/delegation-seat-exchange',"DelegationController@showSeatExchange");
     Route::post('/delegation-seat-exchange',"DelegationController@seatExchange");
+    Route::delete('/delegation-seat-exchange/{id}',"DelegationController@deleteExchange");
 });
 

@@ -87,8 +87,11 @@
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="card card-bordered style-primary">
+                    <div class="card card-bordered style-primary" id="seat-exchange-request">
                         <div class="card-head">
+                            <div class="tools">
+                                <a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
+                            </div>
                             <header>
                                 名额交换请求
                             </header>
@@ -104,25 +107,32 @@
                                         <th>{{$committee->abbreviation}}</th>
                                     @endforeach
                                     <th>状态</th>
+                                    <th>操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($target_requests as $item)
-                                        <tr>
-                                            <td>{{$item['id']}}</td>
-                                            <td>{{$item['initiator']}}</td>
-                                            <td>{{$item['target']}}</td>
-                                            @foreach($committees as $committee)
-                                                <td>{{$item[$committee->abbreviation]}}</td>
-                                            @endforeach
-                                            @if($item['status'] == "success")
+                                    <tr>
+                                        <td>{{$item['id']}}</td>
+                                        <td>{{$item['initiator']}}</td>
+                                        <td>{{$item['target']}}</td>
+                                        @foreach($committees as $committee)
+                                            <td>{{$item[$committee->abbreviation]}}</td>
+                                        @endforeach
+                                        @if($item['status'] == "success")
                                             <td><span class="tab label label-success">交换成功</span></td>
-                                                @elseif($item['status'] == "fail")
-                                                <td><span class="tab label label-danger">交换失败</span></td>
-                                                @elseif($item['status'] == "padding")
-                                                <td><span class="tab label label-primary">等待确认</span></td>
-                                            @endif
-                                        </tr>
+                                        @elseif($item['status'] == "fail")
+                                            <td><span class="tab label label-danger">交换失败</span></td>
+                                        @elseif($item['status'] == "pending")
+                                            <td><span class="tab label label-primary">等待确认</span></td>
+                                        @endif
+                                        @if($item['status'] == "pending")
+                                            <td><a href="javascript:void(0)" data-target="{{$item['id']}}"><i
+                                                            class="fa fa-ban"></i></a></td>
+                                            @else
+                                            <td> </td>
+                                        @endif
+                                    </tr>
                                 @endforeach
                                 </tbody>
                             </table>
@@ -134,6 +144,9 @@
                 <div class="col-lg-12">
                     <div class="card card-bordered style-primary">
                         <div class="card-head">
+                            <div class="tools">
+                                <a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
+                            </div>
                             <header>
                                 发起的名额交换请求
                             </header>
@@ -149,6 +162,7 @@
                                         <th>{{$committee->abbreviation}}</th>
                                     @endforeach
                                     <th>状态</th>
+                                    <th>操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -164,8 +178,14 @@
                                             <td><span class="tab label label-success">交换成功</span></td>
                                         @elseif($item['status'] == "fail")
                                             <td><span class="tab label label-danger">交换失败</span></td>
-                                        @elseif($item['status'] == "padding")
+                                        @elseif($item['status'] == "pending")
                                             <td><span class="tab label label-primary">等待确认</span></td>
+                                        @endif
+                                        @if($item['status'] == "pending")
+                                            <td><a href="javascript:void(0)" data-target="{{$item['id']}}"><i
+                                                            class="fa fa-ban"></i></a></td>
+                                        @else
+                                            <td> </td>
                                         @endif
                                     </tr>
                                 @endforeach
@@ -182,6 +202,25 @@
 @section('js')
     @include('partial/form-error')
     <script>
+        $('.card .btn.btn-icon-toggle.btn-collapse').click(function (e) {
+            $(this).parents(".card").toggleClass("card-collapsed");
+            $(this).parents(".card-head").siblings(".card-body").slideToggle();
+        });
+        $('#seat-exchange-request a:has(".fa-ban")').click(function () {
+            $.post("{{env('APP_URL')}}/public/delegation-seat-exchange/" + $(this).data('target'), {
+                "_method": "DELETE",
+                "delegation-id": "{{$delegation->id}}",
+                "_token": "{{csrf_token()}}"
+            }, function (data) {
+                if (data == "success") {
+                    BootstrapDialog.show({
+                        type: "type-success",
+                        title: "成功",
+                        message: "已经拒绝此交换申请"
+                    })
+                }
+            });
+        });
         $('table tr td a i.fa.fa-eye').click(function (e) {
             $dialog = new BootstrapDialog();
             $dialog.setType("type-info");

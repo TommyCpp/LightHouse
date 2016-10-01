@@ -273,6 +273,20 @@ class DelegationController extends Controller
         return view("delegation/seat-exchange", compact("committees", "committees_name", "delegations"));
     }
 
+    public function deleteExchange(Request $request,$id){
+        if($request->ajax()){
+            $exchange = SeatExchange::find($id);
+            if($request->input("delegation-id") == $exchange->initiator || $request->input("delegation-id") == $exchange->target){
+                if($exchange->status == "padding") {
+                    $exchange->status = "fail";
+                    $exchange->save();
+                    return response("success",200);
+                }
+            }
+        }
+        return response("fail",400);
+    }
+
     public function seatExchange(SeatExchangeRequest $request)
     {
         $request->session()->put("errors", new Collection());
@@ -288,7 +302,7 @@ class DelegationController extends Controller
 
         //检查是否是一个已经存在的交换申请
         //两个代表团之间只能同时进行一次交换
-        $seat_exchange = SeatExchange::all()->where("initiator", $target->id)->where("target", $initiator->id)->where("status", "padding");
+        $seat_exchange = SeatExchange::all()->where("initiator", $target->id)->where("target", $initiator->id)->where("status", "pending");
         if ($seat_exchange->count() == 1) {
             //已经存在至少一个申请
             $seats = $seat_exchange->first()->seat_exchange_records;
@@ -361,7 +375,7 @@ class DelegationController extends Controller
             $seat_exchange_request = new SeatExchange();
             $seat_exchange_request->initiator = $initiator->id;
             $seat_exchange_request->target = $target->id;
-            $seat_exchange_request->status = "padding";
+            $seat_exchange_request->status = "pending";
             $seat_exchange_request->save();
 
             $seat_exchange_records = [];
