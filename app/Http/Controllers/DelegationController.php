@@ -277,12 +277,13 @@ class DelegationController extends Controller
         if($request->ajax()){
             $exchange = SeatExchange::find($id);
             if($request->input("delegation-id") == $exchange->initiator || $request->input("delegation-id") == $exchange->target){
-                if($exchange->status == "padding") {
+                if($exchange->status == "pending") {
                     $exchange->status = "fail";
                     $exchange->save();
                     return response("success",200);
                 }
             }
+            
         }
         return response("fail",400);
     }

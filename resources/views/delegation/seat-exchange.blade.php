@@ -98,8 +98,7 @@
         $(document).ready(function () {
             $("#submit").click(function (e) {
                 var $button = e.target;
-//                $($button).prop("disabled", true);
-                //防止连续点击两次
+                $($button).prop("disabled", true);
 
                 $inData = $('#seats-in').serializeArray();
                 $outData = $('#seats-out').serializeArray();
@@ -114,12 +113,13 @@
                     method: "POST",
                     data: $data,
                     statusCode: {
-                        200:function(){
+                        200: function () {
                             BootstrapDialog.show({
                                 title: "成功",
                                 message: "代表团名额交换请求创建成功",
                                 type: 'type-success'
-                            })
+                            });
+                            $($button).prop("disabled", false);
                         },
                         400: function (response) {
                             data = response.responseJSON;
@@ -131,14 +131,17 @@
                                 title: "错误",
                                 message: "<div class=\"alert alert-danger\"><ul>" + lis + "</ul></div>",
                                 type: 'type-danger'
-                            })
+                            });
+                            $($button).prop("disabled", false);
                         },
                         422: function () {
                             BootstrapDialog.show({
                                 title: "错误",
-                                message: "<div class=\"alert alert-danger\">表单中存在未填写项、负数、或者交换数量超过该会场限额</div>",
+                                message: "<div class=\"alert alert-danger\">表单中存在如下错误中的一个或多个" +
+                                "<ul><li>未填写项</li><li>负数</li><li>交换数量超过该会场限额</li><li>双代会场交换数量不是偶数</ul></div>",
                                 type: 'type-danger'
-                            })
+                            });
+                            $($button).prop("disabled", false);
                         }
 
                     }

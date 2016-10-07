@@ -87,7 +87,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="card card-bordered style-primary" id="seat-exchange-request">
+                    <div class="card card-bordered style-primary" id="received-seat-exchange-request">
                         <div class="card-head">
                             <div class="tools">
                                 <a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
@@ -119,13 +119,15 @@
                                         @foreach($committees as $committee)
                                             <td>{{$item[$committee->abbreviation]}}</td>
                                         @endforeach
-                                        @if($item['status'] == "success")
-                                            <td><span class="tab label label-success">交换成功</span></td>
-                                        @elseif($item['status'] == "fail")
-                                            <td><span class="tab label label-danger">交换失败</span></td>
-                                        @elseif($item['status'] == "pending")
-                                            <td><span class="tab label label-primary">等待确认</span></td>
-                                        @endif
+                                        <td class="exchange-status">
+                                            @if($item['status'] == "success")
+                                                <span class="tab label label-success">交换成功</span>
+                                            @elseif($item['status'] == "fail")
+                                                <span class="tab label label-danger">交换失败</span>
+                                            @elseif($item['status'] == "pending")
+                                                <span class="tab label label-primary">等待确认</span>
+                                            @endif
+                                        </td>
                                         @if($item['status'] == "pending")
                                             <td><a href="javascript:void(0)" data-target="{{$item['id']}}"><i
                                                             class="fa fa-ban"></i></a></td>
@@ -142,7 +144,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="card card-bordered style-primary">
+                    <div class="card card-bordered style-primary" id="seat-exchange-request">
                         <div class="card-head">
                             <div class="tools">
                                 <a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
@@ -174,13 +176,15 @@
                                         @foreach($committees as $committee)
                                             <td>{{$item[$committee->abbreviation]}}</td>
                                         @endforeach
+                                        <td class="exchange-status">
                                         @if($item['status'] == "success")
-                                            <td><span class="tab label label-success">交换成功</span></td>
+                                            <span class="tab label label-success">交换成功</span>
                                         @elseif($item['status'] == "fail")
-                                            <td><span class="tab label label-danger">交换失败</span></td>
+                                            <span class="tab label label-danger">交换失败</span>
                                         @elseif($item['status'] == "pending")
-                                            <td><span class="tab label label-primary">等待确认</span></td>
+                                            <span class="tab label label-primary">等待确认</span>
                                         @endif
+                                        </td>
                                         @if($item['status'] == "pending")
                                             <td><a href="javascript:void(0)" data-target="{{$item['id']}}"><i
                                                             class="fa fa-ban"></i></a></td>
@@ -206,7 +210,8 @@
             $(this).parents(".card").toggleClass("card-collapsed");
             $(this).parents(".card-head").siblings(".card-body").slideToggle();
         });
-        $('#seat-exchange-request a:has(".fa-ban")').click(function () {
+        $('a:has(".fa-ban")').click(function () {
+            var exchange = this;
             $.post("{{env('APP_URL')}}/public/delegation-seat-exchange/" + $(this).data('target'), {
                 "_method": "DELETE",
                 "delegation-id": "{{$delegation->id}}",
@@ -216,7 +221,16 @@
                     BootstrapDialog.show({
                         type: "type-success",
                         title: "成功",
-                        message: "已经拒绝此交换申请"
+                        message: "已经删除此交换申请"
+                    });
+                    $(exchange).parents('td').siblings('.exchange-status').find('span').removeClass('label-primary').addClass('label-danger').html("交换失败");
+                    $(exchange).parents('td').html("");
+                }
+                else{
+                    BootstrapDialog.show({
+                        type: "type-warning",
+                        title: "失败",
+                        message: "此申请未能成功删除"
                     })
                 }
             });
