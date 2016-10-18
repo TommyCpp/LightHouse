@@ -95,6 +95,11 @@
         $('#target').select2({
             placeholder: "请选择目标代表团"
         });
+        $('input[type=text]').blur(function(){
+           if(!$.isNumeric($(this).val())){
+                $(this).val(0);
+           }
+        });
         $(document).ready(function () {
             $("#submit").click(function (e) {
                 var $button = e.target;
