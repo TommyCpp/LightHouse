@@ -15,8 +15,9 @@ use Auth;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
+
 use Illuminate\Support\Facades\Input;
+use DB;
 
 class DelegationController extends Controller
 {
@@ -25,9 +26,13 @@ class DelegationController extends Controller
     {
         $committees = Committee::all();
         $users = User::all();
+        $users_distributed = Delegation::first()->lists("head_delegate_id");
         $delegates = $users->filter(function (User $user) {
             return $user->hasRole('HEADDEL');
         });
+        $delegates = $delegates->keyBy("id");
+        $delegates = $delegates->forget($users_distributed->all());
+
 
         return view('delegation/create-delegation', compact("committees", "delegates"));
     }
@@ -64,12 +69,14 @@ class DelegationController extends Controller
     {
         $delegation = Delegation::find($id);
         $seats = $delegation->seats;
+        DB::beginTransaction();
         foreach ($seats as $seat) {
             $seat->is_distributed = false;
             $seat->delegation_id = null;
             $seat->save();
         }//释放席位
         $status = $delegation->delete();
+        DB::commit();
         return $status ? response("", 200) : response("", 404);
 
     }
@@ -101,12 +108,13 @@ class DelegationController extends Controller
 
         //更新各个会场限额
         $committee_ids = Committee::all('id')->pluck('id')->toArray();
+        DB::beginTransaction();
         foreach ($committee_ids as $committee_id) {
             $committee = Committee::find($committee_id);
             $committee->limit = $request->input($committee->abbreviation);
             $committee->save();
         }
-
+        DB::commit();
         return redirect("committees/limit");
     }
 
@@ -118,7 +126,7 @@ class DelegationController extends Controller
      * 完成OT层面的代表团信息修改，主要包括
      * 1.修改领队信息
      * 2.修改代表团名称等
-     * 3.修改席位信息（在此处添加或删除席位不受【每个代表团在各个会场席位数量上限】 的限制，便于OT进行奖励性分配
+     * 3.修改席位信息（在此处添加或删除席位不受【每个代表团在各个会场席位数量上限】 的限制，便于OT进行奖励性分配）
      *
      * 尚未实现日志记录功能
      */
@@ -126,7 +134,7 @@ class DelegationController extends Controller
     {
         $committees = Committee::all();
 
-
+        DB::beginTransaction();
         $delegation = Delegation::all()->find($id);
         if ($delegation->head_delegate->id != $request->input("head_delegate_id")) {
             //更改领队
@@ -156,7 +164,7 @@ class DelegationController extends Controller
                 $seats = Seat::where("committee_id", $committee_id)->where("is_distributed", 0)->take($difference)->get();
                 if ($seats->count() < $difference) {
                     //如果剩余席位不够分配
-                    //回滚
+                    DB::rollBack();
                     $error = new Collection();
                     $error->add($committees[$i]->chinese_name . "席位不足");
                     return redirect('/delegation/' . $committee_id . '/edit')->with("errors", $error);
@@ -169,7 +177,7 @@ class DelegationController extends Controller
             }
         }
         $delegation->save();
-
+        DB::commit();
         return redirect("/delegations");
     }
 
@@ -178,6 +186,7 @@ class DelegationController extends Controller
         $committees = Committee::all();
 
         //创建代表团
+        DB::beginTransaction();
         $delegation = new Delegation();
         $user = User::find($request->input("head_delegate_id"));
         $delegation->head_delegate()->associate($user);
@@ -190,15 +199,13 @@ class DelegationController extends Controller
         //不论领队是否代表都创建新用户，在填写代表信息页面将其席位进行转换
         $delegation_id = $delegation->id;
 
-//        $delegates = [];
         for ($i = 0; $i < count($committees); $i++) {
             $committee_id = $committees[$i]->id;
             $committee_abbr = $committees[$i]->abbreviation;
             $seats = Seat::all()->where("committee_id", $committee_id)->where("is_distributed", 0)->take($request->input($committee_abbr));
             if ($seats->count() != $request->input($committee_abbr)) {
                 //如果剩余席位不够分配
-                //回滚
-                $delegation->delete();
+                DB::rollBack();
                 $error = new Collection();
                 $error->add($committees[$i]->chinese_name . "席位不足");
                 return redirect('create-delegation')->with("errors", $error);
@@ -209,6 +216,7 @@ class DelegationController extends Controller
             }
             $delegation->seats()->saveMany($seats);
         }
+        DB::commit();
         return redirect("delegations");
     }
 
@@ -326,10 +334,13 @@ class DelegationController extends Controller
 //                $this->errorHandle($request,["与目标代表团提交的名额交换申请存在出入"]);
                 return response(["与目标代表团提交的名额交换申请存在出入"], 400);
             } else {
+                //开始事务
+                DB::beginTransaction();
                 $this->exchangeSeats($seat_exchange->first());
+                DB::commit();
             }
         } else {
-            //如果没有对应的申请
+            //如果没有对应的申请,创建新的名额交换申请
             //检查本代表团是否有足够名额
             $initiator_in_faults = [];//本代表团超限的会场
             $target_out_faults = [];//目标代表团名额不足的会场
@@ -422,8 +433,5 @@ class DelegationController extends Controller
         $initiator->save();
         $target->save();
         $exchange_request->save();
-
     }
-
-
 }

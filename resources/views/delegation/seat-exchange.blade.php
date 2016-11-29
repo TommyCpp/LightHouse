@@ -95,18 +95,18 @@
         $('#target').select2({
             placeholder: "请选择目标代表团"
         });
-        $('input[type=text]').blur(function(){
-           if(!$.isNumeric($(this).val())){
+        $('input[type=text]').blur(function () {
+            if (!$.isNumeric($(this).val())) {
                 $(this).val(0);
-           }
+            }
         });
         $(document).ready(function () {
             $("#submit").click(function (e) {
                 var $button = e.target;
                 $($button).prop("disabled", true);
 
-                $inData = $('#seats-in').serializeArray();
-                $outData = $('#seats-out').serializeArray();
+                var $inData = $('#seats-in').serializeArray();
+                var $outData = $('#seats-out').serializeArray();
 
                 $data = $inData.concat($outData).concat($('#target').serializeArray()).concat({
                     "name": "_token",

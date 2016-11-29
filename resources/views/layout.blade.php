@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Learn Laravel 5</title>
+    <title>LightHouse@BDMUNC</title>
 
     {{--<link href='http://fonts.useso.com/css?family=Roboto:300italic,400italic,300,400,500,700,900' rel='stylesheet' type='text/css'/>--}}
     <link href="{{env('APP_URL')}}/resources/assets/css/bootstrap.css" rel="stylesheet" type="text/css">

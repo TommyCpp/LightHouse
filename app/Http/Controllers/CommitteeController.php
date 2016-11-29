@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Committee;
 use App\Delegation;
 use App\Seat;
+use DB;
 use Faker\Provider\lv_LV\Person;
 use Illuminate\Http\Request;
 
@@ -54,20 +55,24 @@ class CommitteeController extends Controller
         Committee::create($request->input());
         $committee = Committee::find($request->input("id"));
         $seats = [];
+        DB::beginTransaction();
         for ($i = 0; $i < $request->input("number"); $i++) {
             $seats[count($seats)] = new Seat();
         }
         $committee->seats()->saveMany($seats);
+        DB::commit();
         return redirect('committees');
     }
 
     public function delete(Request $request, $id)
     {
         $committee = Committee::find($id);
+        DB::beginTransaction();
         foreach ($committee->seats as $seat) {
             $seat->delete();
         }
         $status = $committee->delete();
+        DB::commit();//事务处理
         return $status ? response("", 200) : response("", 500);
     }
 
@@ -96,6 +101,7 @@ class CommitteeController extends Controller
         ]);
 
         $committee = Committee::all()->find($id);
+        DB::beginTransaction();
         if ($id != $request->input('id')) {
             //如果更改ID的话,更新所有seats的id
             $seats = $committee->seats->all();
@@ -103,6 +109,7 @@ class CommitteeController extends Controller
                 $seat->update(["committee_id" => $request->input("id")]);
             }
         }
+        DB::commit();
         if ($committee->update($request->input())) {
             return redirect("committees");
         } else {
