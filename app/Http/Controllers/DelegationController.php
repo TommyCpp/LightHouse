@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Committee;
+use App\Delegate;
 use App\Delegation;
 
 use App\Http\Requests\DelegationRequest;
@@ -61,6 +62,10 @@ class DelegationController extends Controller
         $delegates = $users->filter(function (User $user) {
             return $user->hasRole('HEADDEL');
         });
+        $users_distributed = Delegation::first()->lists("head_delegate_id")->all();
+        $delegates = $delegates->keyBy("id");
+        $delegates = $delegates->forget($users_distributed);
+        $delegates[count($delegates)] = User::find($delegation->head_delegate->id);
 
         return view('delegation/edit', compact("delegation", "committee_seats", "delegates"));
     }
@@ -426,10 +431,12 @@ class DelegationController extends Controller
             }
         }
         $exchange_request->status = "success";
-        $initiator->seat_number = $initiator->seats->count();
-        $initiator->delegate_number = $initiator->seats->count();
-        $target->seat_number = $target->seats->count();
-        $target->delegate_number = $target->seats->count();
+        $initiator_seat_number = Seat::where("delegation_id",$initiator->id)->count();;
+        $target_seat_number = Seat::where("delegation_id",$target->id)->count();
+        $initiator->seat_number = $initiator_seat_number;
+        $initiator->delegate_number = $initiator_seat_number;
+        $target->seat_number = $target_seat_number;
+        $target->delegate_number = $target_seat_number;
         $initiator->save();
         $target->save();
         $exchange_request->save();

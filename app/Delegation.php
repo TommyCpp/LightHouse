@@ -31,7 +31,7 @@ class Delegation extends Model
     }
     
     public function getCommitteeSeatsAttribute(){
-        //返回 会场 => 席位 关联数组
+        //返回 会场缩写 => 席位 关联数组
         $committees = Committee::all();
         $result = [];
         foreach($committees as $committee){
