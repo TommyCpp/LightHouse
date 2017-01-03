@@ -12,7 +12,7 @@
 */
 
 $app = new Illuminate\Foundation\Application(
-    realpath(__DIR__.'/../')
+    realpath(__DIR__ . '/../')
 );
 
 /*
@@ -40,6 +40,10 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
+
+$app->configureMonologUsing(function ($monolog) {
+    $monolog->pushHandler(new \Monolog\Handler\StreamHandler(storage_path() . '\logs\info.log'), \Monolog\Logger::INFO, false);
+});
 
 /*
 |--------------------------------------------------------------------------

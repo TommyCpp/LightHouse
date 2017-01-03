@@ -13,15 +13,18 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\SomeEvent' => [
-            'App\Listeners\EventListener',
+        'Illuminate\Auth\Events\Login' => [
+            'App\Listeners\LoginListener'
         ],
+        'Illuminate\Auth\Events\Logout' => [
+            'App\Listeners\LogoutListener'
+        ]
     ];
 
     /**
      * Register any other events for your application.
      *
-     * @param  \Illuminate\Contracts\Events\Dispatcher  $events
+     * @param  \Illuminate\Contracts\Events\Dispatcher $events
      * @return void
      */
     public function boot(DispatcherContract $events)
