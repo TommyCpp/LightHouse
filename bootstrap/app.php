@@ -42,7 +42,8 @@ $app->singleton(
 );
 
 $app->configureMonologUsing(function ($monolog) {
-    $monolog->pushHandler(new \Monolog\Handler\StreamHandler(storage_path() . '\logs\info.log'), \Monolog\Logger::INFO, false);
+    $monolog->pushHandler(new \Monolog\Handler\StreamHandler(storage_path() . '\logs\info.log', Monolog\Logger::INFO, false));
+    $monolog->pushHandler(new \Monolog\Handler\StreamHandler(storage_path() . '\logs\error.log', Monolog\Logger::ERROR, false));
 });
 
 /*
