@@ -25,8 +25,8 @@ return [
     |
     */
 
-//    'debug' => env('APP_DEBUG', false),
-    'debug' => true,
+    'debug' => env('APP_DEBUG', false),
+//    'debug' => true,
     /*
     |--------------------------------------------------------------------------
     | Application URL
@@ -38,7 +38,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'http://localhost/LightHouse'),
 
     /*
     |--------------------------------------------------------------------------

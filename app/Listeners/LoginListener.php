@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Log;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use App\User;
 
 class LoginListener
 {
@@ -36,6 +37,6 @@ class LoginListener
         $user = $event->user;
         $time = Carbon::now();
         $ip = $this->request->ip();
-        Log::info("User Login", ['last_login' => $time, 'id' => $user->id, 'username' => $user->name, 'ip' => $ip]);
+        Log::info("User Login", ['last_login' => $time, 'id' => $user->id, 'username' => $user->name, 'ip' => $ip, 'user-agent' => $this->request->header("User-Agent")]);
     }
 }
