@@ -6,6 +6,7 @@ use App\Committee;
 use App\Delegate;
 use App\Delegation;
 
+use App\Events\DelegateExchangeApplied;
 use App\Http\Requests\DelegationRequest;
 use App\Http\Requests\SeatExchangeRequest;
 use App\Seat;
@@ -13,6 +14,7 @@ use App\SeatExchange;
 use App\SeatExchangeRecord;
 use App\User;
 use Auth;
+use Event;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
@@ -406,6 +408,7 @@ class DelegationController extends Controller
                 }
             }
             $seat_exchange_request->seat_exchange_records()->saveMany($seat_exchange_records);
+            Event::fire(new DelegateExchangeApplied($seat_exchange_request,Auth::user(),$request));
         }
         return response("", 200);
     }
