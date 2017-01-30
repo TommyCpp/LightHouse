@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.2.45 on 2017-01-07.
+ * Generated for Laravel 5.2.45 on 2017-01-30.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -6979,6 +6979,61 @@ namespace {
     }
 
 
+    class Redis extends \Illuminate\Support\Facades\Redis{
+        
+        /**
+         * Get a specific Redis connection instance.
+         *
+         * @param string $name
+         * @return \Predis\ClientInterface|null 
+         * @static 
+         */
+        public static function connection($name = 'default'){
+            return \Illuminate\Redis\Database::connection($name);
+        }
+        
+        /**
+         * Run a command against the Redis database.
+         *
+         * @param string $method
+         * @param array $parameters
+         * @return mixed 
+         * @static 
+         */
+        public static function command($method, $parameters = array()){
+            return \Illuminate\Redis\Database::command($method, $parameters);
+        }
+        
+        /**
+         * Subscribe to a set of given channels for messages.
+         *
+         * @param array|string $channels
+         * @param \Closure $callback
+         * @param string $connection
+         * @param string $method
+         * @return void 
+         * @static 
+         */
+        public static function subscribe($channels, $callback, $connection = null, $method = 'subscribe'){
+            \Illuminate\Redis\Database::subscribe($channels, $callback, $connection, $method);
+        }
+        
+        /**
+         * Subscribe to a set of given channels with wildcards.
+         *
+         * @param array|string $channels
+         * @param \Closure $callback
+         * @param string $connection
+         * @return void 
+         * @static 
+         */
+        public static function psubscribe($channels, $callback, $connection = null){
+            \Illuminate\Redis\Database::psubscribe($channels, $callback, $connection);
+        }
+        
+    }
+
+
     class Request extends \Illuminate\Support\Facades\Request{
         
         /**
@@ -11429,11 +11484,12 @@ namespace {
          * @param string $name
          * @param string $value
          * @param array $options
+         * @param bool $escape_html
          * @return \Illuminate\Support\HtmlString 
          * @static 
          */
-        public static function label($name, $value = null, $options = array()){
-            return \Collective\Html\FormBuilder::label($name, $value, $options);
+        public static function label($name, $value = null, $options = array(), $escape_html = true){
+            return \Collective\Html\FormBuilder::label($name, $value, $options, $escape_html);
         }
         
         /**
@@ -12004,11 +12060,12 @@ namespace {
          * @param string $title
          * @param array $attributes
          * @param bool $secure
+         * @param bool $escape
          * @return \Illuminate\Support\HtmlString 
          * @static 
          */
-        public static function link($url, $title = null, $attributes = array(), $secure = null){
-            return \Collective\Html\HtmlBuilder::link($url, $title, $attributes, $secure);
+        public static function link($url, $title = null, $attributes = array(), $secure = null, $escape = true){
+            return \Collective\Html\HtmlBuilder::link($url, $title, $attributes, $secure, $escape);
         }
         
         /**
@@ -12085,11 +12142,12 @@ namespace {
          * @param string $email
          * @param string $title
          * @param array $attributes
+         * @param bool $escape
          * @return \Illuminate\Support\HtmlString 
          * @static 
          */
-        public static function mailto($email, $title = null, $attributes = array()){
-            return \Collective\Html\HtmlBuilder::mailto($email, $title, $attributes);
+        public static function mailto($email, $title = null, $attributes = array(), $escape = true){
+            return \Collective\Html\HtmlBuilder::mailto($email, $title, $attributes, $escape);
         }
         
         /**
@@ -12101,6 +12159,17 @@ namespace {
          */
         public static function email($email){
             return \Collective\Html\HtmlBuilder::email($email);
+        }
+        
+        /**
+         * Generates non-breaking space entities based on number supplied.
+         *
+         * @param int $num
+         * @return string 
+         * @static 
+         */
+        public static function nbsp($num = 1){
+            return \Collective\Html\HtmlBuilder::nbsp($num);
         }
         
         /**

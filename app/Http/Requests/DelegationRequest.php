@@ -26,8 +26,7 @@ class DelegationRequest extends Request
     public function rules()
     {
         //验证
-        $committees_double = Committee::all()->where('delegation', 2);//所有双代委员会
-        $committees = Committee::all()->all();//所有委员会名称集合
+        $committees = Committee::all()->all();//所有委员会信息集合
         $names = [];
         for ($i = 0; $i < count($committees); $i++) {
             $names[$i] = $committees[$i]->abbreviation;
@@ -35,9 +34,12 @@ class DelegationRequest extends Request
         $names = implode(",", $names);//委员会名称数组
 
         $committees_validation = [];
-        foreach ($committees_double as $committee) {
-            $committees_validation[$committee->abbreviation] = "required|even";
-        }//为所有双代委员会
+        foreach ($committees as $committee) {
+            if($committee->delegation == 2)
+                $committees_validation[$committee->abbreviation] = "required|even";
+            else
+                $committees_validation[$committee->abbreviation] = "required";
+        }
 
         $rules = [
             'name' => 'required',
@@ -52,7 +54,7 @@ class DelegationRequest extends Request
             'required' => ':attribute 为必填项',
             'integer' => ':attribute 必须是数字',
             'in' => ':attribute 必须是下列值中的一个 :values',
-            'even' => ':attribute 必须是一个偶数',
+            'even' => ':attribute 代表数必须是一个偶数',
             'equal_to_total_seat' => '代表团人数与席位总数不符合'
         ];
     }

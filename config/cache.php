@@ -78,6 +78,6 @@ return [
     |
     */
 
-    'prefix' => 'laravel',
+    'prefix' => env("CACHE_PREFIX", 'laravel')
 
 ];

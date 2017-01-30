@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Input;
 use DB;
+use Log;
 
 class DelegationController extends Controller
 {
@@ -135,7 +136,7 @@ class DelegationController extends Controller
      * 2.修改代表团名称等
      * 3.修改席位信息（在此处添加或删除席位不受【每个代表团在各个会场席位数量上限】 的限制，便于OT进行奖励性分配）
      *
-     * 尚未实现日志记录功能
+     * 尚未测试日志记录功能
      */
     public function edit(DelegationRequest $request, $id)
     {
@@ -147,6 +148,8 @@ class DelegationController extends Controller
             //更改领队
             $delegation->head_delegate()->dissociate();
             $delegation->head_delegate()->associate(User::find($request->input("head_delegate_id")));
+            Log::info("The head delegate has been changed", ['delegation_name' => $delegation->name, 'operator' => Auth::user()->name
+            ]);
         }
         $delegation->name = $request->input("name");
         $delegation->delegate_number = $request->input("delegate_number");
@@ -164,6 +167,8 @@ class DelegationController extends Controller
                     $seat->delegation()->dissociate();//删除的席位将回到席位池中
                     $seat->is_distributed = false;
                     $seat->save();
+                    Log::info("The delegation seats number has been change", ['delegation_name' => $delegation->name, 'difference' => '-' . $difference, 'operator' => Auth::user()->name
+                    ]);
                 }
             } else if ($difference < 0) {
                 //需要增加席位
@@ -172,6 +177,12 @@ class DelegationController extends Controller
                 if ($seats->count() < $difference) {
                     //如果剩余席位不够分配
                     DB::rollBack();
+                    Log::warning("The seat redistributed has encounter a problem, the remaining seat of committee is not enough to distribute", [
+                        'delegation_name' => $delegation->name,
+                        'committee_name' => $committees[$i]->chinese_name,
+                        'request_seat_number' => $difference,
+                        'operator' => Auth::user()->name
+                    ]);
                     $error = new Collection();
                     $error->add($committees[$i]->chinese_name . "席位不足");
                     return redirect('/delegation/' . $committee_id . '/edit')->with("errors", $error);
@@ -180,6 +191,11 @@ class DelegationController extends Controller
                     $seat->is_distributed = true;
                     $seat->save();
                 }
+                Log::info("The seat of delegation in committee has been change", [
+                    'delegation_name'=>$delegation->name,
+                    'committee_name'=>$committees[$i]->chinese_name,
+                    'operator'=>Auth::user()->name
+                ]);
                 $delegation->seats()->saveMany($seats);
             }
         }
@@ -213,6 +229,12 @@ class DelegationController extends Controller
             if ($seats->count() != $request->input($committee_abbr)) {
                 //如果剩余席位不够分配
                 DB::rollBack();
+                Log::warning("The seat distributed has encounter a problem, the remaining seat of committee is not enough to distribute", [
+                    'delegation_name' => $delegation->name,
+                    'committee_name' => $committees[$i]->chinese_name,
+                    'request_seat_number' => $seats->count(),
+                    'operator' => Auth::user()->name
+                ]);
                 $error = new Collection();
                 $error->add($committees[$i]->chinese_name . "席位不足");
                 return redirect('create-delegation')->with("errors", $error);
@@ -224,6 +246,12 @@ class DelegationController extends Controller
             $delegation->seats()->saveMany($seats);
         }
         DB::commit();
+        Log::info("New delegation has been created", [
+            "delegation_id" => $delegation_id,
+            "delegation_name" => $delegation->chinese_name,
+            "operator" => Auth::user()->name,
+
+        ]);
         return redirect("delegations");
     }
 
@@ -231,6 +259,7 @@ class DelegationController extends Controller
      * 以上方法适用于OT登录的情况下，
      * 以下适用于代表团领队
      */
+    //================================================================================================
 
     public function showDelegationInformation(Request $request, $id)
     {
@@ -253,13 +282,13 @@ class DelegationController extends Controller
             $record['initiator'] = $delegations->find($item->initiator)->name;
             $record['target'] = $delegations->find($id)->name;
             $delta = $item->delta;
-            foreach($committees as $committee){
+            foreach ($committees as $committee) {
                 $record[$committee->abbreviation] = -$delta[$committee->abbreviation];
             }
             $record['status'] = $item->status;
             $target_requests[] = $record;
         }
-        $as_initiators = SeatExchange::where("initiator",$id)->get();
+        $as_initiators = SeatExchange::where("initiator", $id)->get();
         $initiator_requests = [];
         foreach ($as_initiators as $item) {
             $record = [];
@@ -267,7 +296,7 @@ class DelegationController extends Controller
             $record['target'] = $delegations->find($item->target)->name;
             $record['initiator'] = $delegations->find($id)->name;
             $delta = $item->delta;
-            foreach($committees as $committee){
+            foreach ($committees as $committee) {
                 $record[$committee->abbreviation] = $delta[$committee->abbreviation];
             }
             $record['status'] = $item->status;
@@ -275,7 +304,7 @@ class DelegationController extends Controller
         }
 
 
-        return view("delegation/delegation", compact("seats", "committees", "delegation","initiator_requests","target_requests"));
+        return view("delegation/delegation", compact("seats", "committees", "delegation", "initiator_requests", "target_requests"));
 
     }
 
@@ -288,19 +317,20 @@ class DelegationController extends Controller
         return view("delegation/seat-exchange", compact("committees", "committees_name", "delegations"));
     }
 
-    public function deleteExchange(Request $request,$id){
-        if($request->ajax()){
+    public function deleteExchange(Request $request, $id)
+    {
+        if ($request->ajax()) {
             $exchange = SeatExchange::find($id);
-            if($request->input("delegation-id") == $exchange->initiator || $request->input("delegation-id") == $exchange->target){
-                if($exchange->status == "pending") {
+            if ($request->input("delegation-id") == $exchange->initiator || $request->input("delegation-id") == $exchange->target) {
+                if ($exchange->status == "pending") {
                     $exchange->status = "fail";
                     $exchange->save();
-                    return response("success",200);
+                    return response("success", 200);
                 }
             }
-            
+
         }
-        return response("fail",400);
+        return response("fail", 400);
     }
 
     public function seatExchange(SeatExchangeRequest $request)
@@ -408,7 +438,7 @@ class DelegationController extends Controller
                 }
             }
             $seat_exchange_request->seat_exchange_records()->saveMany($seat_exchange_records);
-            Event::fire(new DelegateExchangeApplied($seat_exchange_request,Auth::user(),$request));
+            Event::fire(new DelegateExchangeApplied($seat_exchange_request, Auth::user(), $request));
         }
         return response("", 200);
     }
@@ -434,8 +464,8 @@ class DelegationController extends Controller
             }
         }
         $exchange_request->status = "success";
-        $initiator_seat_number = Seat::where("delegation_id",$initiator->id)->count();;
-        $target_seat_number = Seat::where("delegation_id",$target->id)->count();
+        $initiator_seat_number = Seat::where("delegation_id", $initiator->id)->count();;
+        $target_seat_number = Seat::where("delegation_id", $target->id)->count();
         $initiator->seat_number = $initiator_seat_number;
         $initiator->delegate_number = $initiator_seat_number;
         $target->seat_number = $target_seat_number;

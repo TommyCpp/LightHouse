@@ -33,7 +33,7 @@ class LogDelegatedExchange
             "target" => $event->seat_exchange_record->target,
             "ip" => $event->request->ip(),
             "user-agent" => $event->request->header("User-Agent"),
-            "user" => $event->user
+            "user_name" => $event->user->name
         ]);
 
     }
