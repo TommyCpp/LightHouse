@@ -3,11 +3,18 @@
 use App\User;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\DatabaseTransactions;//不影响数据库
+use Illuminate\Support\Facades\Cache;
 
 class CommitteeTest extends TestCase
 {
+    use DatabaseTransactions;
     private $committee_id = 100;
+
+    public function setUp(){
+        parent::setup();
+    }
+
     /**
      *测试创建委员会表单
      */
@@ -19,44 +26,64 @@ class CommitteeTest extends TestCase
             ->type("测试委员会", "chinese_name")
             ->type("Security Council", "english_name")
             ->select("1", "delegation")
-            ->select("chinese","language")
+            ->select("chinese", "language")
             ->type("SC", "abbreviation")
             ->type("24", "number")
             ->type("无议题", "topic_chinese_name")
             ->type("No Topic", "topic_english_name")
-            ->type("Testing Note","note")
+            ->type("Testing Note", "note")
             ->press("现在提交")
             ->seeInDatabase("committees", ['chinese_name' => '测试委员会']);
 
     }
 
-    public function testReadNote(){
+    public function testReadNote()
+    {
         $this->actingAs(User::find(15));
-        $this->get('/committee/'.$this->committee_id.'/note',['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->get('/committee/' . $this->committee_id . '/note', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
             ->see("Testing Note");
     }
 
     public function testUpdateCommittee()
     {
         $this->actingAs(User::find(15));
-        $this->visit("/committee/".$this->committee_id."/edit")
-            ->type("修改后的测试议题","topic_chinese_name")
-            ->type("修改后的备注","note")
+        $this->visit("/committee/" . $this->committee_id . "/edit")
+            ->type("修改后的测试议题", "topic_chinese_name")
+            ->type("修改后的备注", "note")
             ->press("现在提交")
             ->seePageIs("/committees")
-            ->seeInDatabase("committees",['id'=>$this->committee_id,"topic_chinese_name"=>"修改后的测试议题","note"=>"修改后的备注"]);
+            ->seeInDatabase("committees", ['id' => $this->committee_id, "topic_chinese_name" => "修改后的测试议题", "note" => "修改后的备注"]);
     }
-    public function testDeleteCommittee(){
+
+    public function testDeleteCommittee()
+    {
         Session::start();
         $this->actingAs(User::find(15));
-        $this->post("/committee/".$this->committee_id,["_method"=>'DELETE',"_token"=>csrf_token()])
-            ->dontSeeInDatabase("committees",['id'=>$this->committee_id]);
+        $this->post("/committee/" . $this->committee_id, ["_method" => 'DELETE', "_token" => csrf_token()])
+            ->dontSeeInDatabase("committees", ['id' => $this->committee_id]);
     }
 
     public function testCommitteeSeats()
     {
         $this->actingAs(User::find(22));
-        $this->post('/committee/1/seats',['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+        $this->post('/committee/1/seats', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
             ->seeStatusCode(200);
+    }
+
+    public function testCache()
+    {
+        $this->actingAs(User::find(15));
+        $committee = factory(App\Committee::class)->make();
+        $committee->save();
+        $this->assertNotNull(Cache::get("committees"));
+        /** @var \App\Committee $committee */
+        $committee = \App\Committee::find(100);
+        $committee->update([
+            "note" => "This is a new note"
+        ]);
+       $this->assertEquals('This is a new note',Cache::get("committees")->get(100)->note);
+       $committee->delete();
+       $this->assertArrayNotHasKey(100,Cache::get("committees")->toArray());
+
     }
 }

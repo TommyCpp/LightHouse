@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Barryvdh\Reflection\DocBlock\Type\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class SeatExchange extends Model
@@ -47,11 +48,25 @@ class SeatExchange extends Model
             if ($record->count() != 0) {
                 $record = $record->first();
                 $result[$committee->abbreviation] = $record->in - $record->out;
-            }
-            else{
+            } else {
                 $result[$committee->abbreviation] = 0;
             }
         }
         return $result;
+    }
+
+    /*
+     * Service
+     */
+    public static function padding($initiator = null, $target = null)
+    {
+        $paddings = SeatExchange::where("status",0)->get();
+        if($initiator){
+            $paddings = $paddings->where("initiator",$initiator);
+        }
+        if($target){
+            $paddings = $paddings->where("target",$target);
+        }
+        return $paddings;
     }
 }

@@ -45,7 +45,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            @foreach($committee_seats as $committee_seat)
+                            @foreach($index_committee_seats as $committee_seat)
                                 <div class='form-group'>
                                     {{Form::label($committee_seat['committee'],$committee_seat['committee']." 会场席位数")}}
                                     {{Form::text($committee_seat['committee'],$committee_seat['seats'],['class'=>'form-control'])}}

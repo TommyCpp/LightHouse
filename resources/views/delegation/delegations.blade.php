@@ -39,15 +39,14 @@
                             </thead>
                             <tbody>
                             @foreach($delegations as $delegation)
-                                @php($seats = $delegation->committee_seats)
                                 <tr>
                                     <td>{{$delegation->id}}</td>
                                     <td>{{$delegation->name}}</td>
                                     <td>{{$delegation->head_delegation_name}}</td>
                                     <td>{{$delegation->delegate_number}}</td>
                                     <td>{{$delegation->seat_number}}</td>
-                                    @foreach($seats as $seat)
-                                        <td>{{$seat["seats"]}}</td>
+                                    @foreach($committee_names as $name)
+                                        <td>{{$seats[$delegation->id][$name]}}</td>
                                     @endforeach
                                     <td><a href="{{url("delegation/".$delegation->id."/edit")}}"><i
                                                     class="md md-mode-edit"></i></a>

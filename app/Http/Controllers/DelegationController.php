@@ -14,6 +14,7 @@ use App\SeatExchange;
 use App\SeatExchangeRecord;
 use App\User;
 use Auth;
+use Cache;
 use Event;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -23,12 +24,21 @@ use Illuminate\Support\Facades\Input;
 use DB;
 use Log;
 
+/**
+ * Class DelegationController
+ * @package App\Http\Controllers
+ */
 class DelegationController extends Controller
 {
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function showCreateForm()
     {
-        $committees = Committee::all();
+        $committees = Cache::remember("committees", 60 * 24, function () {
+            return Committee::allInOrder();
+        });
         $users = User::all();
         $users_distributed = Delegation::first()->lists("head_delegate_id");
         $delegates = $users->filter(function (User $user) {
@@ -41,26 +51,57 @@ class DelegationController extends Controller
         return view('delegation/create-delegation', compact("committees", "delegates"));
     }
 
+    /**
+     * 显示代表团名额交换规则页面（设置各个委员会上限）
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function showDelegationSeatExchangeRuleForm()
     {
-        $committees = Committee::all();
+        $committees = Cache::remember("committees",60*24,function(){
+            return Committee::allInOrder();
+        });
         return view('delegation/rules', compact("committees"));
     }
 
     public function showDelegations()
     {
-        $committee_names = Committee::all("abbreviation");
+        $committees = Cache::remember("committees", 60 * 24, function () {
+            return Committee::allInOrder();
+        });
+        $delegations = Cache::remember("delegations", 60 * 24, function () {
+            return Delegation::all();
+        });
+        $committee_names = $committees->pluck("abbreviation")->all();
         $names = new Collection();
-        foreach ($committee_names as $committee_name) {
-            $names->add($committee_name->abbreviation);
+        $seats = new Collection();
+        foreach ($delegations->all() as $delegation) {
+            $seats[$delegation->id . ''] = Cache::remember("delegation" . $delegation->id . "_seats", 24 * 60, function () use ($delegation) {
+                return $delegation->committee_seats;
+            });
         }
-        return view("delegation/delegations", ["delegations" => Delegation::all(), 'committee_names' => $names->toArray()]);
+        foreach ($committee_names as $committee_name) {
+            $names->add($committee_name);
+        }
+        //下面处理代表团席位
+
+
+        return view("delegation/delegations", ["delegations" => $delegations, 'committee_names' => $names->toArray(), 'seats' => $seats->toArray()]);
     }
 
     public function showUpdateForm(Request $request, $id)
     {
         $delegation = Delegation::find($id);
-        $committee_seats = $delegation->committee_seats;
+        $index_committee_seats = new Collection();//数组形式为index=>["committee"=>委员会名称,"seats"=>席位数]
+        $committee_seats = Cache::remember("delegation" . $delegation->id . "_seats", 24 * 60, function () use ($delegation) {
+            return $delegation->committee_seats;
+        });//数组形式为委员会名称 => 席位数
+        foreach ($committee_seats as $committee => $seat) {
+            $index_committee_seats->add([
+                "committee" => $committee,
+                "seats" => $seat,
+            ]);
+        }
+        $index_committee_seats = $index_committee_seats->toArray();
         $users = User::all();
         $delegates = $users->filter(function (User $user) {
             return $user->hasRole('HEADDEL');
@@ -70,7 +111,7 @@ class DelegationController extends Controller
         $delegates = $delegates->forget($users_distributed);
         $delegates[count($delegates)] = User::find($delegation->head_delegate->id);
 
-        return view('delegation/edit', compact("delegation", "committee_seats", "delegates"));
+        return view('delegation/edit', compact("delegation", "index_committee_seats", "delegates"));
     }
 
     public function delete(Request $request, $id)
@@ -78,11 +119,6 @@ class DelegationController extends Controller
         $delegation = Delegation::find($id);
         $seats = $delegation->seats;
         DB::beginTransaction();
-        foreach ($seats as $seat) {
-            $seat->is_distributed = false;
-            $seat->delegation_id = null;
-            $seat->save();
-        }//释放席位
         $status = $delegation->delete();
         DB::commit();
         return $status ? response("", 200) : response("", 404);
@@ -192,9 +228,9 @@ class DelegationController extends Controller
                     $seat->save();
                 }
                 Log::info("The seat of delegation in committee has been change", [
-                    'delegation_name'=>$delegation->name,
-                    'committee_name'=>$committees[$i]->chinese_name,
-                    'operator'=>Auth::user()->name
+                    'delegation_name' => $delegation->name,
+                    'committee_name' => $committees[$i]->chinese_name,
+                    'operator' => Auth::user()->name
                 ]);
                 $delegation->seats()->saveMany($seats);
             }
