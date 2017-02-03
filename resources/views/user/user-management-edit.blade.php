@@ -17,52 +17,53 @@
             <div class="row">
                 <div class="col-lg-12">
                     {{Form::open(['action'=>['UserController@editUserInformation',$user->id],'class'=>'form','id'=>'edit-form'])}}
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-group">
-                            {{Form::label('id','ID')}}
-                            {{Form::text('id',$user->id,['class'=>'form-control','readonly'])}}
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                {{Form::text('id',$user->id,['class'=>'form-control','readonly'])}}
+                                {{Form::label('id','ID')}}
+                            </div>
+                            <div class="form-group">
+                                {{Form::text('name',$user->name,['class'=>'form-control'])}}
+                                {{Form::label('name','姓名')}}
+                            </div>
+                            <div class="form-group">
+                                {{Form::text('first-name',$user->archive->FirstName,['class'=>'form-control'])}}
+                                {{Form::label('first-name','名拼音')}}
+                            </div>
+                            <div class="form-group">
+                                {{Form::text('last-name',$user->archive->LastName,['class'=>'form-control'])}}
+                                {{Form::label('last-name','姓拼音')}}
+                            </div>
+                            <div class="form-group">
+                                {{Form::text('high-school',$user->archive->HighSchool,['class'=>'form-control'])}}
+                                {{Form::label('high-school','高中学校名称')}}
+                            </div>
+                            <div class="form-group">
+                                {{Form::text('university',$user->archive->University,['class'=>'form-control'])}}
+                                {{Form::label('university','大学名称')}}
+                            </div>
+                            <div class="form-group" style="padding-top:24px;">
+                                {{Form::select('identity[]',[
+                                "ADMIN"=>"管理员",
+                                "DAIS"=>'主席',
+                                "OT"=>'会务运营团队',
+                                "AT"=>'学术管理团队',
+                                "DIR"=>"理事",
+                                "COREDIR"=>"核心理事",
+                                "VOL"=>"志愿者",
+                                "DEL"=>"代表",
+                                "HEADDEL"=>"代表团领队",
+                                "OTHER"=>"其他"
+                                ],explode(",",$user->archive->Identity),['class'=>'form-control','multiple'=>true,'id'=>'identities'])}}
+                                {{Form::label('identity','身份')}}
+                            </div>
+                            <div class="form-group">
+                                {{Form::button('现在提交',['class'=>'btn btn-flat btn-primary','id'=>'submit'])}}
+                            </div>
+                            {{Form::close()}}
                         </div>
-                        <div class="form-group">
-                            {{Form::label('name','姓名')}}
-                            {{Form::text('name',$user->name,['class'=>'form-control'])}}
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('first-name','名拼音')}}
-                            {{Form::text('first-name',$user->archive->FirstName,['class'=>'form-control'])}}
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('last-name','姓拼音')}}
-                            {{Form::text('last-name',$user->archive->LastName,['class'=>'form-control'])}}
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('high-school','高中学校名称')}}
-                            {{Form::text('high-school',$user->archive->HighSchool,['class'=>'form-control'])}}
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('university','大学名称')}}
-                            {{Form::text('university',$user->archive->University,['class'=>'form-control'])}}
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('identity','身份')}}
-                            {{Form::select('identity[]',[
-                            "ADMIN"=>"管理员",
-                            "DAIS"=>'主席',
-                            "OT"=>'会务运营团队',
-                            "AT"=>'学术管理团队',
-                            "DIR"=>"理事",
-                            "COREDIR"=>"核心理事",
-                            "VOL"=>"志愿者",
-                            "DEL"=>"代表",
-                            "HEADDEL"=>"代表团领队",
-                            "OTHER"=>"其他"
-                            ],explode(",",$user->archive->Identity),['class'=>'form-control','multiple'=>true,'id'=>'identities'])}}
-                        </div>
-                        <div class="form-group">
-                            {{Form::button('现在提交',['class'=>'btn btn-flat btn-primary','id'=>'submit'])}}
-                        </div>
-                        {{Form::close()}}
                     </div>
                 </div>
             </div>
@@ -83,22 +84,22 @@
                 data: $('#edit-form').serializeArray(),
                 success: function () {
                     BootstrapDialog.show({
-                        title:"修改成功",
-                        type:"type-success",
-                        message:"用户信息修改成功",
-                        buttons:[{
-                            id:"redirect",
-                            label:"返回用户列表",
-                            cssClass:"btn btn-success",
-                            action:function(dialog){
-                                window.location.href="{{env("APP_URL")}}"+"/public/users";
+                        title: "修改成功",
+                        type: "type-success",
+                        message: "用户信息修改成功",
+                        buttons: [{
+                            id: "redirect",
+                            label: "返回用户列表",
+                            cssClass: "btn btn-success",
+                            action: function (dialog) {
+                                window.location.href = "{{env("APP_URL")}}" + "/public/users";
                             }
                         },
                             {
-                                id:"close",
-                                label:"关闭",
-                                cssClass:"btn btn-danger",
-                                action:function(dialog){
+                                id: "close",
+                                label: "关闭",
+                                cssClass: "btn btn-danger",
+                                action: function (dialog) {
                                     dialog.close();
                                 }
                             }]

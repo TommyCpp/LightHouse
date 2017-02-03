@@ -92,52 +92,182 @@
                             <div class="tools">
                                 <a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
                             </div>
+                            <ul class="nav nav-tabs pull-right tabs-text-contrast tabs-primary-light"
+                                data-toggle="tabs">
+                                <li class="active">
+                                    <a href="#target-all">全部</a>
+                                </li>
+                                <li><a href="#target-fail">失败</a></li>
+                                <li><a href="#target-success">成功</a></li>
+                                <li><a href="#target-pending">待处理</a></li>
+                            </ul>
                             <header>
-                                名额交换请求
+                                收到的名额交换请求
                             </header>
                         </div>
-                        <div class="card-body style-default-bright">
-                            <table class="table table-hover no-margin">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>发起方</th>
-                                    <th>目标方</th>
-                                    @foreach($committees as $committee)
-                                        <th>{{$committee->abbreviation}}</th>
-                                    @endforeach
-                                    <th>状态</th>
-                                    <th>操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($target_requests as $item)
+                        <div class="card-body style-default-bright tab-content">
+                            <div class="tab-pane active" id="target-all">
+                                <table class="table table-hover no-margin">
+                                    <thead>
                                     <tr>
-                                        <td>{{$item['id']}}</td>
-                                        <td>{{$item['initiator']}}</td>
-                                        <td>{{$item['target']}}</td>
+                                        <th>#</th>
+                                        <th>发起方</th>
+                                        <th>目标方</th>
                                         @foreach($committees as $committee)
-                                            <td>{{$item[$committee->abbreviation]}}</td>
+                                            <th>{{$committee->abbreviation}}</th>
                                         @endforeach
-                                        <td class="exchange-status">
-                                            @if($item['status'] == "success")
-                                                <span class="tab label label-success">交换成功</span>
-                                            @elseif($item['status'] == "fail")
-                                                <span class="tab label label-danger">交换失败</span>
-                                            @elseif($item['status'] == "pending")
-                                                <span class="tab label label-primary">等待确认</span>
-                                            @endif
-                                        </td>
-                                        @if($item['status'] == "pending")
-                                            <td><a href="javascript:void(0)" data-target="{{$item['id']}}"><i
-                                                            class="fa fa-ban"></i></a></td>
-                                            @else
-                                            <td> </td>
-                                        @endif
+                                        <th>状态</th>
+                                        <th>操作</th>
                                     </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($target_requests as $item)
+                                        <tr>
+                                            <td>{{$item['id']}}</td>
+                                            <td>{{$item['initiator']}}</td>
+                                            <td>{{$item['target']}}</td>
+                                            @foreach($committees as $committee)
+                                                <td>{{$item[$committee->abbreviation]}}</td>
+                                            @endforeach
+                                            <td class="exchange-status">
+                                                @if($item['status'] == "success")
+                                                    <span class="tab label label-success">交换成功</span>
+                                                @elseif($item['status'] == "fail")
+                                                    <span class="tab label label-danger">交换失败</span>
+                                                @elseif($item['status'] == "pending")
+                                                    <span class="tab label label-primary">等待确认</span>
+                                                @endif
+                                            </td>
+                                            @if($item['status'] == "pending")
+                                                <td><a href="javascript:void(0)" data-target="{{$item['id']}}"><i
+                                                                class="fa fa-ban"></i></a></td>
+                                            @else
+                                                <td></td>
+                                            @endif
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane" id="target-fail">
+                                <table class="table table-hover no-margin">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>发起方</th>
+                                        <th>目标方</th>
+                                        @foreach($committees as $committee)
+                                            <th>{{$committee->abbreviation}}</th>
+                                        @endforeach
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($target_requests as $item)
+                                        @if($item['status']=="fail")
+                                        <tr>
+                                            <td>{{$item['id']}}</td>
+                                            <td>{{$item['initiator']}}</td>
+                                            <td>{{$item['target']}}</td>
+                                            @foreach($committees as $committee)
+                                                <td>{{$item[$committee->abbreviation]}}</td>
+                                            @endforeach
+                                            <td class="exchange-status">
+                                                    <span class="tab label label-danger">交换失败</span>
+                                            </td>
+                                            @if($item['status'] == "pending")
+                                                <td><a href="javascript:void(0)" data-target="{{$item['id']}}"><i
+                                                                class="fa fa-ban"></i></a></td>
+                                            @else
+                                                <td></td>
+                                            @endif
+                                        </tr>
+                                        @endif
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane" id="target-success">
+                                <table class="table table-hover no-margin">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>发起方</th>
+                                        <th>目标方</th>
+                                        @foreach($committees as $committee)
+                                            <th>{{$committee->abbreviation}}</th>
+                                        @endforeach
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($target_requests as $item)
+                                        @if($item['status']=="success")
+
+                                            <tr>
+                                                <td>{{$item['id']}}</td>
+                                                <td>{{$item['initiator']}}</td>
+                                                <td>{{$item['target']}}</td>
+                                                @foreach($committees as $committee)
+                                                    <td>{{$item[$committee->abbreviation]}}</td>
+                                                @endforeach
+                                                <td class="exchange-status">
+                                                    <span class="tab label label-success">交换成功</span>
+                                                </td>
+                                                @if($item['status'] == "pending")
+                                                    <td><a href="javascript:void(0)" data-target="{{$item['id']}}"><i
+                                                                    class="fa fa-ban"></i></a></td>
+                                                @else
+                                                    <td></td>
+                                                @endif
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane" id="target-pending">
+                                <table class="table table-hover no-margin">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>发起方</th>
+                                        <th>目标方</th>
+                                        @foreach($committees as $committee)
+                                            <th>{{$committee->abbreviation}}</th>
+                                        @endforeach
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($target_requests as $item)
+                                        @if($item['status']=="pending")
+
+                                            <tr>
+                                                <td>{{$item['id']}}</td>
+                                                <td>{{$item['initiator']}}</td>
+                                                <td>{{$item['target']}}</td>
+                                                @foreach($committees as $committee)
+                                                    <td>{{$item[$committee->abbreviation]}}</td>
+                                                @endforeach
+                                                <td class="exchange-status">
+                                                    <span class="tab label label-primary">等待确认</span>
+                                                </td>
+                                                @if($item['status'] == "pending")
+                                                    <td><a href="javascript:void(0)" data-target="{{$item['id']}}"><i
+                                                                    class="fa fa-ban"></i></a></td>
+                                                @else
+                                                    <td></td>
+                                                @endif
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -149,52 +279,180 @@
                             <div class="tools">
                                 <a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
                             </div>
+                            <ul class="nav nav-tabs pull-right tabs-text-contrast tabs-primary-light"
+                                data-toggle="tabs">
+                                <li class="active">
+                                    <a href="#initiator-all">全部</a>
+                                </li>
+                                <li><a href="#initiator-fail">失败</a></li>
+                                <li><a href="#initiator-success">成功</a></li>
+                                <li><a href="#initiator-pending">待处理</a></li>
+                            </ul>
                             <header>
                                 发起的名额交换请求
                             </header>
                         </div>
-                        <div class="card-body style-default-bright">
-                            <table class="table table-hover no-margin">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>发起方</th>
-                                    <th>目标方</th>
-                                    @foreach($committees as $committee)
-                                        <th>{{$committee->abbreviation}}</th>
-                                    @endforeach
-                                    <th>状态</th>
-                                    <th>操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($initiator_requests as $item)
+                        <div class="card-body style-default-bright tab-content">
+                            <div class="tab-pane active" id="initiator-all">
+                                <table class="table table-hover no-margin">
+                                    <thead>
                                     <tr>
-                                        <td>{{$item['id']}}</td>
-                                        <td>{{$item['initiator']}}</td>
-                                        <td>{{$item['target']}}</td>
+                                        <th>#</th>
+                                        <th>发起方</th>
+                                        <th>目标方</th>
                                         @foreach($committees as $committee)
-                                            <td>{{$item[$committee->abbreviation]}}</td>
+                                            <th>{{$committee->abbreviation}}</th>
                                         @endforeach
-                                        <td class="exchange-status">
-                                        @if($item['status'] == "success")
-                                            <span class="tab label label-success">交换成功</span>
-                                        @elseif($item['status'] == "fail")
-                                            <span class="tab label label-danger">交换失败</span>
-                                        @elseif($item['status'] == "pending")
-                                            <span class="tab label label-primary">等待确认</span>
-                                        @endif
-                                        </td>
-                                        @if($item['status'] == "pending")
-                                            <td><a href="javascript:void(0)" data-target="{{$item['id']}}"><i
-                                                            class="fa fa-ban"></i></a></td>
-                                        @else
-                                            <td> </td>
-                                        @endif
+                                        <th>状态</th>
+                                        <th>操作</th>
                                     </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($initiator_requests as $item)
+                                        <tr>
+                                            <td>{{$item['id']}}</td>
+                                            <td>{{$item['initiator']}}</td>
+                                            <td>{{$item['target']}}</td>
+                                            @foreach($committees as $committee)
+                                                <td>{{$item[$committee->abbreviation]}}</td>
+                                            @endforeach
+                                            <td class="exchange-status">
+                                                @if($item['status'] == "success")
+                                                    <span class="tab label label-success">交换成功</span>
+                                                @elseif($item['status'] == "fail")
+                                                    <span class="tab label label-danger">交换失败</span>
+                                                @elseif($item['status'] == "pending")
+                                                    <span class="tab label label-primary">等待确认</span>
+                                                @endif
+                                            </td>
+                                            @if($item['status'] == "pending")
+                                                <td><a href="javascript:void(0)" data-target="{{$item['id']}}"><i
+                                                                class="fa fa-ban"></i></a></td>
+                                            @else
+                                                <td></td>
+                                            @endif
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane" id="initiator-fail">
+                                <table class="table table-hover no-margin">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>发起方</th>
+                                        <th>目标方</th>
+                                        @foreach($committees as $committee)
+                                            <th>{{$committee->abbreviation}}</th>
+                                        @endforeach
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($initiator_requests as $item)
+                                        @if($item['status']=="fail")
+                                        <tr>
+                                            <td>{{$item['id']}}</td>
+                                            <td>{{$item['initiator']}}</td>
+                                            <td>{{$item['target']}}</td>
+                                            @foreach($committees as $committee)
+                                                <td>{{$item[$committee->abbreviation]}}</td>
+                                            @endforeach
+                                            <td class="exchange-status">
+                                                    <span class="tab label label-danger">交换失败</span>
+                                            </td>
+                                            @if($item['status'] == "pending")
+                                                <td><a href="javascript:void(0)" data-target="{{$item['id']}}"><i
+                                                                class="fa fa-ban"></i></a></td>
+                                            @else
+                                                <td></td>
+                                            @endif
+                                        </tr>
+                                        @endif
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane" id="initiator-pending">
+                                <table class="table table-hover no-margin">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>发起方</th>
+                                        <th>目标方</th>
+                                        @foreach($committees as $committee)
+                                            <th>{{$committee->abbreviation}}</th>
+                                        @endforeach
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($initiator_requests as $item)
+                                        @if($item['status']=="pending")
+                                            <tr>
+                                                <td>{{$item['id']}}</td>
+                                                <td>{{$item['initiator']}}</td>
+                                                <td>{{$item['target']}}</td>
+                                                @foreach($committees as $committee)
+                                                    <td>{{$item[$committee->abbreviation]}}</td>
+                                                @endforeach
+                                                <td class="exchange-status">
+                                                    <span class="tab label label-primary">等待确认</span>
+                                                </td>
+                                                @if($item['status'] == "pending")
+                                                    <td><a href="javascript:void(0)" data-target="{{$item['id']}}"><i
+                                                                    class="fa fa-ban"></i></a></td>
+                                                @else
+                                                    <td></td>
+                                                @endif
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane" id="initiator-success">
+                                <table class="table table-hover no-margin">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>发起方</th>
+                                        <th>目标方</th>
+                                        @foreach($committees as $committee)
+                                            <th>{{$committee->abbreviation}}</th>
+                                        @endforeach
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($initiator_requests as $item)
+                                        @if($item['status']=="success")
+                                            <tr>
+                                                <td>{{$item['id']}}</td>
+                                                <td>{{$item['initiator']}}</td>
+                                                <td>{{$item['target']}}</td>
+                                                @foreach($committees as $committee)
+                                                    <td>{{$item[$committee->abbreviation]}}</td>
+                                                @endforeach
+                                                <td class="exchange-status">
+                                                    <span class="tab label label-success">交换成功</span>
+                                                </td>
+                                                @if($item['status'] == "pending")
+                                                    <td><a href="javascript:void(0)" data-target="{{$item['id']}}"><i
+                                                                    class="fa fa-ban"></i></a></td>
+                                                @else
+                                                    <td></td>
+                                                @endif
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -226,7 +484,7 @@
                     $(exchange).parents('td').siblings('.exchange-status').find('span').removeClass('label-primary').addClass('label-danger').html("交换失败");
                     $(exchange).parents('td').html("");
                 }
-                else{
+                else {
                     BootstrapDialog.show({
                         type: "type-warning",
                         title: "失败",

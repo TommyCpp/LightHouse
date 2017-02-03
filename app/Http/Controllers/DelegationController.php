@@ -57,7 +57,7 @@ class DelegationController extends Controller
      */
     public function showDelegationSeatExchangeRuleForm()
     {
-        $committees = Cache::remember("committees",60*24,function(){
+        $committees = Cache::remember("committees", 60 * 24, function () {
             return Committee::allInOrder();
         });
         return view('delegation/rules', compact("committees"));
@@ -303,7 +303,7 @@ class DelegationController extends Controller
         $delegation = Delegation::find($id);
         $delegates = $delegation->delegates;
         $seat_collection = $delegation->seats;
-        $committees = Committee::all("id", "abbreviation", "limit");
+        $committees = Committee::all();
         $seats = [];
         foreach ($committees as $committee) {
             $seats[$committee->abbreviation] = $seat_collection->where("committee_id", $committee->id)->count();
@@ -312,30 +312,31 @@ class DelegationController extends Controller
         //名额交换数据
         $as_targets = SeatExchange::where("target", $id)->get();
         $target_requests = [];
-        foreach ($as_targets as $item) {
+        foreach ($as_targets as $as_target) {
             $record = [];
-            $record['id'] = $item->id;
-            $record['initiator'] = $delegations->find($item->initiator)->name;
+            $record['id'] = $as_target->id;
+            $record['initiator'] = $delegations->find($as_target->initiator)->name;
             $record['target'] = $delegations->find($id)->name;
-            $delta = $item->delta;
+            $delta = $as_target->delta;
             foreach ($committees as $committee) {
                 $record[$committee->abbreviation] = -$delta[$committee->abbreviation];
             }
-            $record['status'] = $item->status;
+            $record['status'] = $as_target->status;
             $target_requests[] = $record;
         }
+
         $as_initiators = SeatExchange::where("initiator", $id)->get();
         $initiator_requests = [];
-        foreach ($as_initiators as $item) {
+        foreach ($as_initiators as $as_initiator) {
             $record = [];
-            $record['id'] = $item->id;
-            $record['target'] = $delegations->find($item->target)->name;
+            $record['id'] = $as_initiator->id;
+            $record['target'] = $delegations->find($as_initiator->target)->name;
             $record['initiator'] = $delegations->find($id)->name;
-            $delta = $item->delta;
+            $delta = $as_initiator->delta;
             foreach ($committees as $committee) {
                 $record[$committee->abbreviation] = $delta[$committee->abbreviation];
             }
-            $record['status'] = $item->status;
+            $record['status'] = $as_initiator->status;
             $initiator_requests[] = $record;
         }
 

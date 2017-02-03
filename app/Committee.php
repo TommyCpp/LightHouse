@@ -67,13 +67,21 @@ class Committee extends Model
      * 按照[委员会id=>委员会Model]实体的形式组织一个Collection并返回
      * @return Collection
      */
-    public static function allInOrder(){
+    public static function allInOrder()
+    {
         $committees = Committee::all();
         $result = new Collection();
         foreach ($committees as $committee) {
             $result[$committee->id] = $committee;
         }
         return $result;
+    }
+
+    public static function all($column = ["*"])
+    {
+        return Cache::remember("committees", 24 * 60, function (){
+            return Committee::allInOrder();
+        });
     }
 
     //Event Handler
@@ -86,7 +94,7 @@ class Committee extends Model
             if (Cache::has("committees")) {
                 $committees = Cache::get("committees");
                 $committees[$committee->id] = $committee;
-                Cache::put("committees",$committees, 24 * 60);
+                Cache::put("committees", $committees, 24 * 60);
             } else {
                 Cache::put("committees", Committee::allInOrder(), 24 * 60);
             }
@@ -110,13 +118,12 @@ class Committee extends Model
             }
         });
 
-        static::deleted(function($committee){
+        static::deleted(function ($committee) {
             if (Cache::has("committees")) {
                 $committees = Cache::get("committees");
                 $committees->forget($committee->id);
                 Cache::put("committees", $committees, 24 * 60);
-            }
-            else{
+            } else {
                 Cache::put("committees", Committee::allInOrder());
             }
         });

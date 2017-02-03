@@ -18,6 +18,9 @@
         .dropdown-menu.animation-dock li.dropdown-body {
             padding: 5px 20px;
         }
+        *{
+            font-family: Arial,serif;
+        }
     </style>
 </head>
 
@@ -131,7 +134,8 @@
             <ul class="header-nav header-nav-profile">
                 <li class="dropdown">
                     <a href="javascript:void(0);" class="dropdown-toggle ink-reaction" data-toggle="dropdown">
-                        <img src="../../assets/img/avatar1.jpg?1403934956" alt=""/>
+                        <img src="../../assets/img/avatar1.jpg?1403934956" alt="" style="visibility:hidden"/>
+
 								<span class="profile-info">
                                     {{Auth::user()->name}}
 								</span>

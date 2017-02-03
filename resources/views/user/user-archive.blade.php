@@ -16,32 +16,32 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="form-group">
-                                {{Form::label('id','ID')}}
                                 {{Form::text('id',$user->id,['readonly','class'=>'form-control'])}}
+                                {{Form::label('id','ID')}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('email','Email')}}
                                 {{Form::text('email',Request::user()->email,['class'=>'form-control','readonly'])}}
+                                {{Form::label('email','Email')}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('name','姓名')}}
                                 {{Form::text('name',Request::user()->name,['class'=>'form-control'])}}
+                                {{Form::label('name','姓名')}}
                             </div>
                             <div class="form-group">
-                                {{Form::label('first-name','名拼音')}}
                                 {{Form::text('first-name',$user->FirstName,['class'=>'form-control'])}}
+                                {{Form::label('first-name','名拼音')}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('last-name','姓拼音')}}
                                 {{Form::text('last-name',$user->LastName,['class'=>'form-control'])}}
+                                {{Form::label('last-name','姓拼音')}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('high-school','高中学校名称')}}
                                 {{Form::text('high-school',$user->HighSchool,['class'=>'form-control'])}}
+                                {{Form::label('high-school','高中学校名称')}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('university','大学名称')}}
                                 {{Form::text('university',$user->University,['class'=>'form-control'])}}
+                                {{Form::label('university','大学名称')}}
                             </div>
                             <div class="form-group">
                                 {{Form::submit('现在提交',['class'=>'btn btn-flat btn-primary'])}}
