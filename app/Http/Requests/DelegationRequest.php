@@ -27,13 +27,13 @@ class DelegationRequest extends Request
     public function rules()
     {
         //验证
-        $committees = Cache::remember("committees",24*60, function () {
+        $committees = Cache::remember("committees", 24 * 60, function () {
             return Committee::all();
         });//所有委员会信息集合
         $committees = $committees->all();//获得原生数组而不是Collection
         $names = [];
-        for ($i = 0; $i < count($committees); $i++) {
-            $names[$i] = $committees[$i]->abbreviation;
+        foreach ($committees as $committee) {
+            $names[] = $committee->abbreviation;
         }
         $names = implode(",", $names);//委员会名称数组
 

@@ -11,7 +11,8 @@ class CommitteeTest extends TestCase
     use DatabaseTransactions;
     private $committee_id = 100;
 
-    public function setUp(){
+    public function setUp()
+    {
         parent::setup();
     }
 
@@ -33,13 +34,17 @@ class CommitteeTest extends TestCase
             ->type("No Topic", "topic_english_name")
             ->type("Testing Note", "note")
             ->press("现在提交")
-            ->seeInDatabase("committees", ['chinese_name' => '测试委员会']);
+            ->seeInDatabase("committees", ['id' => $this->committee_id]);
 
     }
 
     public function testReadNote()
     {
         $this->actingAs(User::find(15));
+        factory(App\Committee::class)->create([
+            "id" => $this->committee_id,
+            "note" => "Testing Note"
+        ]);
         $this->get('/committee/' . $this->committee_id . '/note', ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
             ->see("Testing Note");
     }
@@ -47,6 +52,10 @@ class CommitteeTest extends TestCase
     public function testUpdateCommittee()
     {
         $this->actingAs(User::find(15));
+        factory(App\Committee::class)->create([
+            "id" => $this->committee_id,
+            "note" => "Testing Note"
+        ]);
         $this->visit("/committee/" . $this->committee_id . "/edit")
             ->type("修改后的测试议题", "topic_chinese_name")
             ->type("修改后的备注", "note")
@@ -81,9 +90,9 @@ class CommitteeTest extends TestCase
         $committee->update([
             "note" => "This is a new note"
         ]);
-       $this->assertEquals('This is a new note',Cache::get("committees")->get(100)->note);
-       $committee->delete();
-       $this->assertArrayNotHasKey(100,Cache::get("committees")->toArray());
+        $this->assertEquals('This is a new note', Cache::get("committees")->get(100)->note);
+        $committee->delete();
+        $this->assertArrayNotHasKey(100, Cache::get("committees")->toArray());
 
     }
 }

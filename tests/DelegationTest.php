@@ -14,10 +14,16 @@ class DelegationTest extends TestCase
     public function testCreate()
     {
         $this->actingAs(User::find(18));
+        $user_1 = factory(App\User::class)->create([
+            "id" => 102
+        ])->archive()->save(factory(App\UserArchive::class)->create([
+            'id' => 102
+        ]));
+
         $this->visit("/create-delegation")
             ->type("第五测试代表团", "name")
             ->type("1", "delegate_number")
-            ->select("22", "head_delegate_id")
+            ->select(102, "head_delegate_id")
             ->type("1", "ASS")//应该为双数
             ->press("现在提交")
             ->seePageIs("/create-delegation");

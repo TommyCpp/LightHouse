@@ -127,7 +127,7 @@ class DelegationController extends Controller
 
     public function showCommitteesLimitForm()
     {
-        $committees = Committee::all();
+        $committees = Committee::allInCache();
 
         return view('delegation/limit', compact('committees'));
     }
@@ -176,7 +176,7 @@ class DelegationController extends Controller
      */
     public function edit(DelegationRequest $request, $id)
     {
-        $committees = Committee::all();
+        $committees = Committee::allInCache();
 
         DB::beginTransaction();
         $delegation = Delegation::all()->find($id);
@@ -242,7 +242,7 @@ class DelegationController extends Controller
 
     public function create(DelegationRequest $request)
     {
-        $committees = Committee::all();
+        $committees = Committee::allInCache();
 
         //创建代表团
         DB::beginTransaction();
@@ -303,7 +303,7 @@ class DelegationController extends Controller
         $delegation = Delegation::find($id);
         $delegates = $delegation->delegates;
         $seat_collection = $delegation->seats;
-        $committees = Committee::all();
+        $committees = Committee::allInCache();
         $seats = [];
         foreach ($committees as $committee) {
             $seats[$committee->abbreviation] = $seat_collection->where("committee_id", $committee->id)->count();
@@ -347,7 +347,7 @@ class DelegationController extends Controller
 
     public function showSeatExchange()
     {
-        $committees = Committee::all();
+        $committees = Committee::allInCache();
         $committees_name = $committees->pluck("abbreviation");
         $delegations = Delegation::all();
 
@@ -373,7 +373,7 @@ class DelegationController extends Controller
     public function seatExchange(SeatExchangeRequest $request)
     {
         $request->session()->put("errors", new Collection());
-        $committees = Committee::all();
+        $committees = Committee::allInCache();
         $committee_rules = $committees->pluck("limit");
         $committee_abbreviations = $committees->pluck("abbreviation");
 

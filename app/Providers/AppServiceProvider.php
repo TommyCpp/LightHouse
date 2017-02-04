@@ -98,8 +98,8 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend("equal_to_total_seat", function ($attribute, $value, $para, $validator) {
             $total = 0;
             $data = $validator->getData();
-            for ($i = 0; $i < count($para); $i++)
-                $total += array_get($data, $para[$i]);
+            foreach($para as $item)
+                $total += array_get($data, $item);
             return $value == $total;
         });
     }

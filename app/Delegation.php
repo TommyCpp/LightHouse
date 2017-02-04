@@ -35,7 +35,7 @@ class Delegation extends Model
     public function getCommitteeSeatsAttribute()
     {
         //返回 会场缩写 => 席位 关联数组
-        $committees = Committee::all();
+        $committees = Committee::allInCache();
         $result = [];
         foreach ($committees as $committee) {
             $result[$committee->abbreviation] = $this->seats()->where("committee_id", $committee->id)->count();

@@ -77,7 +77,7 @@ class Committee extends Model
         return $result;
     }
 
-    public static function all($column = ["*"])
+    public static function allInCache($column = ["*"])
     {
         return Cache::remember("committees", 24 * 60, function (){
             return Committee::allInOrder();

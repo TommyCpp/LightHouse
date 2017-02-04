@@ -42,7 +42,7 @@ class SeatExchange extends Model
     public function getDeltaAttribute()
     {
         $result = [];
-        $committees = Committee::all();
+        $committees = Committee::allInCache();
         foreach ($committees as $committee) {
             $record = $this->seat_exchange_records->where("committee_id", $committee->id);
             if ($record->count() != 0) {

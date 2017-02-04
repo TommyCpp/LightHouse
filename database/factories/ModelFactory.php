@@ -22,7 +22,6 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 
 $factory->define(App\UserArchive::class, function (Faker\Generator $faker) {
     return [
-        "id" => 100,
         "FirstName" => $faker->firstName,
         "LastName" => $faker->lastName,
         "HighSchool" => "Faker中学",
@@ -49,7 +48,7 @@ $factory->define(App\Committee::class, function (Faker\Generator $faker) {
 $factory->define(App\Delegation::class, function (Faker\Generator $faker) {
     $number = $faker->numberBetween($min = 4, $max = 15);
     return [
-        'id'=>100,
+        'id' => 100,
         "head_delegate_id" => 100,
         "name" => "测试用例代表团",
         "delegate_number" => $number,

@@ -45,9 +45,13 @@ class User extends Authenticatable
         return $this->hasOne("App\\Delegate", "delegate_id");
     }
 
+    /**
+     * 仅适用于代表团领队
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function delegation()
     {
-        return $this->hasOne("App\\Delegation","head_delegate_id","id");
+        return str_contains("HEADDEL", $this->archive->Identity) ? $this->hasOne("App\\Delegation", "head_delegate_id", "id") : null;
     }
 
     /**获取身份数组
@@ -117,7 +121,7 @@ class User extends Authenticatable
             $delegate->delegate_id = $this->id;//设置成与User的id相同
             $this->delegate = $delegate;
         }
-        
+
         return false;
     }
 

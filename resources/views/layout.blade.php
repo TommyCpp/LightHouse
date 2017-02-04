@@ -18,8 +18,9 @@
         .dropdown-menu.animation-dock li.dropdown-body {
             padding: 5px 20px;
         }
-        *{
-            font-family: Arial,serif;
+
+        * {
+            font-family: Arial, serif;
         }
     </style>
 </head>
@@ -35,7 +36,7 @@
                 <li class="header-nav-brand">
                     <div class="brand-holder">
                         <a href="{{url('home')}}">
-                            <span class="text-lg text-bold text-primary">MATERIAL ADMIN</span>
+                            <span class="text-lg text-bold text-primary"><i class="fa fa-bolt"></i> LightHouse</span>
                         </a>
                     </div>
                 </li>
@@ -136,7 +137,7 @@
                     <a href="javascript:void(0);" class="dropdown-toggle ink-reaction" data-toggle="dropdown">
                         <img src="../../assets/img/avatar1.jpg?1403934956" alt="" style="visibility:hidden"/>
 
-								<span class="profile-info">
+                        <span class="profile-info">
                                     {{Auth::user()->name}}
 								</span>
                     </a>
@@ -169,9 +170,9 @@
 <!-- BEGIN BASE-->
 <div id="base">
 
-    @include('partial.menu')
+@include('partial.menu')
 
-            <!-- BEGIN OFFCANVAS LEFT -->
+<!-- BEGIN OFFCANVAS LEFT -->
     <div class="offcanvas">
     </div><!--end .offcanvas-->
     <!-- END OFFCANVAS LEFT -->
