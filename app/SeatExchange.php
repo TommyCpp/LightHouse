@@ -11,7 +11,7 @@ class SeatExchange extends Model
     {
         return $this->hasMany("App\\SeatExchangeRecord", "request_id", "id");
     }
-
+    
     public function setStatusAttribute($value)
     {
         $arr = [

@@ -12,7 +12,12 @@
 */
 
 $factory->define(App\User::class, function (Faker\Generator $faker) {
+    $id = $faker->numberBetween($min = 100, $max = 400);
+    factory(App\UserArchive::class)->create([
+        'id' => $id
+    ]);
     return [
+        'id' => $id,
         'name' => $faker->name,
         'email' => $faker->safeEmail,
         'password' => bcrypt(str_random(10)),
@@ -60,5 +65,38 @@ $factory->define(App\SeatExchange::class, function (Faker\Generator $faker) {
     return [
         "id" => 100,
         "status" => 0
+    ];
+});
+
+$factory->define(App\SeatExchangeRecord::class, function (Faker\Generator $faker) {
+    return [
+        "request_id" => factory(App\SeatExchange::class)->create()->id
+    ];
+});
+
+
+/*
+ * 带有mock的类会在内部创建相应的关联类
+ * Delegation会同步创建一个作为head_delegate的User，User的id和Delegation的id同样，是一个100~400的随机数
+ * SeatExchange会同步创建两个Delegation作为initiator或者target
+ */
+$factory->defineAs(App\Delegation::class, 'mock', function (Faker\Generator $faker) use ($factory) {
+    $delegation_id = $faker->numberBetween($min = 100, $max = 400);
+    $delegation = $factory->raw(App\Delegation::class);
+    $user = factory(App\User::class)->create(['id' => $delegation_id]);
+    $user->archive()->save(factory(App\UserArchive::class)->create([
+        "id" => $user->id
+    ]));
+    $user->save();
+    $delegation['head_delegate_id'] = $user->id;
+    $delegation['id'] = $delegation_id;
+    return $delegation;
+});
+
+$factory->defineAs(App\SeatExchange::class, 'mock', function (Faker\Generator $faker) {
+    return [
+        "id" => 100,
+        "initiator" => factory(App\Delegation::class, 'mock'),
+        "target" => factory(App\Delegation::class, 'mock'),
     ];
 });

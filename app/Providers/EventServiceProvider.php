@@ -19,8 +19,8 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Auth\Events\Logout' => [
             'App\Listeners\LogoutListener'
         ],
-        'App\Events\DelegateExchangeApplied' =>[
-            'App\Listeners\LogDelegatedExchange'
+        'App\Events\SeatExchangeApplied' =>[
+            'App\Listeners\LogSeatExchange'
         ]
     ];
 

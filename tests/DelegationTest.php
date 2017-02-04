@@ -17,7 +17,8 @@ class DelegationTest extends TestCase
         $user_1 = factory(App\User::class)->create([
             "id" => 102
         ])->archive()->save(factory(App\UserArchive::class)->create([
-            'id' => 102
+            'id' => 102,
+            "Identity"=>"HEADDEL"
         ]));
 
         $this->visit("/create-delegation")

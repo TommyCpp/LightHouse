@@ -2,12 +2,13 @@
 
 namespace App\Listeners;
 
-use App\Events\DelegateExchangeApplied;
+use App\Events\SeatExchangeApplied;
+use App\Jobs\SendEmailOnApplySeatExchange;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Log;
 
-class LogDelegatedExchange
+class LogSeatExchange
 {
     /**
      * Create the event listener.
@@ -22,19 +23,21 @@ class LogDelegatedExchange
     /**
      * Handle the event.
      *
-     * @param  DelegateExchangeApplied $event
-     * @return void
+     * @param SeatExchangeApplied $event
      */
-    public function handle(DelegateExchangeApplied $event)
+    public function handle(SeatExchangeApplied $event)
     {
         Log::info("Seat Exchange Request has been filed", [
-            "request_id" => $event->seat_exchange_record->id,
-            "initiator" => $event->seat_exchange_record->initiator,
-            "target" => $event->seat_exchange_record->target,
+            "request_id" => $event->seat_exchange_apply->id,
+            "initiator" => $event->seat_exchange_apply->initiator,
+            "target" => $event->seat_exchange_apply->target,
             "ip" => $event->request->ip(),
             "user-agent" => $event->request->header("User-Agent"),
             "user_name" => $event->user->name
         ]);
+        //向initiator和target发送相应邮件
+        dispatch(new SendEmailOnApplySeatExchange($event));
+
 
     }
 }
