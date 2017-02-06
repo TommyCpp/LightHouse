@@ -6,7 +6,10 @@ use App\Committee;
 use App\Delegate;
 use App\Delegation;
 
+use App\Events\DelegationCreated;
+use App\Events\DelegationUpdated;
 use App\Events\SeatExchangeApplied;
+use App\Events\SeatExchanged;
 use App\Http\Requests\DelegationRequest;
 use App\Http\Requests\SeatExchangeRequest;
 use App\Seat;
@@ -65,6 +68,7 @@ class DelegationController extends Controller
 
     public function showDelegations()
     {
+
         $committees = Cache::remember("committees", 60 * 24, function () {
             return Committee::allInOrder();
         });
@@ -82,19 +86,16 @@ class DelegationController extends Controller
         foreach ($committee_names as $committee_name) {
             $names->add($committee_name);
         }
-        //下面处理代表团席位
-
 
         return view("delegation/delegations", ["delegations" => $delegations, 'committee_names' => $names->toArray(), 'seats' => $seats->toArray()]);
     }
 
     public function showUpdateForm(Request $request, $id)
     {
+        /** @var Delegation $delegation */
         $delegation = Delegation::find($id);
         $index_committee_seats = new Collection();//数组形式为index=>["committee"=>委员会名称,"seats"=>席位数]
-        $committee_seats = Cache::remember("delegation" . $delegation->id . "_seats", 24 * 60, function () use ($delegation) {
-            return $delegation->committee_seats;
-        });//数组形式为委员会名称 => 席位数
+        $committee_seats = $delegation->rememberCommitteeSeats();//数组形式为委员会名称 => 席位数
         foreach ($committee_seats as $committee => $seat) {
             $index_committee_seats->add([
                 "committee" => $committee,
@@ -180,6 +181,9 @@ class DelegationController extends Controller
 
         DB::beginTransaction();
         $delegation = Delegation::all()->find($id);
+
+        $cache_record = [];//用于调整Cache内部的delegation_seats_number变量
+
         if ($delegation->head_delegate->id != $request->input("head_delegate_id")) {
             //更改领队
             $delegation->head_delegate()->dissociate();
@@ -197,6 +201,7 @@ class DelegationController extends Controller
             $committee_abbr = $committees[$i]->abbreviation;
             $current_seat = $delegation->seats->where("committee_id", $committee_id);
             $difference = $current_seat->count() - $request->input($committee_abbr);
+            $cache_record[$committee_abbr] = -$difference;
             if ($difference > 0) {
                 //需要从代表团中删除席位
                 foreach ($current_seat->take($difference) as $seat) {
@@ -236,6 +241,7 @@ class DelegationController extends Controller
             }
         }
         $delegation->save();
+        Event::fire(new DelegationUpdated($delegation, $cache_record));
         DB::commit();
         return redirect("/delegations");
     }
@@ -282,12 +288,7 @@ class DelegationController extends Controller
             $delegation->seats()->saveMany($seats);
         }
         DB::commit();
-        Log::info("New delegation has been created", [
-            "delegation_id" => $delegation_id,
-            "delegation_name" => $delegation->chinese_name,
-            "operator" => Auth::user()->name,
-
-        ]);
+        Event::fire(new DelegationCreated($delegation));
         return redirect("delegations");
     }
 
@@ -510,5 +511,6 @@ class DelegationController extends Controller
         $initiator->save();
         $target->save();
         $exchange_request->save();
+        Event::fire(new SeatExchanged($exchange_request, Auth::user()));
     }
 }

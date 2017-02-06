@@ -346,7 +346,7 @@
             <div class="content">
 
                 <!-- START CENTERED WHITE CONTAINER -->
-                <span class="preheader">This is preheader text. Some clients will show this text as a preview.</span>
+                <span class="preheader">名额交换完成</span>
                 <table class="main">
 
                     <!-- START MAIN CONTENT AREA -->
@@ -358,13 +358,7 @@
                                         <p>
                                             尊敬的 {{$delegation_name}} 代表团领队 {{$head_delegate_name}}:</p>
                                         <p>
-                                            @if($is_initiator)
-                                                您已经成功创建代表团名额交换申请，该申请编号 {{$seat_exchange_id}}.
-                                                具体信息将呈现在下方
-                                            @else
-                                                您的代表团收到一个新的申请，该申请编号 {{$seat_exchange_id}}.
-                                                具体信息将呈现在下方
-                                            @endif
+                                            您与{{$other_delegation_name}}的名额交换已经完成,该申请细节将呈现在下方
                                         </p>
                                         <table border="1" cellpadding="2" cellspacing="2">
                                             <thead>
@@ -378,7 +372,7 @@
                                             <tbody>
                                             @for($i=0;$i<count($seat_exchange_records);$i++)
                                                 <tr>
-                                                    <td>{{$i}}</td>
+                                                    <td>{{$i+1}}</td>
                                                     <td>{{$seat_exchange_records[$i]['committee_name']}}</td>
                                                     <td>{{$seat_exchange_records[$i]['in']}}</td>
                                                     <td>{{$seat_exchange_records[$i]['out']}}</td>
@@ -386,7 +380,31 @@
                                             @endfor
                                             </tbody>
                                         </table>
-                                        <p>如果上述信息与您的预计不符，请尽快联系 <a href="mailto:{{Config::get("maillist.notify.seat_exchange_applied.emergence_connector")}}">{{Config::get("maillist.notify.seat_exchange_applied.emergence_connector")}}</a></p>
+                                        <br/>
+                                        <p>交换后代表团的名额分配情况</p>
+                                        <table border="1" cellpadding="2" cellspacing="2">
+                                            <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>委员会名称</th>
+                                                <th>席位数量</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($seats as $index=>$seat)
+                                                <tr>
+                                                    <td>{{$index}}</td>
+                                                    <td>{{$seat['committee_name']}}</td>
+                                                    <td>{{$seat['seat_number']}}</td>
+                                                </tr>
+                                            @endforeach
+                                            </tbody>
+
+                                        </table>
+                                        <p><br/>
+                                            如果上述信息与您的预期不符合，请尽快联系 <a
+                                                    href="mailto:{{Config::get("maillist.notify.seat_exchanged.emergence_connector")}}">{{Config::get("maillist.notify.seat_exchanged.emergence_connector")}}</a>
+                                        </p>
                                         <p>闪亮之梦全国中学生模拟联合国大会 {{Config::get("conference.abbreviation")}}</p>
                                     </td>
                                 </tr>
@@ -396,27 +414,7 @@
 
                     <!-- END MAIN CONTENT AREA -->
                 </table>
-
-                <!-- START FOOTER -->
-            {{--<div class="footer">--}}
-            {{--<table border="0" cellpadding="0" cellspacing="0">--}}
-            {{--<tr>--}}
-            {{--<td class="content-block">--}}
-            {{--<span class="apple-link">Company Inc, 3 Abbey Road, San Francisco CA 94102</span>--}}
-            {{--<br> Don't like these emails? <a href="http://i.imgur.com/CScmqnj.gif">Unsubscribe</a>.--}}
-            {{--</td>--}}
-            {{--</tr>--}}
-            {{--<tr>--}}
-            {{--<td class="content-block powered-by">--}}
-            {{--Powered by <a href="http://htmlemail.io">HTMLemail</a>.--}}
-            {{--</td>--}}
-            {{--</tr>--}}
-            {{--</table>--}}
-            {{--</div>--}}
-
-            <!-- END FOOTER -->
-
-                <!-- END CENTERED WHITE CONTAINER --></div>
+            </div>
         </td>
         <td>&nbsp;</td>
     </tr>

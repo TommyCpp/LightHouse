@@ -22,8 +22,8 @@
                         <div class="card-body">
                             @foreach($committees as $committee)
                                 <div class='form-group'>
-                                    {{Form::label($committee->abbreviation,$committee->chinese_name." 会场席位限额/每代表团")}}
                                     {{Form::text($committee->abbreviation,$committee->limit,['class'=>'form-control'])}}
+                                    {{Form::label($committee->abbreviation,$committee->chinese_name." 会场席位限额/每代表团")}}
                                 </div>
                             @endforeach
                             <div class="form-group">

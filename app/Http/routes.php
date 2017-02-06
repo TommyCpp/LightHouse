@@ -61,3 +61,6 @@ Route::group(['middleware' => ['auth', 'role:HEADDEL']], function () {
     Route::delete('/delegation-seat-exchange/{id}',"DelegationController@deleteExchange");
 });
 
+Route::group(['middleware'=>['auth','role:ADMIN']],function(){
+    Route::get("logs", '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+});

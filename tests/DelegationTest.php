@@ -1,5 +1,6 @@
 <?php
 
+use App\Committee;
 use App\Seat;
 use App\SeatExchange;
 use App\User;
@@ -10,6 +11,11 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 class DelegationTest extends TestCase
 {
     use DatabaseTransactions;
+
+    public function teardown()
+    {
+        parent::teardown();
+    }
 
     public function testCreate()
     {
@@ -71,6 +77,36 @@ class DelegationTest extends TestCase
         $delegation_1->delete();
         $this->assertEquals("fail", SeatExchange::find($seat_exchange->id)->status);
 
+    }
+
+    public function testCache()
+    {
+        $this->actingAs(User::find(15));
+        Cache::forget("delegations");
+        Cache::forget("delegation_seats_count");
+        //清空相关Cache
+        $delegation = factory(App\Delegation::class, 'mock')->create();
+        Event::fire(new \App\Events\DelegationCreated($delegation));
+        $this->assertNotNull(Cache::get("delegations"));//创建代表团后要更新Cache中的delegations，如果没有要创建
+        $this->assertNotNull(Cache::get("delegation_seats_count"));
+        $this->assertEquals($delegation->committee_seats, $delegation->rememberCommitteeSeats());
+
+        //相关Cache非空的情况
+        $delegation = factory(App\Delegation::class, 'mock')->create();
+        Event::fire(new \App\Events\DelegationCreated($delegation));
+        $this->assertNotNull(Cache::get("delegations"));//创建代表团后要更新Cache中的delegations，如果没有要创建
+        $this->assertNotNull(Cache::get("delegation_seats_count"));
+        $this->assertEquals($delegation->committee_seats, $delegation->rememberCommitteeSeats());
+
+        $seat_change_log = [];
+        foreach(Committee::all() as $committee){
+            $seat_change_log[$committee->abbreviation] = 1;
+        }
+        $delegation->name = "改变后的测试代表团";
+        $delegation->save();
+        Event::fire(new \App\Events\DelegationUpdated($delegation,$seat_change_log));
+        $this->assertEquals($seat_change_log, Cache::get("delegation_seats_count")[$delegation->id]);
+        $this->assertEquals("改变后的测试代表团",Cache::get("delegations")[$delegation->id]->name);
     }
 
 

@@ -85,14 +85,21 @@ class CommitteeTest extends TestCase
         $committee = factory(App\Committee::class)->make();
         $committee->save();
         $this->assertNotNull(Cache::get("committees"));
+        $this->assertEquals($committee->english_name, Cache::get("committees")[$committee->id]->english_name);
         /** @var \App\Committee $committee */
-        $committee = \App\Committee::find(100);
+        $committee = \App\Committee::find($committee->id);
         $committee->update([
             "note" => "This is a new note"
         ]);
-        $this->assertEquals('This is a new note', Cache::get("committees")->get(100)->note);
+        $this->assertEquals('This is a new note', Cache::get("committees")->get($committee->id)->note);
         $committee->delete();
-        $this->assertArrayNotHasKey(100, Cache::get("committees")->toArray());
+        $this->assertArrayNotHasKey($committee->id, Cache::get("committees")->toArray());
+    }
 
+    public function testCommitteeModel()
+    {
+        $this->actingAs(User::find(15));
+        $committee = factory(App\Committee::class, 'mock')->create();
+        $this->seeInDatabase("seats", ["committee_id" => $committee->id, "is_distributed" => 0]);
     }
 }

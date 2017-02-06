@@ -26,7 +26,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Where User has corresponding role
+     * Whether User has corresponding role
      * @param $role
      * @return bool
      */

@@ -37,7 +37,7 @@ $factory->define(App\UserArchive::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Committee::class, function (Faker\Generator $faker) {
     return [
-        'id' => 100,
+        'id' => $faker->numberBetween($min = 100, $max = 400),
         'chinese_name' => "测试委员会",
         'english_name' => "Test Committee",
         "delegation" => 1,
@@ -58,6 +58,14 @@ $factory->define(App\Delegation::class, function (Faker\Generator $faker) {
         "name" => "测试用例代表团",
         "delegate_number" => $number,
         "seat_number" => $number,
+    ];
+});
+
+$factory->define(App\Seat::class, function (Faker\Generator $faker) {
+    return [
+        'main_name' => $faker->word,
+        'assist_name' => $faker->word,
+        'is_distributed' => 0,
     ];
 });
 
@@ -96,7 +104,20 @@ $factory->defineAs(App\Delegation::class, 'mock', function (Faker\Generator $fak
 $factory->defineAs(App\SeatExchange::class, 'mock', function (Faker\Generator $faker) {
     return [
         "id" => 100,
-        "initiator" => factory(App\Delegation::class, 'mock'),
-        "target" => factory(App\Delegation::class, 'mock'),
+        "initiator" => factory(App\Delegation::class, 'mock')->create()->id,
+        "target" => factory(App\Delegation::class, 'mock')->create()->id,
     ];
+});
+
+//passed test
+$factory->defineAs(App\Committee::class, 'mock', function (Faker\Generator $faker) use ($factory) {
+    $committee = $factory->raw(App\Committee::class);
+    $index = $faker->numberBetween($min = 1000, $max = 1200);
+    for ($i = $index; $i < $index + $committee['number']; $i++) {
+        factory(App\Seat::class)->create([
+            "seat_id" => $i,
+            "committee_id" => $committee['id'],
+        ]);
+    }
+    return $committee;
 });

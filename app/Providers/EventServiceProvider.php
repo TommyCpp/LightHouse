@@ -20,7 +20,16 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\LogoutListener'
         ],
         'App\Events\SeatExchangeApplied' =>[
-            'App\Listeners\LogSeatExchange'
+            'App\Listeners\HandleSeatExchangeApplied'
+        ],
+        'App\Events\SeatExchanged'=>[
+            'App\Listeners\HandleSeatExchanged'
+        ],
+        'App\Events\DelegationCreated'=>[
+            'App\Listeners\HandleDelegationCreated'
+        ],
+        'App\Events\DelegationUpdated'=>[
+            'App\Listeners\HandleDelegationUpdated'
         ]
     ];
 

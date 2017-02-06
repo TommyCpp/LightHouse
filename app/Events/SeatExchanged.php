@@ -2,33 +2,36 @@
 
 namespace App\Events;
 
+use App\Events\Event;
+use App\Seat;
 use App\SeatExchange;
 use App\User;
-use Illuminate\Http\Request;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class SeatExchangeApplied extends Event
+class SeatExchanged extends Event
 {
     use SerializesModels;
 
-    public $user;
+    /**
+     * @var SeatExchange $seat_exchange
+     */
     public $seat_exchange;
-    public $request;
-
+    /**
+     * @var User $user
+     */
+    public $user;
     /**
      * Create a new event instance.
      *
-     * @param SeatExchange $seat_exchange_apply
+     * @param SeatExchange $seat_exchange
      * @param User $user
-     * @param Request $request
-     *
      */
-    public function __construct(SeatExchange $seat_exchange_apply, User $user, Request $request)
+    public function __construct(SeatExchange $seat_exchange,User $user)
     {
+        //
+        $this->seat_exchange = $seat_exchange;
         $this->user = $user;
-        $this->seat_exchange = $seat_exchange_apply;
-        $this->request = $request;
     }
 
     /**
