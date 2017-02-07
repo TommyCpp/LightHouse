@@ -13,7 +13,7 @@ use Log;
  * Class Delegation
  * @property int id
  * @property User head_delegate
- * @property Collection committee_seats
+ * @property Collection committee_selats
  * @property string name
  * @property Collection delegates
  * @property Collection seats
@@ -101,12 +101,39 @@ class Delegation extends Model
                 $exchange_request->status = "fail";
                 $exchange_request->save();
             }//修改所有与被删除代表团相关的seat_exchange为fail
-
+            //删除delegations的缓存
+            if (Cache::has("delegations")) {
+                $cache = Cache::get("delegations");
+                if (array_has($cache, $delegation->id)) {
+                    array_forget($cache, $delegation->id);
+                    Cache::put("delegations", $cache, 24 * 60);
+                }
+            }
+            if (Cache::has("delegation_seats_count")) {
+                $cache = Cache::get("delegation_seats_count");
+                if (array_has($cache, $delegation->id)) {
+                    array_forget($cache, $delegation->id);
+                    Cache::put("delegations", $cache, 24 * 60);
+                }
+            }
         });
         static::created(function (Delegation $delegation) {
             //Update Cache
             if (Cache::has("delegations")) {
                 Cache::put("delegations", Cache::get("delegations")->add($delegation), 24 * 60);
+            } else {
+                Cache::put("delegations", Delegation::all()->keyBy("id"), 24 * 60);
+            }
+        });
+        static::updated(function (Delegation $delegation) {
+            if (Cache::has("delegations")) {
+                $cache = Cache::get("delegations");
+                if (array_has($cache, $delegation->id)) {
+                    $cache[$delegation->id] = $delegation;
+                } else {
+                    $cache = Delegation::all()->keyBy("id");
+                }
+                Cache::put("delegations", $cache, 24 * 60);
             } else {
                 Cache::put("delegations", Delegation::all()->keyBy("id"), 24 * 60);
             }

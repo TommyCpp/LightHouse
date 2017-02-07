@@ -16,44 +16,44 @@
                     <div class="card">
                         <div class="card-body">
                             <div class='form-group'>
-                                {{Form::label('id','会场编号')}}
                                 {{Form::text('id',null,['class'=>'form-control'])}}
+                                {{Form::label('id','会场编号')}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('chinese_name','中文名称')}}
                                 {{Form::text('chinese_name',null,['class'=>'form-control'])}}
+                                {{Form::label('chinese_name','中文名称')}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('english_name','英文名称')}}
                                 {{Form::text('english_name',null,['class'=>'form-control'])}}
+                                {{Form::label('english_name','英文名称')}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('language','工作语言')}}
                                 {{Form::select('language',["chinese"=>"中文","english"=>"English"],null,['class'=>'form-control'])}}
+                                {{Form::label('language','工作语言')}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('abbreviation','缩写')}}
                                 {{Form::text('abbreviation',null,['class'=>'form-control'])}}
+                                {{Form::label('abbreviation','缩写')}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('delegation','代表制')}}
                                 {{Form::select('delegation',[1=>'单代表制',2=>'双代表制',0=>'混合代表制'],null,['class'=>'form-control'])}}
+                                {{Form::label('delegation','代表制')}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('number','代表人数')}}
                                 {{Form::text('number',null,['class'=>'form-control'])}}
+                                {{Form::label('number','代表人数')}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('topic_chinese_name','议题中文名称')}}
                                 {{Form::text('topic_chinese_name',null,['class'=>'form-control'])}}
+                                {{Form::label('topic_chinese_name','议题中文名称')}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('topic_english_name','议题英文名称')}}
                                 {{Form::text('topic_english_name',null,['class'=>'form-control'])}}
+                                {{Form::label('topic_english_name','议题英文名称')}}
                             </div>
                             <div class='form-group'>
-                                {{Form::label('note','备注')}}
                                 {{Form::textarea('note',null,['class'=>'form-control'])}}
+                                {{Form::label('note','备注')}}
                             </div>
                             <div class="form-group">
                                 {{Form::submit('现在提交',['class'=>'btn btn-primary'])}}

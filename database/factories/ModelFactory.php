@@ -44,14 +44,14 @@ $factory->define(App\Committee::class, function (Faker\Generator $faker) {
         "number" => $faker->numberBetween($min = 10, $max = 40),
         "topic_chinese_name" => "测试议题",
         "topic_english_name" => "Test Topic",
-        "abbreviation" => "TEST",
+        "abbreviation" => strtoupper($faker->word),
         'language' => "English",
         'note' => $faker->text()
     ];
 });
 
 $factory->define(App\Delegation::class, function (Faker\Generator $faker) {
-    $number = $faker->numberBetween($min = 4, $max = 15);
+    $number = $faker->numberBetween($min = 4, $max = 8);
     return [
         'id' => 100,
         "head_delegate_id" => 100,

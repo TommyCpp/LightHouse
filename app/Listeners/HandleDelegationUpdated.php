@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Delegation;
 use App\Events\DelegationUpdated;
 use Illuminate\Support\Collection;
 use Cache;
@@ -28,7 +29,6 @@ class HandleDelegationUpdated
      */
     public function handle(DelegationUpdated $event)
     {
-        //
         //更新delegation_seats_count
         $delegation = $event->delegation;
         $seat_change_log = $event->seat_change_log;
@@ -47,19 +47,6 @@ class HandleDelegationUpdated
             $cache[$delegation->id] = $delegation->committee_seats;
             Cache::put("delegation_seats_count", $cache, 24 * 60);
         }
-        //更新delegations
-        if (Cache::has("delegations")) {
-            $cache = Cache::get("delegations");
-            if (array_has($cache, $delegation->id)) {
-                $cache[$delegation->id] = $delegation;
-            } else {
-                $cache[$delegation->id] = $delegation;
-            }
-            Cache::put("delegations", $cache, 24 * 60);
-        } else {
-            $cache = new Collection();
-            $cache[$delegation->id] = $delegation;
-            Cache::put("delegations", $cache, 24 * 60);
-        }
+        //更新delegations的功能由delegation模型实现
     }
 }

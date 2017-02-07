@@ -98,13 +98,20 @@ class Committee extends Model
             } else {
                 Cache::put("committees", Committee::allInOrder(), 24 * 60);
             }
+            if (Cache::has("delegation_seats_count")) {
+                $delegation_seats_counts = Cache::get("delegation_seats_count");
+                foreach ($delegation_seats_counts as &$delegation_seats_count) {
+                    $delegation_seats_count[$committee->abbreviation] = 0;
+                }
+                Cache::put("delegation_seats_count", $delegation_seats_counts, 24 * 60);
+            }
             Log::info("New committee has been created", [
                 "operator" => Auth::user()->name,
                 "committee_id" => $committee->id
             ]);
         });
 
-        static::updated(function ($committee) {
+        static::updating(function (Committee $committee) {
             if (Cache::has("committees")) {
                 $original_committees = Cache::get("committees");
                 $committees = $original_committees->reject(function ($c) use ($committee) {
@@ -116,6 +123,17 @@ class Committee extends Model
             } else {
                 Cache::put("committees", Committee::allInOrder());
             }
+            if($committee->getOriginal("abbreviation") != $committee->abbreviation && Cache::has("delegation_seats_count")){
+                //如果abbreviation发生了改变
+                $delegation_seats_counts = Cache::get("delegation_seats_count");
+                $original_abbreviation = $committee->getOriginal("abbreviation");
+                $abbreviation  = $committee->abbreviation;
+                foreach ($delegation_seats_counts as &$delegation_seats_count) {
+                    $value = $delegation_seats_count[$original_abbreviation];
+                    array_forget($delegation_seats_count, $original_abbreviation);
+                    $delegation_seats_count[$abbreviation] = $value;
+                }
+            }
         });
 
         static::deleted(function ($committee) {
@@ -125,6 +143,13 @@ class Committee extends Model
                 Cache::put("committees", $committees, 24 * 60);
             } else {
                 Cache::put("committees", Committee::allInOrder());
+            }
+            if (Cache::has("delegation_seat_count")) {
+                $delegation_seats_counts = Cache::get("delegation_seats_count");
+                foreach ($delegation_seats_counts as &$delegation_seats_count) {
+                    array_forget($delegation_seats_count, $committee->abbreviation);
+                }
+                Cache::put("delegation_seats_count", $delegation_seats_counts, 24 * 60);
             }
         });
     }

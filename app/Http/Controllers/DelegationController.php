@@ -39,9 +39,7 @@ class DelegationController extends Controller
      */
     public function showCreateForm()
     {
-        $committees = Cache::remember("committees", 60 * 24, function () {
-            return Committee::allInOrder();
-        });
+        $committees = Committee::allInCache();
         $users = User::all();
         $users_distributed = Delegation::first()->lists("head_delegate_id");
         $delegates = $users->filter(function (User $user) {
@@ -60,20 +58,16 @@ class DelegationController extends Controller
      */
     public function showDelegationSeatExchangeRuleForm()
     {
-        $committees = Cache::remember("committees", 60 * 24, function () {
-            return Committee::allInOrder();
-        });
+        $committees = Committee::allInCache();
         return view('delegation/rules', compact("committees"));
     }
 
     public function showDelegations()
     {
 
-        $committees = Cache::remember("committees", 60 * 24, function () {
-            return Committee::allInOrder();
-        });
+        $committees = Committee::allInCache();
         $delegations = Cache::remember("delegations", 60 * 24, function () {
-            return Delegation::all();
+            return Delegation::all()->keyBy("id");
         });
         $committee_names = $committees->pluck("abbreviation")->all();
         $names = new Collection();
@@ -248,7 +242,7 @@ class DelegationController extends Controller
 
     public function create(DelegationRequest $request)
     {
-        $committees = Committee::allInCache();
+        $committees = Committee::allInCache()->values();
 
         //创建代表团
         DB::beginTransaction();
@@ -262,8 +256,6 @@ class DelegationController extends Controller
 
         //创建相应代表
         //不论领队是否代表都创建新用户，在填写代表信息页面将其席位进行转换
-        $delegation_id = $delegation->id;
-
         for ($i = 0; $i < count($committees); $i++) {
             $committee_id = $committees[$i]->id;
             $committee_abbr = $committees[$i]->abbreviation;
