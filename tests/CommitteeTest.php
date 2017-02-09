@@ -1,5 +1,6 @@
 <?php
 
+use App\Committee;
 use App\User;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -14,6 +15,9 @@ class CommitteeTest extends TestCase
     public function setUp()
     {
         parent::setup();
+        Cache::forget("committees");
+        Cache::forget("delegations");
+        Cache::forget("delegation_seats_count");
     }
 
     /**
@@ -22,6 +26,10 @@ class CommitteeTest extends TestCase
     public function testCreateCommittee()
     {
         $this->actingAs(User::find(15));
+        $delegation = factory(App\Delegation::class)->create();
+        Event::fire(new \App\Events\DelegationCreated($delegation));
+        $this->assertArrayHasKey($delegation->id, Cache::get("delegation_seats_count"));
+        $this->assertArrayNotHasKey($this->committee_id, Cache::get("delegation_seats_count")[$delegation->id]);
         $this->visit("/create-committee")
             ->type($this->committee_id, "id")
             ->type("测试委员会", "chinese_name")
@@ -35,6 +43,7 @@ class CommitteeTest extends TestCase
             ->type("Testing Note", "note")
             ->press("现在提交")
             ->seeInDatabase("committees", ['id' => $this->committee_id]);
+        $this->assertArrayHasKey(Committee::find($this->committee_id)->abbreviation, Cache::get("delegation_seats_count")[$delegation->id]);
 
     }
 
@@ -54,22 +63,43 @@ class CommitteeTest extends TestCase
         $this->actingAs(User::find(15));
         factory(App\Committee::class)->create([
             "id" => $this->committee_id,
-            "note" => "Testing Note"
+            "note" => "Testing Note",
+            "abbreviation" => "TEST"
         ]);
+        $delegation = factory(App\Delegation::class, 'mock')->create();
+        Event::fire(new \App\Events\DelegationCreated($delegation));
+        $this->assertArrayHasKey("TEST", Cache::get("delegation_seats_count")[$delegation->id]);
+
         $this->visit("/committee/" . $this->committee_id . "/edit")
             ->type("修改后的测试议题", "topic_chinese_name")
             ->type("修改后的备注", "note")
+            ->type("TESTAFTER", "abbreviation")
             ->press("现在提交")
             ->seePageIs("/committees")
             ->seeInDatabase("committees", ['id' => $this->committee_id, "topic_chinese_name" => "修改后的测试议题", "note" => "修改后的备注"]);
+
+        $this->assertTrue(Cache::has("delegation_seats_count"));
+        $this->assertArrayHasKey("TESTAFTER", Cache::get("delegation_seats_count")[$delegation->id],Cache::get("delegation_seats_count"));
+        $this->assertArrayNotHasKey("TEST", Cache::get("delegation_seats_count")[$delegation->id]);
     }
 
     public function testDeleteCommittee()
     {
         Session::start();
         $this->actingAs(User::find(15));
+        $committee = factory(App\Committee::class)->create([
+            "id" => $this->committee_id,
+            "note" => "Testing Note",
+            "abbreviation" => "TEST"
+        ]);
+        $delegation = factory(App\Delegation::class, 'mock')->create();
+        Event::fire(new \App\Events\DelegationCreated($delegation));
+        $this->assertArrayHasKey("TEST", Cache::get("delegation_seats_count")[$delegation->id]);
         $this->post("/committee/" . $this->committee_id, ["_method" => 'DELETE', "_token" => csrf_token()])
             ->dontSeeInDatabase("committees", ['id' => $this->committee_id]);
+        $this->assertTrue(Cache::has("delegation_seats_count"));
+        $this->assertArrayNotHasKey("TEST", Cache::get("delegation_seats_count")[$delegation->id]);
+
     }
 
     public function testCommitteeSeats()

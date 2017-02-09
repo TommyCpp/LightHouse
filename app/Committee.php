@@ -77,9 +77,10 @@ class Committee extends Model
         return $result;
     }
 
+
     public static function allInCache($column = ["*"])
     {
-        return Cache::remember("committees", 24 * 60, function (){
+        return Cache::remember("committees", 24 * 60, function () {
             return Committee::allInOrder();
         });
     }
@@ -123,20 +124,22 @@ class Committee extends Model
             } else {
                 Cache::put("committees", Committee::allInOrder());
             }
-            if($committee->getOriginal("abbreviation") != $committee->abbreviation && Cache::has("delegation_seats_count")){
+            if ($committee->getOriginal("abbreviation") != $committee->abbreviation && Cache::has("delegation_seats_count")) {
                 //如果abbreviation发生了改变
                 $delegation_seats_counts = Cache::get("delegation_seats_count");
                 $original_abbreviation = $committee->getOriginal("abbreviation");
-                $abbreviation  = $committee->abbreviation;
-                foreach ($delegation_seats_counts as &$delegation_seats_count) {
+                $abbreviation = $committee->abbreviation;
+                foreach ($delegation_seats_counts as $index => &$delegation_seats_count) {
                     $value = $delegation_seats_count[$original_abbreviation];
                     array_forget($delegation_seats_count, $original_abbreviation);
                     $delegation_seats_count[$abbreviation] = $value;
+                    $delegation_seats_counts[$index] = $delegation_seats_count;
                 }
+                Cache::put("delegation_seats_count", $delegation_seats_counts, 24 * 60);
             }
         });
 
-        static::deleted(function ($committee) {
+        static::deleting(function ($committee) {
             if (Cache::has("committees")) {
                 $committees = Cache::get("committees");
                 $committees->forget($committee->id);
@@ -144,10 +147,11 @@ class Committee extends Model
             } else {
                 Cache::put("committees", Committee::allInOrder());
             }
-            if (Cache::has("delegation_seat_count")) {
+            if (Cache::has("delegation_seats_count")) {
                 $delegation_seats_counts = Cache::get("delegation_seats_count");
-                foreach ($delegation_seats_counts as &$delegation_seats_count) {
+                foreach ($delegation_seats_counts as $index =>&$delegation_seats_count) {
                     array_forget($delegation_seats_count, $committee->abbreviation);
+                    $delegation_seats_counts[$index] = $delegation_seats_count;
                 }
                 Cache::put("delegation_seats_count", $delegation_seats_counts, 24 * 60);
             }

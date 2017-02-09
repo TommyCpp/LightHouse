@@ -7,8 +7,17 @@ use Auth;
 use Cache;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Collection;
 use Log;
 
+/**
+ * Class HandleDelegationCreated
+ * Handle DelegationCreated Event
+ * 1.Log that someone create a delegation in notice level
+ * 2.update cache value of delegation_seat_count,creating a new key in it using the id of new-created delegation
+ *
+ * @package App\Listeners
+ */
 class HandleDelegationCreated
 {
     /**
@@ -41,6 +50,7 @@ class HandleDelegationCreated
             $cache[$delegation->id] = $delegation->committee_seats;
             Cache::put("delegation_seats_count", $cache, 24 * 60);
         } else {
+            $cache = new Collection();
             $cache[$delegation->id] = $delegation->committee_seats;
             Cache::put("delegation_seats_count", $cache, 24 * 60);
         }

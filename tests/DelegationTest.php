@@ -21,6 +21,13 @@ class DelegationTest extends TestCase
         parent::teardown();
     }
 
+    public function setup(){
+        parent::setup();
+        Cache::forget("delegations");
+        Cache::forget("delegation_seats_count");
+        Cache::forget("committees");
+    }
+
     public function testChangeCommitteeLimit()
     {
         $this->actingAs(User::find(18));
