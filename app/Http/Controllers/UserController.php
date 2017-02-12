@@ -14,6 +14,7 @@ class UserController extends Controller
      * @param Request $request
      * 查看全部用户
      * /users
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function userManage(Request $request)
     {

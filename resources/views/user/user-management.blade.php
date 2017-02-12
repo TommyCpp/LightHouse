@@ -74,20 +74,15 @@
     <script src="{{env('APP_URL')}}/resources/assets/js/libs/DataTables/extensions/TableTools/js/dataTables.tableTools.min.js"></script>
     <script src="{{env('APP_URL')}}/resources/assets/js/libs/toastr/toastr.js"></script>
     <script>
-        $('#users').DataTable({
-            "language": {
-                "lengthMenu": "每页显示 _MENU_ 条",
-                "zeroRecords": "没有任何记录",
-                "info": "显示 _PAGES_ 中的 _PAGE_ 页",
-                "infoEmpty": "没有数据",
-                "infoFiltered": "(从 _MAX_ 个数据中筛选)",
-                "search": "搜索"
+        var table = $('#users').DataTable({
+                "language":{
+                "url":'{{env('APP_URL')}}/resources/assets/js/libs/DataTables/i18n/chinese.json'
             }
         });
         @if(session('error') != null)
             toastr.error('{{session('error')}}');
         @endif
-         $("i.fa.fa-trash").click(function (e) {
+        $("#users").on("click", ".fa-trash", function (e) {
             var current_tr = $(e.target).parents("tr");
             var user_id = $(e.target).parent().data('target');
             BootstrapDialog.show({
@@ -100,13 +95,13 @@
                     cssClass: "btn btn-danger",
                     action: function (dialog) {
                         $.ajax({
-                            url:"user/"+ user_id,
-                            method:"POST",
-                            data:{
-                                _method:"DELETE",
-                                _token:"{{csrf_token()}}"
+                            url: "user/" + user_id,
+                            method: "POST",
+                            data: {
+                                _method: "DELETE",
+                                _token: "{{csrf_token()}}"
                             },
-                            success:function(data){
+                            success: function (data) {
                                 $(current_tr).remove();
                                 dialog.close();
                             }
@@ -122,6 +117,6 @@
                 }
                 ]
             })
-        })
+        });
     </script>
 @endsection

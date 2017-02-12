@@ -78,12 +78,7 @@
     <script>
         $('#committees').DataTable({
             "language": {
-                "lengthMenu": "每页显示 _MENU_ 条",
-                "zeroRecords": "没有任何记录",
-                "info": "显示 _PAGES_ 中的 _PAGE_ 页",
-                "infoEmpty": "没有数据",
-                "infoFiltered": "(从 _MAX_ 个数据中筛选)",
-                "search": "搜索"
+                "url": '{{env('APP_URL')}}/resources/assets/js/libs/DataTables/i18n/chinese.json'
             }
         });
         @if(session('error') != null)
