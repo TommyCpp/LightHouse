@@ -91,6 +91,7 @@ class SendEmail extends Job implements ShouldQueue
                 });
             }
             if ($this->event instanceof SeatExchanged) {
+                //创建有关SeatExchanged，席位交换已经完成的邮件通知
                 $initiator_seats = [];
                 $target_seats = [];
                 foreach (Committee::allInOrder() as $committee) {

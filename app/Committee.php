@@ -106,9 +106,10 @@ class Committee extends Model
                 }
                 Cache::put("delegation_seats_count", $delegation_seats_counts, 24 * 60);
             }
+            //Log
             Log::info("New committee has been created", [
                 "operator" => Auth::user()->name,
-                "committee_id" => $committee->id
+                "committee" => $committee->toArray()
             ]);
         });
 
@@ -137,9 +138,15 @@ class Committee extends Model
                 }
                 Cache::put("delegation_seats_count", $delegation_seats_counts, 24 * 60);
             }
+            //Log
+            Log::info("Committee has been changed", [
+                "operator"=>Auth::user()->name,
+                "original_committee" => $committee->getOriginal(),
+                "modified_committee" => $committee->toArray()
+            ]);
         });
 
-        static::deleting(function ($committee) {
+        static::deleting(function (Committee $committee) {
             if (Cache::has("committees")) {
                 $committees = Cache::get("committees");
                 $committees->forget($committee->id);
@@ -155,6 +162,11 @@ class Committee extends Model
                 }
                 Cache::put("delegation_seats_count", $delegation_seats_counts, 24 * 60);
             }
+            //Log
+            Log::notice("Committee has been deleted", [
+                "operator" => Auth::user()->name,
+                "committee" => $committee->toArray()
+            ]);
         });
     }
 

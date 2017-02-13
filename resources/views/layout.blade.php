@@ -8,11 +8,11 @@
     <title>LightHouse@BDMUNC</title>
 
     {{--<link href='http://fonts.useso.com/css?family=Roboto:300italic,400italic,300,400,500,700,900' rel='stylesheet' type='text/css'/>--}}
-    <link href="{{env('APP_URL')}}/resources/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="{{env('APP_URL')}}/resources/assets/css/materialadmin.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{{env('APP_URL')}}/resources/assets/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{{env('APP_URL')}}/resources/assets/css/material-design-iconic-font.min.css">
-    <link rel="stylesheet" href="{{env('APP_URL')}}/resources/assets/css/libs/bootstrap-dialog/bootstrap-dialog.css"/>
+    <link href="{{asset("/assets/css/bootstrap.css")}}" rel="stylesheet" type="text/css">
+    <link href="{{asset("/assets/css/materialadmin.css")}}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{{asset("/assets/css/font-awesome.min.css")}}">
+    <link rel="stylesheet" href="{{asset("/assets/css/material-design-iconic-font.min.css")}}">
+    <link rel="stylesheet" href="{{asset("/assets/css/libs/bootstrap-dialog/bootstrap-dialog.css")}}"/>
     @yield('css')
     <style>
         .dropdown-menu.animation-dock li.dropdown-body {
@@ -149,7 +149,7 @@
                             @endforeach
                         @endif
                         <li class="divider"></li>
-                        <li><a href="{{env("APP_URL")}}/public/logout">登出</a></li>
+                        <li><a href="{{url("logout")}}">登出</a></li>
 
                     </ul><!--end .dropdown-menu -->
                 </li><!--end .dropdown -->
@@ -447,32 +447,32 @@
 
 </body>
 </html>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/jquery/jquery-1.11.2.min.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/jquery/jquery-migrate-1.2.1.min.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/bootstrap/bootstrap.min.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/bootstrap-dialog/bootstrap-dialog.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/spin.js/spin.min.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/autosize/jquery.autosize.min.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/moment/moment.min.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/flot/jquery.flot.min.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/flot/jquery.flot.time.min.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/flot/jquery.flot.resize.min.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/flot/jquery.flot.orderBars.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/flot/jquery.flot.pie.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/flot/curvedLines.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/jquery-knob/jquery.knob.min.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/sparkline/jquery.sparkline.min.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/nanoscroller/jquery.nanoscroller.min.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/d3/d3.min.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/d3/d3.v3.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/libs/rickshaw/rickshaw.min.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/core/source/App.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/core/source/AppNavigation.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/core/source/AppOffcanvas.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/core/source/AppCard.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/core/source/AppForm.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/core/source/AppNavSearch.js"></script>
-<script src="{{env('APP_URL')}}/resources/assets/js/core/source/AppVendor.js"></script>
+<script src="{{asset('/assets/js/libs/jquery/jquery-1.11.2.min.js')}}"></script>
+<script src="{{asset("/assets/js/libs/jquery/jquery-migrate-1.2.1.min.js")}}"></script>
+<script src="{{asset("/assets/js/libs/bootstrap/bootstrap.min.js")}}"></script>
+<script src="{{asset("/assets/js/libs/bootstrap-dialog/bootstrap-dialog.js")}}"></script>
+<script src="{{asset("/assets/js/libs/spin.js/spin.min.js")}}"></script>
+<script src="{{asset("/assets/js/libs/autosize/jquery.autosize.min.js")}}"></script>
+<script src="{{asset("/assets/js/libs/moment/moment.min.js")}}"></script>
+<script src="{{asset("/assets/js/libs/flot/jquery.flot.min.js")}}"></script>
+<script src="{{asset("/assets/js/libs/flot/jquery.flot.time.min.js")}}"></script>
+<script src="{{asset("/assets/js/libs/flot/jquery.flot.resize.min.js")}}"></script>
+<script src="{{asset("/assets/js/libs/flot/jquery.flot.orderBars.js")}}"></script>
+<script src="{{asset("/assets/js/libs/flot/jquery.flot.pie.js")}}"></script>
+<script src="{{asset("/assets/js/libs/flot/curvedLines.js")}}"></script>
+<script src="{{asset("/assets/js/libs/jquery-knob/jquery.knob.min.js")}}"></script>
+<script src="{{asset("/assets/js/libs/sparkline/jquery.sparkline.min.js")}}"></script>
+<script src="{{asset("/assets/js/libs/nanoscroller/jquery.nanoscroller.min.js")}}"></script>
+<script src="{{asset("/assets/js/libs/d3/d3.min.js")}}"></script>
+<script src="{{asset("/assets/js/libs/d3/d3.v3.js")}}"></script>
+<script src="{{asset("/assets/js/libs/rickshaw/rickshaw.min.js")}}"></script>
+<script src="{{asset("/assets/js/core/source/App.js")}}"></script>
+<script src="{{asset("/assets/js/core/source/AppNavigation.js")}}"></script>
+<script src="{{asset("/assets/js/core/source/AppOffcanvas.js")}}"></script>
+<script src="{{asset("/assets/js/core/source/AppCard.js")}}"></script>
+<script src="{{asset("/assets/js/core/source/AppForm.js")}}"></script>
+<script src="{{asset("/assets/js/core/source/AppNavSearch.js")}}"></script>
+<script src="{{asset("/assets/js/core/source/AppVendor.js")}}"></script>
 <script>
     $("#main-menu").find("li").removeClass('active');
     $("a[href='{{Request::url()}}']").parent('li').addClass('active');

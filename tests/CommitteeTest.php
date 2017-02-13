@@ -20,6 +20,14 @@ class CommitteeTest extends TestCase
         Cache::forget("delegation_seats_count");
     }
 
+    public function teardown()
+    {
+        Cache::forget("committees");
+        Cache::forget("delegations");
+        Cache::forget("delegation_seats_count");
+        parent::teardown();
+    }
+
     /**
      *测试创建委员会表单
      */

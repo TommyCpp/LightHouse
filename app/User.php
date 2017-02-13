@@ -51,7 +51,7 @@ class User extends Authenticatable
      */
     public function delegation()
     {
-        return str_contains("HEADDEL", $this->archive->Identity) ? $this->hasOne("App\\Delegation", "head_delegate_id", "id") : null;
+        return str_contains($this->archive->Identity,"HEADDEL") ? $this->hasOne("App\\Delegation", "head_delegate_id", "id") : null;
     }
 
     /**获取身份数组

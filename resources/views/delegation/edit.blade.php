@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('css')
-    <link rel="stylesheet" href="{{env('APP_URL')}}/resources/assets/css/libs/select2/select2.css">
+    <link rel="stylesheet" href="{{asset("/assets/css/libs/select2/select2.css")}}">
 @endsection
 
 @section('content')
@@ -63,7 +63,7 @@
 @endsection
 
 @section('js')
-    <script src="{{env("APP_URL")}}/resources/assets/js/libs/select2/select2.min.js"></script>
+    <script src="{{asset("/assets/js/libs/select2/select2.min.js")}}"></script>
     @include('partial/form-error')
     <script>
         $("#head_delegate_id").select2();

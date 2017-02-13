@@ -122,7 +122,7 @@
                                     </thead>
                                     <tbody>
                                     @foreach($target_requests as $item)
-                                        <tr>
+                                        <tr data-target="{{$item["id"]}}">
                                             <td>{{$item['id']}}</td>
                                             <td>{{$item['initiator']}}</td>
                                             <td>{{$item['target']}}</td>
@@ -152,7 +152,7 @@
                             <div class="tab-pane" id="target-fail">
                                 <table class="table table-hover no-margin">
                                     <thead>
-                                    <tr>
+                                    <tr data-target="{{$item["id"]}}">
                                         <th>#</th>
                                         <th>发起方</th>
                                         <th>目标方</th>
@@ -166,7 +166,7 @@
                                     <tbody>
                                     @foreach($target_requests as $item)
                                         @if($item['status']=="fail")
-                                        <tr>
+                                        <tr data-target="{{$item["id"]}}">
                                             <td>{{$item['id']}}</td>
                                             <td>{{$item['initiator']}}</td>
                                             <td>{{$item['target']}}</td>
@@ -206,7 +206,7 @@
                                     @foreach($target_requests as $item)
                                         @if($item['status']=="success")
 
-                                            <tr>
+                                            <tr data-target="{{$item["id"]}}">
                                                 <td>{{$item['id']}}</td>
                                                 <td>{{$item['initiator']}}</td>
                                                 <td>{{$item['target']}}</td>
@@ -309,7 +309,7 @@
                                     </thead>
                                     <tbody>
                                     @foreach($initiator_requests as $item)
-                                        <tr>
+                                        <tr data-target="{{$item["id"]}}">
                                             <td>{{$item['id']}}</td>
                                             <td>{{$item['initiator']}}</td>
                                             <td>{{$item['target']}}</td>
@@ -353,7 +353,7 @@
                                     <tbody>
                                     @foreach($initiator_requests as $item)
                                         @if($item['status']=="fail")
-                                        <tr>
+                                        <tr data-target="{{$item["id"]}}">
                                             <td>{{$item['id']}}</td>
                                             <td>{{$item['initiator']}}</td>
                                             <td>{{$item['target']}}</td>
@@ -392,7 +392,7 @@
                                     <tbody>
                                     @foreach($initiator_requests as $item)
                                         @if($item['status']=="pending")
-                                            <tr>
+                                            <tr data-target="{{$item["id"]}}">
                                                 <td>{{$item['id']}}</td>
                                                 <td>{{$item['initiator']}}</td>
                                                 <td>{{$item['target']}}</td>
@@ -431,7 +431,7 @@
                                     <tbody>
                                     @foreach($initiator_requests as $item)
                                         @if($item['status']=="success")
-                                            <tr>
+                                            <tr data-target="{{$item["id"]}}">
                                                 <td>{{$item['id']}}</td>
                                                 <td>{{$item['initiator']}}</td>
                                                 <td>{{$item['target']}}</td>
@@ -470,7 +470,7 @@
         });
         $('a:has(".fa-ban")').click(function () {
             var exchange = this;
-            $.post("{{env('APP_URL')}}/public/delegation-seat-exchange/" + $(this).data('target'), {
+            $.post("{{url('delegation-seat-exchange')}}/" + $(this).data('target'), {
                 "_method": "DELETE",
                 "delegation-id": "{{$delegation->id}}",
                 "_token": "{{csrf_token()}}"
@@ -479,10 +479,16 @@
                     BootstrapDialog.show({
                         type: "type-success",
                         title: "成功",
-                        message: "已经删除此交换申请"
+                        message: "已经删除此交换申请",
+                        onhidden:function(){
+                            location.reload();
+                        }
                     });
-                    $(exchange).parents('td').siblings('.exchange-status').find('span').removeClass('label-primary').addClass('label-danger').html("交换失败");
-                    $(exchange).parents('td').html("");
+//                    $(exchange).parents('td').siblings('.exchange-status').find('span').removeClass('label-primary').addClass('label-danger').html("交换失败");
+//                    $(exchange).parents('td').html("");
+//                    //Update Tabs
+//                    $tr = $(exchange).parents("tr");
+
                 }
                 else {
                     BootstrapDialog.show({
@@ -505,7 +511,7 @@
         });
 
         function getSeatsData($committee_id) {
-            $.post("{{env('APP_URL')}}/public/committee/" + $committee_id + "/seats", {"_token": "{{csrf_token()}}"}, function (data) {
+            $.post("{{url("committee")}}/" + $committee_id + "/seats", {"_token": "{{csrf_token()}}"}, function (data) {
 //                console.log(data);
                 $("#seats-information .bootstrap-dialog-message").html("");
                 $('<table class="table table-responsive" id="seat-table"><thead><tr><th>代表团编号</tf><th>代表团名称</th><th>席位数</th></tr></thead><tbody></tbody></table>').appendTo($("#seats-information .bootstrap-dialog-message"));

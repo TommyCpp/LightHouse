@@ -11,6 +11,22 @@ class SeatExchangeTest extends TestCase
 {
     use DatabaseTransactions;
 
+    public function setup()
+    {
+        parent::setup();
+        Cache::forget("delegations");
+        Cache::forget("committees");
+        Cache::forget("delegation_seats_count");
+    }
+
+    public function teardown()
+    {
+        Cache::forget("committees");
+        Cache::forget("delegations");
+        Cache::forget("delegation_seats_count");
+        parent::teardown();
+    }
+
     public function testProposeSeatExchange()
     {
         $delegation_1 = factory(App\Delegation::class)->create([

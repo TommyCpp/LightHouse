@@ -2,12 +2,12 @@
 
 @section('css')
     <link type="text/css" rel="stylesheet"
-          href="{{env('APP_URL')}}/resources/assets/css/libs/DataTables/jquery.dataTables.css?1423553989"/>
+          href="{{asset("/assets/css/libs/DataTables/jquery.dataTables.css?1423553989")}}"/>
     <link type="text/css" rel="stylesheet"
-          href="{{env('APP_URL')}}/resources/assets/css/libs/DataTables/extensions/dataTables.colVis.css?1423553990"/>
+          href="{{asset("/assets/css/libs/DataTables/extensions/dataTables.colVis.css?1423553990")}}"/>
     <link type="text/css" rel="stylesheet"
-          href="{{env('APP_URL')}}/resources/assets/css/libs/DataTables/extensions/dataTables.tableTools.css?1423553990"/>
-    <link rel="stylesheet" href="{{env('APP_URL')}}/resources/assets/css/libs/toastr/toastr.css"/>
+          href="{{asset("/assets/css/libs/DataTables/extensions/dataTables.tableTools.css?1423553990")}}"/>
+    <link rel="stylesheet" href="{{asset("/assets/css/libs/toastr/toastr.css")}}"/>
 @endsection
 
 @section('content')
@@ -69,14 +69,14 @@
 @endsection
 
 @section('js')
-    <script src="{{env('APP_URL')}}/resources/assets/js/libs/DataTables/jquery.dataTables.min.js"></script>
-    <script src="{{env('APP_URL')}}/resources/assets/js/libs/DataTables/extensions/ColVis/js/dataTables.colVis.min.js"></script>
-    <script src="{{env('APP_URL')}}/resources/assets/js/libs/DataTables/extensions/TableTools/js/dataTables.tableTools.min.js"></script>
-    <script src="{{env('APP_URL')}}/resources/assets/js/libs/toastr/toastr.js"></script>
+    <script src="{{asset("/assets/js/libs/DataTables/jquery.dataTables.min.js")}}"></script>
+    <script src="{{asset("/assets/js/libs/DataTables/extensions/ColVis/js/dataTables.colVis.min.js")}}"></script>
+    <script src="{{asset("/assets/js/libs/DataTables/extensions/TableTools/js/dataTables.tableTools.min.js")}}"></script>
+    <script src="{{asset("/assets/js/libs/toastr/toastr.js")}}"></script>
     <script>
         var table = $('#users').DataTable({
                 "language":{
-                "url":'{{env('APP_URL')}}/resources/assets/js/libs/DataTables/i18n/chinese.json'
+                "url":'{{asset("/assets/js/libs/DataTables/i18n/chinese.json")}}'
             }
         });
         @if(session('error') != null)

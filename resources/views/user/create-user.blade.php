@@ -1,8 +1,8 @@
 @extends('layout')
 
 @section('css')
-    <link rel="stylesheet" href="{{env('APP_URL')}}/resources/assets/css/libs/multi-select/multi-select.css"/>
-    <link rel="stylesheet" href="{{env('APP_URL')}}/resources/assets/css/libs/bootstrap-dialog/bootstrap-dialog.css"/>
+    <link rel="stylesheet" href="{{asset("/assets/css/libs/multi-select/multi-select.css")}}"/>
+    <link rel="stylesheet" href="{{asset("/assets/css/libs/bootstrap-dialog/bootstrap-dialog.css")}}"/>
 @endsection
 @section('content')
     <section>
@@ -67,8 +67,8 @@
 @endsection
 
 @section('js')
-    <script src="{{env('APP_URL')}}/resources/assets/js/libs/multi-select/jquery.multi-select.js"></script>
-    <script src="{{env('APP_URL')}}/resources/assets/js/libs/bootstrap-dialog/bootstrap-dialog.js"></script>
+    <script src="{{asset("/assets/js/libs/multi-select/jquery.multi-select.js")}}"></script>
+    <script src="{{asset("/assets/js/libs/bootstrap-dialog/bootstrap-dialog.js")}}"></script>
     <script>
         $('#identities').multiSelect();
         $("#submit").click(function () {

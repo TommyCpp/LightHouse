@@ -38,6 +38,7 @@ class HandleSeatExchanged
             'user-agent' => Request::header("User-Agent"),
             'user_name' => $event->user->name
         ]);
+        //Send Email
         dispatch(new SendEmail($event));
 
     }
