@@ -92,7 +92,7 @@
                             label: "返回用户列表",
                             cssClass: "btn btn-success",
                             action: function (dialog) {
-                                window.location.href = "{{env("APP_URL")}}" + "/public/users";
+                                window.location.href = "{{url("users")}}";
                             }
                         },
                             {

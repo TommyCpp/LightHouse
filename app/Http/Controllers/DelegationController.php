@@ -375,6 +375,9 @@ class DelegationController extends Controller
 
         $errors = [];
 
+        if(SeatExchange::all()->where("initiator", $initiator->id)->where("target", $target->id)->where("status", "pending")->count() >= 1){
+            return response(["与目标代表团存在尚未完成的名额交换申请"], 400);
+        }
 
         //检查是否是一个已经存在的交换申请
         //两个代表团之间只能同时进行一次交换
@@ -468,7 +471,7 @@ class DelegationController extends Controller
                 }
             }
             $seat_exchange_request->seat_exchange_records()->saveMany($seat_exchange_records);
-            Event::fire(new SeatExchangeApplied($seat_exchange_request, Auth::user(), $request));
+            //Event::fire(new SeatExchangeApplied($seat_exchange_request, Auth::user(), $request));
         }
         return response("", 200);
     }

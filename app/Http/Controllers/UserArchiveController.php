@@ -47,7 +47,7 @@ class UserArchiveController extends Controller
         $user_archive->HighSchool = $request->input('high-school');
         $user_archive->University = $request->input('university');
         if($user_archive->save()){
-            return redirect('home');
+            return redirect('user-archive');
         }
         else
             return ('404');
