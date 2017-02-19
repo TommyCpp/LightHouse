@@ -471,7 +471,7 @@ class DelegationController extends Controller
                 }
             }
             $seat_exchange_request->seat_exchange_records()->saveMany($seat_exchange_records);
-            //Event::fire(new SeatExchangeApplied($seat_exchange_request, Auth::user(), $request));
+            Event::fire(new SeatExchangeApplied($seat_exchange_request, Auth::user(), $request));
         }
         return response("", 200);
     }

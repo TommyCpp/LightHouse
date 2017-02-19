@@ -98,9 +98,24 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend("equal_to_total_seat", function ($attribute, $value, $para, $validator) {
             $total = 0;
             $data = $validator->getData();
-            foreach($para as $item)
+            foreach ($para as $item)
                 $total += array_get($data, $item);
             return $value == $total;
+        });
+        Validator::extend("emails", function ($attributes, $value, $para, $validator) {
+            if (!is_array($value)) {
+                //如果是数组
+                $value = explode(",", $value);
+                foreach($value as $item){
+                    $validator = Validator::make(['email'=>$item],['email' => 'required|email']);
+                    if($validator->fails()){
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
         });
     }
 
@@ -115,20 +130,4 @@ class AppServiceProvider extends ServiceProvider
     }
 
 
-//    /**
-//     * @param $array
-//     * @param $key
-//     * @param $value
-//     * @return bool|int
-//     * 针对二维数组（第一维是普通数组，第二维是关联数组），查询$key,$value是否在该数组中，如果在返回对应数组在$array中的索引，否则返回false
-//     */
-//    private function double_array_find($array, $key, $value)
-//    {
-//        for ($i = 0; $i < count($array); $i++) {
-//            if ($array[$i][$key] == $value) {
-//                return $i;
-//            }
-//        }
-//        return false;
-//    }
 }

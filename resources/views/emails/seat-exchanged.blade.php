@@ -403,7 +403,7 @@
                                         </table>
                                         <p><br/>
                                             如果上述信息与您的预期不符合，请尽快联系 <a
-                                                    href="mailto:{{Config::get("maillist.notify.seat_exchanged.emergence_connector")}}">{{Config::get("maillist.notify.seat_exchanged.emergence_connector")}}</a>
+                                                    href="mailto:{{Config::get("maillist.notify.seat_exchanged.emergence_connector")}}">{{Config::get("maillist.notify.seat_exchanged.emergence_contact")}}</a>
                                         </p>
                                         <p>闪亮之梦全国中学生模拟联合国大会 {{Config::get("conference.abbreviation")}}</p>
                                     </td>

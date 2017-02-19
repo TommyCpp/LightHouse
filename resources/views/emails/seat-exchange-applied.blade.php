@@ -386,7 +386,7 @@
                                             @endfor
                                             </tbody>
                                         </table>
-                                        <p>如果上述信息与您的预计不符，请尽快联系 <a href="mailto:{{Config::get("maillist.notify.seat_exchange_applied.emergence_connector")}}">{{Config::get("maillist.notify.seat_exchange_applied.emergence_connector")}}</a></p>
+                                        <p>如果上述信息与您的预计不符，请尽快联系 <a href="mailto:{{Config::get("maillist.notify.seat_exchange_applied.emergence_connector")}}">{{Config::get("maillist.notify.seat_exchange_applied.emergence_contact")}}</a></p>
                                         <p>闪亮之梦全国中学生模拟联合国大会 {{Config::get("conference.abbreviation")}}</p>
                                     </td>
                                 </tr>
