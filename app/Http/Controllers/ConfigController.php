@@ -20,7 +20,9 @@ class ConfigController extends Controller
     }
 
     /**
+     * show config update form
      * GET config/{config_file}/{config}
+     *
      * @param Request $request
      * @param $config_file
      * @param $config
@@ -43,7 +45,9 @@ class ConfigController extends Controller
 
 
     /**
+     * Do update config
      * POST config/{config_file}/{config}
+     *
      * @param Request $request
      * @param $config_file
      * @param $config
@@ -97,6 +101,7 @@ class ConfigController extends Controller
     }
 
     /**
+     * helper
      * prepossess the request variable
      * @param $input
      * @param string $type

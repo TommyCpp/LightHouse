@@ -23,17 +23,37 @@ class CommitteeController extends Controller
         $this->middleware('role:AT', ['only' => ['showCreateForm', 'showUpdateForm', 'update', 'create', 'delete']]);
     }
 
+    /**
+     * show committee list
+     * GET committee/index
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         $committees = Committee::all();
         return view('committee/index', compact('committees'));
     }
 
+    /**
+     * show committee create form
+     * GET create-committee
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function showCreateForm(Request $request)
     {
         return view('committee/create-committee');
     }
 
+    /**
+     * Do create committee
+     * POST create-committee
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function create(Request $request)
     {
         $this->validate($request, [
@@ -64,6 +84,14 @@ class CommitteeController extends Controller
         return redirect('committees');
     }
 
+    /**
+     * Do delete committee
+     * DELETE committee/{id}
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
     public function delete(Request $request, $id)
     {
         $committee = Committee::find($id);
@@ -76,12 +104,27 @@ class CommitteeController extends Controller
         return $status ? response("", 200) : response("", 500);
     }
 
+    /**
+     * show committee update form
+     * GET committee/{id}/edit
+     *
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function showUpdateForm($id)
     {
         $committee = Committee::all()->find($id);
         return view('committee/committee')->with("committee", $committee);
     }
 
+    /**
+     * Do update committee
+     * PUT committee/{id}
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function update(Request $request, $id)
     {
         $this->validate($request, [
@@ -118,6 +161,14 @@ class CommitteeController extends Controller
 
     }
 
+    /**
+     * show note of committee
+     * GET(ajax) committee/{id}/note
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
     public function getNote(Request $request, $id)
     {
         if ($request->ajax()) {
@@ -127,6 +178,14 @@ class CommitteeController extends Controller
         }
     }
 
+    /**
+     * show seat info of every delegation which has seat in requested committee
+     * POST committee/{id}/seats
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getSeats(Request $request, $id)
     {
 //        if ($request->ajax()) {
