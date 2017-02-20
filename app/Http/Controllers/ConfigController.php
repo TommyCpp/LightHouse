@@ -8,12 +8,24 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
+/**
+ * Class ConfigController
+ * @package App\Http\Controllers
+ * Handle the change to config
+ */
 class ConfigController extends Controller
 {
     public function __construct()
     {
     }
 
+    /**
+     * GET config/{config_file}/{config}
+     * @param Request $request
+     * @param $config_file
+     * @param $config
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Contracts\View\Factory|\Illuminate\View\View|\Symfony\Component\HttpFoundation\Response
+     */
     public function show(Request $request, $config_file, $config)
     {
         if ($config_file == "mail") {
@@ -29,6 +41,14 @@ class ConfigController extends Controller
         return response("", 404);
     }
 
+
+    /**
+     * POST config/{config_file}/{config}
+     * @param Request $request
+     * @param $config_file
+     * @param $config
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function edit(Request $request, $config_file, $config)
     {
         if ($config_file == "mail") {
@@ -57,9 +77,11 @@ class ConfigController extends Controller
                 $config_array = $this->prepossess($request->input(), "mail");
                 Config::set("maillist.notify.seat_exchange_applied", $config_array);
                 $config_data = var_export(Config::get("maillist"), 1);
+                //using var_export to print the literal of config array
+
                 if (File::put(env("ROOT_PATH") . "/config/maillist.php", "<?php\n return $config_data ;")) {
                     return redirect($request->url());
-                }
+                }//using File facade to modify config file,if success then redirect
             }
             if ($config == "seat-exchanged") {
                 //席位交换完成的配置
@@ -84,9 +106,9 @@ class ConfigController extends Controller
     private function prepossess($input, $type)
     {
         if ($type == "mail") {
-            $input['ccs'] = explode(",", $input['ccs']);
-            array_forget($input, "_token");
-            return $input;
+            $input['ccs'] = explode(",", $input['ccs']);//convert the string to array by explode
+            array_forget($input, "_token");//remove _token
+            return $input;//now has every key config needs
         }
     }
 }

@@ -7,6 +7,7 @@ use App\Jobs\SendEmail;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Log;
+use Request;
 
 class HandleSeatExchangeApplied
 {
@@ -31,8 +32,8 @@ class HandleSeatExchangeApplied
             "request_id" => $event->seat_exchange->id,
             "initiator" => $event->seat_exchange->initiator,
             "target" => $event->seat_exchange->target,
-            "ip" => $event->request->ip(),
-            "user-agent" => $event->request->header("User-Agent"),
+            "ip" => Request::ip(),
+            "user-agent" => Request::header("User-Agent"),
             "user_name" => $event->user->name
         ]);
         //向initiator和target发送相应邮件

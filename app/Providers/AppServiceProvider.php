@@ -18,30 +18,6 @@ class AppServiceProvider extends ServiceProvider
     {
         view()->composer('partial/menu', function (View $view) {
 
-            /*
-             * $menus = [
-                ['name' => '首页', 'url' => 'home'],
-                ['name' => '我的资料', 'url' => 'users']
-            ];
-
-            if (Auth::user()->hasRole('ADMIN')) {
-                $key = array_search("会场管理", array_pluck($menus, 'name'));
-                if ($key !== false) {
-                    if (array_search("会场列表", array_pluck($menus[$key]['offspring'], 'name')) === false) {
-                        $menus[$key]['offspring'][] = ['name' => '会场列表', 'url' => 'committees'];
-                    }
-                    if (array_search("创建会场", array_pluck($menus[$key]['offspring'], 'name')) === false) {
-                        $menus[$key]['offspring'][] = ['name' => '创建会场', 'url' => 'create-committee'];
-                    }
-                }
-                else{
-                    $menus[] = ['name' => '会场管理', 'url' => "javascript:void(0)", 'offspring' => [['name' => '会场列表', 'url' => 'committees'], ['name' => '创建会场', 'url' => 'create-committee']]];
-                }
-
-                $key = array_search("代表团管理", array_pluck($menus, 'name'));
-            }
-            */
-
             if (Auth::user()->hasRole('ADMIN')) {
                 $view->with('menus', [
                     //name:选项名称
@@ -51,7 +27,12 @@ class AppServiceProvider extends ServiceProvider
                     ['name' => '首页', 'url' => 'home'],
                     ['name' => '用户管理', 'url' => "users"],
                     ['name' => '我的资料', 'url' => 'user-archive'],
-                    ['name' => '会场管理', 'url' => "javascript:void(0)", 'offspring' => [['name' => '会场列表', 'url' => 'committees'], ['name' => '创建会场', 'url' => 'create-committee']]]
+                    ['name' => '会场管理', 'url' => "javascript:void(0)", 'offspring' => [['name' => '会场列表', 'url' => 'committees'], ['name' => '创建会场', 'url' => 'create-committee']]],
+                    ['name'=>'日志', 'url' => 'logs'],
+                    ['name'=>'配置更改','url'=>'javascript:void(0)','offspring'=>[
+                        ['name'=>'邮件通知 - 名额交换发起','url'=>'config/mail/seat-exchange-applied'],
+                        ['name'=>'邮件通知 - 名额交换完成', 'url' => 'config/mail/seat-exchanged']
+                    ]]
                 ]);
                 return;
             }

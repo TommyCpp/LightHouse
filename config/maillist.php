@@ -20,7 +20,7 @@
       array (
         0 => 'info@test.com',
       ),
-      'initiator_subject' => '名额交换完成',
+      'initiator_subject' => '测试主题',
       'target_subject' => '名额交换完成',
       'emergence_contact' => 'emergence@test.com',
     ),
