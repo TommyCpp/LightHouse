@@ -29,25 +29,16 @@ class SeatExchangeTest extends TestCase
 
     public function testProposeSeatExchange()
     {
-        $delegation_1 = factory(App\Delegation::class)->create([
-            "id" => 102
-        ])->head_delegate()->associate(factory(App\User::class)->create([
-            "id" => 102
-        ])->archive()->save(factory(App\UserArchive::class)->create([
-            'id' => 102
-        ])));
-        $delegation_2 = factory(App\Delegation::class)->create([
-            "id" => 103
-        ])->head_delegate()->associate(factory(App\User::class)->create([
-            "id" => 103
-        ])->archive()->save(factory(App\UserArchive::class)->create([
-            'id' => 103
-        ])));
+
+        $delegation_1 = factory(Delegation::class, "mock")->create();
+        $delegation_2 = factory(Delegation::class, "mock")->create();
+        //为delegation_1分配席位
         $seats = Seat::where("committee_id", 4)->where("is_distributed", 0)->take(2)->get();
         $delegation_1->seats()->saveMany($seats);
         $delegation_1->save();
 
-        $this->actingAs(Delegation::find(102)->head_delegate);
+
+        $this->actingAs(User::find($delegation_1->head_delegate->id));
 
         //发送请求
         $this->post("/delegation-seat-exchange", [
@@ -68,34 +59,41 @@ class SeatExchangeTest extends TestCase
             'G20-out' => 0,
             '_token' => csrf_token()])
             ->seeInDatabase("seat_exchanges", ['initiator' => $delegation_1->id, 'target' => $delegation_2->id, 'status' => 0])
-            ->seeInDatabase("seat_exchange_records", ['committee_id' => 4, 'out' => 2]);
+            ->seeInDatabase("seat_exchange_records", ['committee_id' => 4, 'out' => 2])
+            ->notSeeInDatabase("seats", [
+                "delegation_id" => $delegation_2->id
+            ]);
 
-//        $this->actingAs(Delegation::find(21)->head_delegate);
-//
-//        $origin_ini = Delegation::find(20)->seats->count();
-//        $origin_tar = Delegation::find(21)->seats->count();
-//
-//        $this->post("/delegation-seat-exchange", [
-//            'target' => 20,
-//            'ASS-in' => 1,
-//            'ASS-out' => 0,
-//            'CSCE-in' => 0,
-//            'CSCE-out' => 1,
-//            'SC-in' => 0,
-//            'SC-out' => 0,
-//            'AC-in' => 0,
-//            'AC-out' => 0,
-//            'HJS-in' => 0,
-//            'HJS-out' => 0,
-//            'UNDP-in' => 0,
-//            'UNDP-out' => 0,
-//            'G20-in' => 0,
-//            'G20-out' => 0,
-//            '_token' => csrf_token()])
-//            ->
-//            assertEquals($origin_ini + 1, Delegation::find(20)->seats->where("committee_id", 1)->count());
-//
-//        $this->assertEquals($origin_tar - 1, Delegation::find(21)->seats->where("committee_id", 2)->count());
+
+        $this->actingAs(User::find($delegation_2->head_delegate->id));
+
+
+        $this->post("/delegation-seat-exchange", [
+            'target' => $delegation_1->id,
+            'ASS-in' => 0,
+            'ASS-out' => 0,
+            'CSCE-in' => 0,
+            'CSCE-out' => 0,
+            'SC-in' => 0,
+            'SC-out' => 0,
+            'AC-in' => 2,
+            'AC-out' => 0,
+            'HJS-in' => 0,
+            'HJS-out' => 0,
+            'UNDP-in' => 0,
+            'UNDP-out' => 0,
+            'G20-in' => 0,
+            'G20-out' => 0,
+            '_token' => csrf_token()])
+            ->assertResponseOk()
+            ->seeInDatabase("seat_exchanges", [
+                'initiator' => $delegation_1->id,
+                'target' => $delegation_2->id,
+                'status' => 1
+            ])
+            ->seeInDatabase("seats", [
+                'delegation_id' => $delegation_2->id
+            ]);
     }
 
 }
