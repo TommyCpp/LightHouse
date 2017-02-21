@@ -47,7 +47,7 @@ class User extends Authenticatable
 
     public function delegate()
     {
-        return str_contains($this->archive->Identity, "DEL") ? $this->hasOne("App\\Delegate", "delegate_id") : null;
+        return $this->hasOne("App\\Delegate", "delegate_id");
     }
 
     /**
@@ -56,7 +56,7 @@ class User extends Authenticatable
      */
     public function delegation()
     {
-        return str_contains($this->archive->Identity, "HEADDEL") ? $this->hasOne("App\\Delegation", "head_delegate_id", "id") : null;
+        return $this->hasOne("App\\Delegation", "head_delegate_id", "id");
     }
 
     public function getIdentitiesAttribute()
@@ -120,6 +120,8 @@ class User extends Authenticatable
     {
         return !(strpos($this->archive->Identity, $role) === false);
     }
+
+
 
 
 }

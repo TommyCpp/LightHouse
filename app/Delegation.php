@@ -19,7 +19,6 @@ use Log;
  * @property int delegate_number
  * @property Collection delegates
  * @property string name
- * @property Collection delegates
  * @property Collection seats
  *
  * @package App
