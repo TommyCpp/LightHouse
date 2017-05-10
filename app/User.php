@@ -5,6 +5,21 @@ namespace App;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\Request;
 
+/**
+ * Class User
+ *
+ * @property mixed archive
+ * @property int id
+ * @property string name
+ * @property string email
+ * @property string password
+ * @property bool|array identities
+ * @property Delegation|null delegation
+ *
+ *
+ *
+ * @package App
+ */
 class User extends Authenticatable
 {
     /**
@@ -25,16 +40,6 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    /**
-     * Whether User has corresponding role
-     * @param $role
-     * @return bool
-     */
-    public function hasRole($role)
-    {
-        return !(strpos($this->archive->Identity, $role) === false);
-    }
-
     public function archive()
     {
         return $this->hasOne('App\UserArchive', 'id');
@@ -51,7 +56,12 @@ class User extends Authenticatable
      */
     public function delegation()
     {
-        return str_contains($this->archive->Identity,"HEADDEL") ? $this->hasOne("App\\Delegation", "head_delegate_id", "id") : null;
+        return $this->hasOne("App\\Delegation", "head_delegate_id", "id");
+    }
+
+    public function getIdentitiesAttribute()
+    {
+        return $this->identities();
     }
 
     /**获取身份数组
@@ -101,28 +111,17 @@ class User extends Authenticatable
         return false;
     }
 
-    public function getIdentitiesAttribute()
+    /**
+     * Whether User has corresponding role
+     * @param $role
+     * @return bool
+     */
+    public function hasRole($role)
     {
-        return $this->identities();
+        return !(strpos($this->archive->Identity, $role) === false);
     }
 
-    public function getDelegateAttribute($value)
-    {
-        if ($this->hasRole("DEL")) {
-            return $value;
-        } else {
-            return false;
-        }
-    }
 
-    public function setDelegateAttribute(Delegate $delegate)
-    {
-        if ($this->hasRole("DEL")) {
-            $delegate->delegate_id = $this->id;//设置成与User的id相同
-            $this->delegate = $delegate;
-        }
 
-        return false;
-    }
 
 }

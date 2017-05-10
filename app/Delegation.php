@@ -13,11 +13,14 @@ use Log;
  * Class Delegation
  * @property int id
  * @property User head_delegate
- * @property Collection committee_selats
- * @property string name
- * @property Collection delegates
- * @property Collection seats
  * @property string head_delegate_name
+ * @property Collection committee_seat
+ * @property int seat_number
+ * @property int delegate_number
+ * @property Collection delegates
+ * @property string name
+ * @property Collection seats
+ *
  * @package App
  */
 class Delegation extends Model

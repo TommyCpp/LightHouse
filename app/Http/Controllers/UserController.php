@@ -11,9 +11,9 @@ use App\Http\Requests;
 class UserController extends Controller
 {
     /**
+     * show all users
+     * GET users
      * @param Request $request
-     * 查看全部用户
-     * /users
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function userManage(Request $request)
@@ -22,6 +22,13 @@ class UserController extends Controller
         return view('user/user-management', compact('users'));
     }
 
+    /**
+     * show user info update form
+     * GET user/{id}
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function showUserManageForm(Request $request, $id)
     {
         $user = User::find($id);
@@ -33,6 +40,14 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Do update users' info
+     * POST user/{id}
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function editUserInformation(Request $request, $id)
     {
         $user = User::find($id);
@@ -65,7 +80,14 @@ class UserController extends Controller
         }
     }
 
-    public function deleteUser(Request $request,$id)
+    /**
+     * delete user
+     * DELETE user/{id}
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
+    public function deleteUser(Request $request, $id)
     {
         $user = User::find($id);
         

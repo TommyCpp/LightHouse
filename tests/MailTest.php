@@ -47,7 +47,7 @@ class MailTest extends TestCase
         ]);
         $seat_exchange->seat_exchange_records()->save($seat_exchange_records);
 
-        dispatch(new SendEmail(new \App\Events\SeatExchangeApplied($seat_exchange, User::find($delegation_1->id), Request::create("/"))));
+        dispatch(new SendEmail(new \App\Events\SeatExchangeApplied($seat_exchange, User::find($delegation_1->id))));
 
     }
 

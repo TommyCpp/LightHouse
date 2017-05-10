@@ -35,6 +35,9 @@ class DelegationController extends Controller
 {
 
     /**
+     * show create form of delegation
+     * GET create-delegation
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function showCreateForm()
@@ -54,6 +57,8 @@ class DelegationController extends Controller
 
     /**
      * 显示代表团名额交换规则页面（设置各个委员会上限）
+     * GET committees/limit
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function showDelegationSeatExchangeRuleForm()
@@ -62,6 +67,12 @@ class DelegationController extends Controller
         return view('delegation/rules', compact("committees"));
     }
 
+    /**
+     * show delegations' info
+     * GET delegations
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function showDelegations()
     {
 
@@ -84,6 +95,14 @@ class DelegationController extends Controller
         return view("delegation/delegations", ["delegations" => $delegations, 'committee_names' => $names->toArray(), 'seats' => $seats->toArray()]);
     }
 
+    /**
+     * show update form of delegation
+     * GET delegation/{id}/edit
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function showUpdateForm(Request $request, $id)
     {
         /** @var Delegation $delegation */
@@ -109,17 +128,30 @@ class DelegationController extends Controller
         return view('delegation/edit', compact("delegation", "index_committee_seats", "delegates"));
     }
 
+    /**
+     * Do delete delegation and return delegation's seat to seat pool
+     * DELETE delegation/{id}
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
     public function delete(Request $request, $id)
     {
         $delegation = Delegation::find($id);
-        $seats = $delegation->seats;
         DB::beginTransaction();
-        $status = $delegation->delete();
+        $status = $delegation->delete();//Model in charge of the seats' return.See Delegation.php to find more
         DB::commit();
         return $status ? response("", 200) : response("", 404);
 
     }
 
+    /**
+     * show the form which regulates how much seats one delegation can get in different committee
+     * GET committees/limit
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function showCommitteesLimitForm()
     {
         $committees = Committee::allInCache();
@@ -128,6 +160,9 @@ class DelegationController extends Controller
     }
 
     /**
+     * Do update the limit of how much seats can one delegation get in different committee
+     * POST committees/limit
+     *
      * @param Request $request
      * @return mixed
      * 各个委员会限额，该参数会在代表团自主进行交换时进行限制
@@ -158,6 +193,9 @@ class DelegationController extends Controller
     }
 
     /**
+     * Do update the delegation
+     * PUT delegation/{id}
+     *
      * @param DelegationRequest $request
      * @param $id
      * @return mixed
@@ -167,7 +205,7 @@ class DelegationController extends Controller
      * 2.修改代表团名称等
      * 3.修改席位信息（在此处添加或删除席位不受【每个代表团在各个会场席位数量上限】 的限制，便于OT进行奖励性分配）
      *
-     * 尚未测试日志记录功能
+     *
      */
     public function edit(DelegationRequest $request, $id)
     {
@@ -240,6 +278,13 @@ class DelegationController extends Controller
         return redirect("/delegations");
     }
 
+    /**
+     * Do create the delegation
+     * POST create-delegation
+     *
+     * @param DelegationRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function create(DelegationRequest $request)
     {
         $committees = Committee::allInCache()->values();
@@ -290,6 +335,14 @@ class DelegationController extends Controller
      */
     //================================================================================================
 
+    /**
+     * show delegation info
+     * GET delegation/{id}
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function showDelegationInformation(Request $request, $id)
     {
         $delegations = Delegation::all();
@@ -338,6 +391,11 @@ class DelegationController extends Controller
 
     }
 
+    /**
+     * show seat exchange form
+     * GET delegation-seat-exchange
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function showSeatExchange()
     {
         $committees = Committee::allInCache();
@@ -347,6 +405,14 @@ class DelegationController extends Controller
         return view("delegation/seat-exchange", compact("committees", "committees_name", "delegations"));
     }
 
+
+    /**
+     * delete seat exchange requrest
+     * DELETE(ajax) /delegation-seat-exchange/{id}
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
     public function deleteExchange(Request $request, $id)
     {
         if ($request->ajax()) {
@@ -363,6 +429,13 @@ class DelegationController extends Controller
         return response("fail", 400);
     }
 
+    /**
+     * do seat exchange
+     * POST delegation-seat-exchange
+     *
+     * @param SeatExchangeRequest $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
     public function seatExchange(SeatExchangeRequest $request)
     {
         $request->session()->put("errors", new Collection());
@@ -471,7 +544,7 @@ class DelegationController extends Controller
                 }
             }
             $seat_exchange_request->seat_exchange_records()->saveMany($seat_exchange_records);
-            //Event::fire(new SeatExchangeApplied($seat_exchange_request, Auth::user(), $request));
+            Event::fire(new SeatExchangeApplied($seat_exchange_request, Auth::user()));
         }
         return response("", 200);
     }
@@ -479,6 +552,7 @@ class DelegationController extends Controller
 
     //helper functions
     /**
+     * helper. Do seat exchange.
      * @param SeatExchange $exchange_request
      */
     private function exchangeSeats(SeatExchange $exchange_request)

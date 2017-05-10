@@ -18,30 +18,6 @@ class AppServiceProvider extends ServiceProvider
     {
         view()->composer('partial/menu', function (View $view) {
 
-            /*
-             * $menus = [
-                ['name' => '首页', 'url' => 'home'],
-                ['name' => '我的资料', 'url' => 'users']
-            ];
-
-            if (Auth::user()->hasRole('ADMIN')) {
-                $key = array_search("会场管理", array_pluck($menus, 'name'));
-                if ($key !== false) {
-                    if (array_search("会场列表", array_pluck($menus[$key]['offspring'], 'name')) === false) {
-                        $menus[$key]['offspring'][] = ['name' => '会场列表', 'url' => 'committees'];
-                    }
-                    if (array_search("创建会场", array_pluck($menus[$key]['offspring'], 'name')) === false) {
-                        $menus[$key]['offspring'][] = ['name' => '创建会场', 'url' => 'create-committee'];
-                    }
-                }
-                else{
-                    $menus[] = ['name' => '会场管理', 'url' => "javascript:void(0)", 'offspring' => [['name' => '会场列表', 'url' => 'committees'], ['name' => '创建会场', 'url' => 'create-committee']]];
-                }
-
-                $key = array_search("代表团管理", array_pluck($menus, 'name'));
-            }
-            */
-
             if (Auth::user()->hasRole('ADMIN')) {
                 $view->with('menus', [
                     //name:选项名称
@@ -51,7 +27,12 @@ class AppServiceProvider extends ServiceProvider
                     ['name' => '首页', 'url' => 'home'],
                     ['name' => '用户管理', 'url' => "users"],
                     ['name' => '我的资料', 'url' => 'user-archive'],
-                    ['name' => '会场管理', 'url' => "javascript:void(0)", 'offspring' => [['name' => '会场列表', 'url' => 'committees'], ['name' => '创建会场', 'url' => 'create-committee']]]
+                    ['name' => '会场管理', 'url' => "javascript:void(0)", 'offspring' => [['name' => '会场列表', 'url' => 'committees'], ['name' => '创建会场', 'url' => 'create-committee']]],
+                    ['name'=>'日志', 'url' => 'logs'],
+                    ['name'=>'配置更改','url'=>'javascript:void(0)','offspring'=>[
+                        ['name'=>'邮件通知 - 名额交换发起','url'=>'config/mail/seat-exchange-applied'],
+                        ['name'=>'邮件通知 - 名额交换完成', 'url' => 'config/mail/seat-exchanged']
+                    ]]
                 ]);
                 return;
             }
@@ -98,9 +79,24 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend("equal_to_total_seat", function ($attribute, $value, $para, $validator) {
             $total = 0;
             $data = $validator->getData();
-            foreach($para as $item)
+            foreach ($para as $item)
                 $total += array_get($data, $item);
             return $value == $total;
+        });
+        Validator::extend("emails", function ($attributes, $value, $para, $validator) {
+            if (!is_array($value)) {
+                //如果是数组
+                $value = explode(",", $value);
+                foreach($value as $item){
+                    $validator = Validator::make(['email'=>$item],['email' => 'required|email']);
+                    if($validator->fails()){
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
         });
     }
 
@@ -115,20 +111,4 @@ class AppServiceProvider extends ServiceProvider
     }
 
 
-//    /**
-//     * @param $array
-//     * @param $key
-//     * @param $value
-//     * @return bool|int
-//     * 针对二维数组（第一维是普通数组，第二维是关联数组），查询$key,$value是否在该数组中，如果在返回对应数组在$array中的索引，否则返回false
-//     */
-//    private function double_array_find($array, $key, $value)
-//    {
-//        for ($i = 0; $i < count($array); $i++) {
-//            if ($array[$i][$key] == $value) {
-//                return $i;
-//            }
-//        }
-//        return false;
-//    }
 }

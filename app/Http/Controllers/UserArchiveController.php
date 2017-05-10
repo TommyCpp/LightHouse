@@ -16,10 +16,11 @@ class UserArchiveController extends Controller
     }
 
     /**
-     * return the form which allows user to update or add their information
+     * show user archive form
+     * GET user-archive
      * @param Request $request
-     * @param int $id
      * @return mixed
+     * @internal param int $id
      */
     public function showArchiveForm(Request $request)
     {
@@ -29,7 +30,11 @@ class UserArchiveController extends Controller
     }
 
     /**
+     * add or update user archive of user
+     * GET user-archive
+     *
      * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|string
      */
     public function addOrUpdate(Request $request)
     {

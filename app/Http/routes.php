@@ -23,6 +23,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('user-archive', 'UserArchiveController@addOrUpdate');
 });
 
+Route::group(['middleware'=>['auth', 'role:ADMIN']],function(){
+    Route::get("config/{config_file}/{config_item}","ConfigController@show");
+    Route::post("config/{config_file}/{config_item}","ConfigController@edit");
+});
+
 Route::group(['middleware' => ['auth', 'role:ADMIN|OT']], function () {
     Route::get('users', 'UserController@userManage');
     Route::get('user/{id}', 'UserController@showUserManageForm');
