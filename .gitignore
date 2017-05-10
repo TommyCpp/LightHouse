@@ -5,3 +5,6 @@ Homestead.yaml
 Homestead.json
 composer.lock
 .env
+/storage/debugbar/
+/public/vendor/
+/.idea/
