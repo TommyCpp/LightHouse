@@ -7,4 +7,4 @@ composer.lock
 .env
 /storage/debugbar/
 /public/vendor/
-/.idea/
+/.idea/*
